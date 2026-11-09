@@ -1,0 +1,572 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpBarList:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      Data:
+        PropertyKind: Input
+        DisplayName: Data
+        Description: Table with Label (text), Value (number), Subtitle (text, optional), isHidden (boolean, optional)
+        DataType: Table
+        Default: |-
+          =Table(
+              {Label: "Electronics",        Value: 84200, Subtitle: "Laptops, monitors, cables",  isHidden: false},
+              {Label: "Hardware & Tools",    Value: 61500, Subtitle: "Hand tools, power tools",    isHidden: false},
+              {Label: "Safety Equipment",    Value: 48300, Subtitle: "PPE, helmets, gloves",       isHidden: false},
+              {Label: "Packaging Materials", Value: 34800, Subtitle: "Boxes, tape, wrap",          isHidden: false},
+              {Label: "Cleaning Supplies",   Value: 24100, Subtitle: "Chemicals, equipment",       isHidden: false},
+              {Label: "Office Supplies",     Value: 18600, Subtitle: "Paper, pens, binders",       isHidden: false},
+              {Label: "Spare Parts",         Value: 13000, Subtitle: "Mechanical, electrical",     isHidden: false}
+          )
+      EmptyMessage:
+        PropertyKind: Input
+        DisplayName: Empty Message
+        Description: Text shown when Data is empty or all rows are hidden.
+        DataType: Text
+        Default: ="No data"
+      IsLoading:
+        PropertyKind: Input
+        DisplayName: Is Loading
+        Description: When true, renders skeleton placeholder rows instead of data
+        DataType: Boolean
+        Default: =false
+      OnBarClick:
+        PropertyKind: Event
+        DisplayName: On Bar Click
+        Description: Fires when a bar row is tapped
+        ReturnType: None
+        Default: =
+        Parameters:
+          - ClickedItem:
+              Description: The row record that was clicked
+              DataType: Record
+              Default: |-
+                ={Label: "Electronics", BarValue: 84200, SubtitleSafe: "Laptops, monitors, cables", BarColor: "378ADD"}
+      Palette:
+        PropertyKind: Input
+        DisplayName: Palette
+        Description: Auto-cycling bar colors. Table with a single Color column. Values are hex strings WITHOUT the leading
+        DataType: Table
+        Default: |-
+          =Table(
+              {Color: "378ADD"},
+              {Color: "7F77DD"},
+              {Color: "1D9E75"},
+              {Color: "3B6D11"},
+              {Color: "BA7517"},
+              {Color: "D4537E"},
+              {Color: "888780"}
+          )
+      SelectedItem:
+        PropertyKind: Output
+        DisplayName: Selected Item
+        Description: The last tapped row record
+        DataType: Record
+      ShowRowSubtitle:
+        PropertyKind: Input
+        DisplayName: Show Row Subtitle
+        Description: Show the per-row Subtitle text beneath each label. Increases row height.
+        DataType: Boolean
+        Default: =false
+      StyleConfig:
+        PropertyKind: Input
+        DisplayName: Style Config
+        Description: Light and dark color tokens, spacing, and type scale. Override either theme block to customize.
+        DataType: Record
+        Default: |-
+          ={
+              light: {
+                  cardBg:        ColorValue("#FFFFFF"),
+                  border:        ColorValue("#E5E7EB"),
+                  title:         ColorValue("#111827"),
+                  subtitle:      ColorValue("#6B7280"),
+                  label:         ColorValue("#111827"),
+                  value:         ColorValue("#111827"),
+                  barTrack:      ColorValue("#EEEFF1"),
+                  skeletonBase:  ColorValue("#E5E7EB"),
+                  skeletonShine: ColorValue("#F3F4F6")
+              },
+              dark: {
+                  cardBg:        ColorValue("#1F2937"),
+                  border:        ColorValue("#374151"),
+                  title:         ColorValue("#F9FAFB"),
+                  subtitle:      ColorValue("#9CA3AF"),
+                  label:         ColorValue("#F3F4F6"),
+                  value:         ColorValue("#F9FAFB"),
+                  barTrack:      ColorValue("#374151"),
+                  skeletonBase:  ColorValue("#374151"),
+                  skeletonShine: ColorValue("#4B5563")
+              },
+              space: {
+                  cardPadV: 20,
+                  cardPadH: 20,
+                  barHeight: 6
+              },
+              type: {
+                  title:    14,
+                  subtitle: 12,
+                  label:    13,
+                  value:    13,
+                  rowSub:   11
+              },
+              header: {
+                  height: 64
+              },
+              row: {
+                  height:        44,
+                  heightWithSub: 60
+              },
+              radius: {
+                  card: 12,
+                  bar:   3
+              },
+              abbreviateThreshold: 1000
+          }
+      Subtitle:
+        PropertyKind: Input
+        DisplayName: Subtitle
+        Description: Descriptive text shown below the card title
+        DataType: Text
+        Default: ="Current stock value"
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: '"Light" or "Dark". Controls which StyleConfig color block is active.'
+        DataType: Text
+        Default: ="Light"
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: Card title
+        DataType: Text
+        Default: ="By Category"
+      ValueFormat:
+        PropertyKind: Input
+        DisplayName: Value Format
+        Description: '"Currency" ($1.2K), "Number" (1,234), "Percent" (12.5%), "Auto" (abbreviate, no symbol)'
+        DataType: Text
+        Default: ="Currency"
+    Properties:
+      Height: |-
+        =cmpBarList.StyleConfig.space.cardPadV * 2 +
+           cmpBarList.StyleConfig.header.height +
+           If(
+               CountRows(Filter(cmpBarList.Data, !IfError(isHidden, false))) = 0,
+               cmpBarList.StyleConfig.space.cardPadV + 120,
+               CountRows(Filter(cmpBarList.Data, !IfError(isHidden, false))) *
+                   If(
+                       cmpBarList.ShowRowSubtitle,
+                       cmpBarList.StyleConfig.row.heightWithSub,
+                       cmpBarList.StyleConfig.row.height
+                   )
+           )
+      SelectedItem: =varBarListSelected
+      Width: =App.Width
+    Children:
+      - conBarListCard:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            BorderColor: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.border, cmpBarList.StyleConfig.light.border)
+            BorderThickness: =1
+            DropShadow: =DropShadow.None
+            Fill: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.cardBg, cmpBarList.StyleConfig.light.cardBg)
+            Height: =Parent.Height - 2
+            RadiusBottomLeft: =cmpBarList.StyleConfig.radius.card
+            RadiusBottomRight: =cmpBarList.StyleConfig.radius.card
+            RadiusTopLeft: =cmpBarList.StyleConfig.radius.card
+            RadiusTopRight: =cmpBarList.StyleConfig.radius.card
+            Width: =Parent.Width - 2
+            X: =1
+            Y: =1
+          Children:
+            - txtBarListTitle:
+                Control: ModernText@1.0.0
+                Properties:
+                  AccessibleLabel: =Self.Text
+                  AutoHeight: =true
+                  Color: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.title, cmpBarList.StyleConfig.light.title)
+                  FontWeight: =FontWeight.Semibold
+                  Height: =22
+                  Size: =cmpBarList.StyleConfig.type.title
+                  Text: =cmpBarList.Title
+                  Width: =Parent.Width - cmpBarList.StyleConfig.space.cardPadH * 2
+                  X: =cmpBarList.StyleConfig.space.cardPadH
+                  Y: =cmpBarList.StyleConfig.space.cardPadV
+            - txtBarListSubtitle:
+                Control: ModernText@1.0.0
+                Properties:
+                  AccessibleLabel: =Self.Text
+                  AutoHeight: =true
+                  Color: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.subtitle, cmpBarList.StyleConfig.light.subtitle)
+                  Height: =16
+                  Size: =cmpBarList.StyleConfig.type.subtitle
+                  Text: =cmpBarList.Subtitle
+                  Visible: =cmpBarList.Subtitle <> ""
+                  Width: =Parent.Width - cmpBarList.StyleConfig.space.cardPadH * 2
+                  X: =cmpBarList.StyleConfig.space.cardPadH
+                  Y: =cmpBarList.StyleConfig.space.cardPadV + 28
+            - galBarListRows:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Bar list rows"
+                  BorderStyle: =BorderStyle.None
+                  Height: |-
+                    =CountRows(Filter(cmpBarList.Data, !IfError(isHidden, false))) *
+                     If(
+                         cmpBarList.ShowRowSubtitle,
+                         cmpBarList.StyleConfig.row.heightWithSub,
+                         cmpBarList.StyleConfig.row.height
+                     )
+                  Items: |-
+                    =With(
+                        {
+                            _src: Sort(
+                                Filter(cmpBarList.Data, !IfError(isHidden, false)),
+                                Value,
+                                SortOrder.Descending
+                            ),
+                            _pal: cmpBarList.Palette
+                        },
+                        With(
+                            {
+                                _maxVal: Max(_src, Value)
+                            },
+                            ForAll(
+                                Sequence(CountRows(_src)),
+                                {
+                                    Label:        Index(_src, Value).Label,
+                                    BarValue:     Index(_src, Value).Value,
+                                    SubtitleSafe: IfError(Text(Index(_src, Value).Subtitle), ""),
+                                    BarColor:     IfError(
+                                                      Index(_pal, Mod(Value - 1, Max(1, CountRows(_pal))) + 1).Color,
+                                                      "378ADD"
+                                                  ),
+                                    BarPct:       IfError(
+                                                      If(
+                                                          IsBlank(_maxVal) || _maxVal = 0,
+                                                          0,
+                                                          Round(Index(_src, Value).Value / _maxVal * 100, 0)
+                                                      ),
+                                                      0
+                                                  )
+                                }
+                            )
+                        )
+                    )
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: |-
+                    =If(
+                        cmpBarList.ShowRowSubtitle,
+                        cmpBarList.StyleConfig.row.heightWithSub,
+                        cmpBarList.StyleConfig.row.height
+                    )
+                  Visible: |-
+                    =!cmpBarList.IsLoading &&
+                     CountRows(Filter(cmpBarList.Data, !IfError(isHidden, false))) > 0
+                  Width: =Parent.Width - cmpBarList.StyleConfig.space.cardPadH * 2
+                  X: =cmpBarList.StyleConfig.space.cardPadH
+                  Y: |-
+                    =cmpBarList.StyleConfig.space.cardPadV +
+                     cmpBarList.StyleConfig.header.height
+                Children:
+                  - conBarListRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.TemplateHeight
+                        PaddingBottom: =1
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - txtBarListLabel:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.label, cmpBarList.StyleConfig.light.label)
+                              Height: =20
+                              Size: =cmpBarList.StyleConfig.type.label
+                              Text: =ThisItem.Label
+                              Width: =Parent.Width - 84
+                              Wrap: =false
+                        - txtBarListValue:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              Color: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.value, cmpBarList.StyleConfig.light.value)
+                              FontWeight: =FontWeight.Semibold
+                              Height: =20
+                              Size: =cmpBarList.StyleConfig.type.value
+                              Text: |-
+                                =With(
+                                    {v: ThisItem.BarValue, thresh: cmpBarList.StyleConfig.abbreviateThreshold},
+                                    Switch(
+                                        cmpBarList.ValueFormat,
+                                        "Currency",
+                                            If(
+                                                Abs(v) >= 1000000, "$" & Text(v / 1000000, "#,##0.0") & "M",
+                                                Abs(v) >= thresh,  "$" & Text(v / 1000,    "#,##0.0") & "K",
+                                                Text(v, "[$-en-US]$#,##0.00")
+                                            ),
+                                        "Percent",
+                                            Text(v, "0.0") & "%",
+                                        "Number",
+                                            If(
+                                                Abs(v) >= 1000000, Text(v / 1000000, "#,##0.0") & "M",
+                                                Abs(v) >= thresh,  Text(v / 1000,    "#,##0.0") & "K",
+                                                Text(v, "#,##0")
+                                            ),
+                                        If(
+                                            Abs(v) >= 1000000, Text(v / 1000000, "#,##0.0") & "M",
+                                            Abs(v) >= thresh,  Text(v / 1000,    "#,##0.0") & "K",
+                                            Text(v, "#,##0")
+                                        )
+                                    )
+                                )
+                              Width: =80
+                              X: =Parent.Width - 80
+                        - txtBarListRowSub:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.subtitle, cmpBarList.StyleConfig.light.subtitle)
+                              Height: =14
+                              Size: =cmpBarList.StyleConfig.type.rowSub
+                              Text: =ThisItem.SubtitleSafe
+                              Visible: =cmpBarList.ShowRowSubtitle
+                              Width: =Parent.Width - 84
+                              Wrap: =false
+                              Y: =22
+                        - btnBarListTrack:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.barTrack, cmpBarList.StyleConfig.light.barTrack)
+                              Height: =cmpBarList.StyleConfig.space.barHeight
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =cmpBarList.StyleConfig.radius.bar
+                              RadiusBottomRight: =cmpBarList.StyleConfig.radius.bar
+                              RadiusTopLeft: =cmpBarList.StyleConfig.radius.bar
+                              RadiusTopRight: =cmpBarList.StyleConfig.radius.bar
+                              Text: =
+                              Width: =Parent.Width
+                              Y: =If(cmpBarList.ShowRowSubtitle, 46, 32)
+                        - btnBarListFill:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =IfError(ColorValue("#" & ThisItem.BarColor), ColorValue("#378ADD"))
+                              Height: =cmpBarList.StyleConfig.space.barHeight
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =cmpBarList.StyleConfig.radius.bar
+                              RadiusBottomRight: =cmpBarList.StyleConfig.radius.bar
+                              RadiusTopLeft: =cmpBarList.StyleConfig.radius.bar
+                              RadiusTopRight: =cmpBarList.StyleConfig.radius.bar
+                              Text: =
+                              Width: =Max(2, Round(ThisItem.BarPct / 100 * Parent.Width, 0))
+                              Y: =If(cmpBarList.ShowRowSubtitle, 46, 32)
+                        - btnBarListOverlay:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =RGBA(0, 0, 0, 0)
+                              Fill: =Color.Transparent
+                              Height: =Parent.Height
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0.04)
+                              OnSelect: |-
+                                =Set(varBarListSelected, ThisItem);
+                                cmpBarList.OnBarClick(ThisItem)
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Text: =
+                              Width: =Parent.Width
+            - galBarListSkeleton:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Loading bar list"
+                  BorderStyle: =BorderStyle.None
+                  Height: |-
+                    =CountRows(Filter(cmpBarList.Data, !IfError(isHidden, false))) *
+                     If(
+                         cmpBarList.ShowRowSubtitle,
+                         cmpBarList.StyleConfig.row.heightWithSub,
+                         cmpBarList.StyleConfig.row.height
+                     )
+                  Items: =Sequence(CountRows(Filter(cmpBarList.Data, !IfError(isHidden, false))))
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: |-
+                    =If(
+                        cmpBarList.ShowRowSubtitle,
+                        cmpBarList.StyleConfig.row.heightWithSub,
+                        cmpBarList.StyleConfig.row.height
+                    )
+                  Visible: =cmpBarList.IsLoading
+                  Width: =Parent.Width - cmpBarList.StyleConfig.space.cardPadH * 2
+                  X: =cmpBarList.StyleConfig.space.cardPadH
+                  Y: |-
+                    =cmpBarList.StyleConfig.space.cardPadV +
+                     cmpBarList.StyleConfig.header.height
+                Children:
+                  - conBarListSkeletonRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.TemplateHeight
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - btnBarListSkelLabel:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.skeletonBase, cmpBarList.StyleConfig.light.skeletonBase)
+                              Height: =10
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              Text: =
+                              Width: =70 + Mod(ThisItem.Value * 37, 60)
+                              Y: =5
+                        - btnBarListSkelValue:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.skeletonShine, cmpBarList.StyleConfig.light.skeletonShine)
+                              Height: =10
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              Text: =
+                              Width: =40
+                              X: =Parent.Width - 40
+                              Y: =5
+                        - btnBarListSkelBar:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.skeletonBase, cmpBarList.StyleConfig.light.skeletonBase)
+                              Height: =cmpBarList.StyleConfig.space.barHeight
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =2
+                              RadiusBottomRight: =2
+                              RadiusTopLeft: =2
+                              RadiusTopRight: =2
+                              Text: =
+                              Width: =Round(Parent.Width * (0.3 + Mod(ThisItem.Value * 13, 60) / 100), 0)
+                              Y: =If(cmpBarList.ShowRowSubtitle, 46, 32)
+            - conBarListEmpty:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Height: =cmpBarList.StyleConfig.space.cardPadV + 120
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =8
+                  LayoutJustifyContent: =LayoutJustifyContent.Center
+                  RadiusBottomLeft: =0
+                  RadiusBottomRight: =0
+                  RadiusTopLeft: =0
+                  RadiusTopRight: =0
+                  Visible: |-
+                    =CountRows(Filter(cmpBarList.Data, !IfError(isHidden, false))) = 0 &&
+                     !cmpBarList.IsLoading
+                  Width: =Parent.Width
+                  Y: =cmpBarList.StyleConfig.space.cardPadV + cmpBarList.StyleConfig.header.height
+                Children:
+                  - imgBarListEmptyIcon:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="No data to chart"
+                        BorderStyle: =BorderStyle.None
+                        Height: =36
+                        Image: ="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='20' x2='18' y2='10'/%3E%3Cline x1='12' y1='20' x2='12' y2='4'/%3E%3Cline x1='6' y1='20' x2='6' y2='14'/%3E%3C/svg%3E"
+                        TabIndex: =0
+                        Width: =36
+                  - lblBarListEmptyTitle:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderStyle: =BorderStyle.None
+                        Color: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.subtitle, cmpBarList.StyleConfig.light.subtitle)
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =20
+                        TabIndex: =0
+                        Text: =cmpBarList.EmptyMessage
+                        Width: =Parent.Width
+                  - lblBarListEmptySub:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderStyle: =BorderStyle.None
+                        Color: =If(cmpBarList.Theme = "Dark", cmpBarList.StyleConfig.dark.subtitle, cmpBarList.StyleConfig.light.subtitle)
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =20
+                        Size: =11
+                        TabIndex: =0
+                        Text: ="Nothing to display"
+                        Width: =Parent.Width

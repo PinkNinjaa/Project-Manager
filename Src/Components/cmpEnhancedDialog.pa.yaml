@@ -1,0 +1,642 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpEnhancedDialog:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      BorderRadius:
+        PropertyKind: Input
+        DisplayName: BorderRadius
+        Description: Border radius for dialog and buttons
+        DataType: Number
+        Default: =10
+      Buttons:
+        PropertyKind: Input
+        DisplayName: Buttons
+        Description: Button configuration table
+        DataType: Table
+        Default: |
+          =Table(
+            {Label: "Cancel", ButtonType: "Secondary", Action: "Cancel", Visible: true}, 
+            {Label: "Confirm", ButtonType: "Primary", Action: "Confirm", Visible: true}
+          )
+      ContentHeight:
+        PropertyKind: Output
+        DisplayName: ContentHeight
+        Description: Height of content area for custom controls
+        DataType: Number
+      ContentWidth:
+        PropertyKind: Output
+        DisplayName: ContentWidth
+        Description: Width of content area for custom controls
+        DataType: Number
+      DialogHeight:
+        PropertyKind: Input
+        DisplayName: DialogHeight
+        Description: Height of the dialog (auto if 0)
+        DataType: Number
+        Default: =0
+      DialogType:
+        PropertyKind: Input
+        DisplayName: DialogType
+        Description: Type of dialog - Alert, Confirmation, or Form
+        DataType: Text
+        Default: ="Confirm"
+      DialogWidth:
+        PropertyKind: Input
+        DisplayName: DialogWidth
+        Description: Width of the dialog
+        DataType: Number
+        Default: =400
+      HeaderText:
+        PropertyKind: Input
+        DisplayName: HeaderText
+        Description: Header text displayed in the dialog
+        DataType: Text
+        Default: ="Confirm Action"
+      IconName:
+        PropertyKind: Input
+        DisplayName: IconName
+        Description: Icon type - Warning, Error, Success, Info, Restricted, NoAccess, None
+        DataType: Text
+        Default: ="Warning"
+      InputText:
+        PropertyKind: Output
+        DisplayName: InputText
+        Description: Text typed in the dialog's input box
+        DataType: Text
+      IsTextInputRequired:
+        PropertyKind: Input
+        DisplayName: IsTextInputRequired
+        Description: Marks the TextInput as required
+        DataType: Boolean
+        Default: =false
+      MessageText:
+        PropertyKind: Input
+        DisplayName: MessageText
+        Description: Message text displayed in the dialog body
+        DataType: Text
+        Default: ="Are you sure you want to continue?"
+      OnButtonSelect:
+        PropertyKind: Event
+        DisplayName: OnButtonSelect
+        Description: Fired when any button is selected
+        ReturnType: None
+        Default: =
+      OnCloseSelect:
+        PropertyKind: Event
+        DisplayName: OnCloseSelect
+        Description: Fired when close icon is clicked
+        ReturnType: None
+        Default: =
+      OverlayBlurColor:
+        PropertyKind: Input
+        DisplayName: OverlayBlurColor
+        Description: Background overlay color with opacity
+        DataType: Text
+        Default: ="RGBA(0, 0, 0, 0.4)"
+      PlaceholderText:
+        PropertyKind: Input
+        DisplayName: PlaceholderText
+        Description: Placeholder and label text for the text input
+        DataType: Text
+        Default: ="Enter text"
+      SelectedButton:
+        PropertyKind: Output
+        DisplayName: SelectedButton
+        Description: Information about the selected button
+        DataType: Record
+      ShowCloseIcon:
+        PropertyKind: Input
+        DisplayName: ShowCloseIcon
+        Description: Show close X icon in header
+        DataType: Boolean
+        Default: =false
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: '"Light" or "Dark"'
+        DataType: Text
+        Default: ="Light"
+    Properties:
+      ContentHeight: =cntContent_2.Height
+      ContentWidth: =cntContent_2.Width
+      Fill: =Color.Transparent
+      Height: =App.Height
+      InputText: =txtInput.Value
+      SelectedButton: =galButtons.Selected
+      Width: =App.Width
+    Children:
+      - cntMainDialog:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =Parent.Height
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Width: =Parent.Width
+          Children:
+            - htmlBackgroundBlur:
+                Control: HtmlViewer@2.1.0
+                Properties:
+                  Height: =Parent.Height
+                  HtmlText: |-
+                    ="<div style='
+                        display:block;
+                        width:" & Self.Width & "px;
+                        height:" & Self.Height - 1 & "px;
+                        background:" & cmpEnhancedDialog.OverlayBlurColor & ";
+                        backdrop-filter: blur(6px);
+                    '></div>"
+                  OnSelect: =If(cmpEnhancedDialog.ShowCloseIcon, cmpEnhancedDialog.OnCloseSelect())
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Width: =Parent.Width
+            - btnBackgroundClose:
+                Control: Button@0.0.45
+                Properties:
+                  AccessibleLabel: ="Background Close"
+                  Appearance: ='ButtonCanvas.Appearance'.Transparent
+                  Height: =Parent.Height
+                  OnSelect: =If(cmpEnhancedDialog.ShowCloseIcon, cmpEnhancedDialog.OnCloseSelect())
+                  Text: =""
+                  Width: =Parent.Width
+            - cntDialogMain:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.ExtraBold
+                  Fill: |-
+                    =If(
+                        cmpEnhancedDialog.Theme = "Dark",
+                        ColorValue("#1F2937"),
+                        ColorValue("#FFFFFF")
+                    )
+                  Height: |
+                    =If(cmpEnhancedDialog.DialogHeight > 0, cmpEnhancedDialog.DialogHeight, cntHeader.Height + cntMessage.Height + cntContent_2.Height + cntFooter.Height + 22)
+                  RadiusBottomLeft: =cmpEnhancedDialog.BorderRadius
+                  RadiusBottomRight: =cmpEnhancedDialog.BorderRadius
+                  RadiusTopLeft: =cmpEnhancedDialog.BorderRadius
+                  RadiusTopRight: =cmpEnhancedDialog.BorderRadius
+                  Width: |-
+                    =If(
+                        cmpEnhancedDialog.DialogWidth > 0,
+                        Min(cmpEnhancedDialog.DialogWidth, Parent.Width - 32),
+                        Switch(
+                            cmpEnhancedDialog.DialogType,
+                            "Alert", Min(380, Parent.Width - 32),
+                            "Confirmation", Min(400, Parent.Width - 32),
+                            "Form", Min(500, Parent.Width - 32),
+                            Min(400, Parent.Width - 32)
+                        )
+                    )
+                  X: =(Parent.Width - Self.Width) / 2
+                  Y: =(Parent.Height - Self.Height) / 2
+                Children:
+                  - cntFooter:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: |-
+                          =If(
+                              cmpEnhancedDialog.Theme = "Dark",
+                              ColorValue("#111827"),
+                              ColorValue("#F9FAFB")
+                          )
+                        Height: =72
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =12
+                        LayoutJustifyContent: |-
+                          =If(
+                              cmpEnhancedDialog.DialogType = "Alert",
+                              LayoutJustifyContent.Center,
+                              LayoutJustifyContent.End
+                          )
+                        PaddingBottom: =16
+                        PaddingLeft: =20
+                        PaddingRight: =20
+                        PaddingTop: =16
+                        RadiusBottomLeft: =cmpEnhancedDialog.BorderRadius
+                        RadiusBottomRight: =cmpEnhancedDialog.BorderRadius
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                        Width: =Parent.Width
+                        Y: =Parent.Height - Self.Height
+                      Children:
+                        - galButtons:
+                            Control: Gallery@2.15.0
+                            Variant: Horizontal
+                            Properties:
+                              AccessibleLabel: ="Buttons list"
+                              AlignInContainer: =AlignInContainer.Start
+                              DelayItemLoading: =false
+                              FillPortions: =0
+                              FocusedBorderThickness: =0.5
+                              Height: =40
+                              Items: =Filter(cmpEnhancedDialog.Buttons, Visible)
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              LoadingSpinner: =LoadingSpinner.None
+                              OnSelect: =
+                              ShowScrollbar: =false
+                              TabIndex: =0
+                              TemplateSize: =110
+                              Width: =Self.AllItemsCount * 110 + 2
+                              X: =Parent.Width - Self.Width - 20
+                              Y: =Parent.Height - Self.Height - 20
+                            Children:
+                              - btnDynamic:
+                                  Control: Button@0.0.45
+                                  Properties:
+                                    AccessibleLabel: ="Dynamic"
+                                    Appearance: |
+                                      =Switch(
+                                          ThisItem.ButtonType,
+                                          "Primary",     'ButtonCanvas.Appearance'.Primary,
+                                          "Secondary",   'ButtonCanvas.Appearance'.Secondary,
+                                          "Outline",     'ButtonCanvas.Appearance'.Outline,
+                                          "Subtle",      'ButtonCanvas.Appearance'.Subtle,
+                                          "Transparent", 'ButtonCanvas.Appearance'.Transparent,
+                                          'ButtonCanvas.Appearance'.Primary
+                                      )
+                                    DisplayMode: |-
+                                      =If(
+                                          ThisItem.ButtonType = "Primary" &&
+                                          cmpEnhancedDialog.IsTextInputRequired &&
+                                          cmpEnhancedDialog.DialogType = "Form" &&
+                                          IsBlank(txtInput.Value),
+                                          DisplayMode.Disabled,
+                                          DisplayMode.Edit
+                                      )
+                                    OnSelect: |-
+                                      =
+                                      cmpEnhancedDialog.OnButtonSelect();
+                                      Reset(txtInput)
+                                    Text: =ThisItem.Label
+                                    Width: =Max(100, Len(ThisItem.Label) * 10)
+                  - rectDividerFooter:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        AccessibleLabel: ="Divider Footer divider"
+                        Fill: =If(cmpEnhancedDialog.Theme = "Dark", ColorValue("#374151"), ColorValue("#E5E7EB"))
+                        FocusedBorderThickness: =0.5
+                        Height: =1
+                        TabIndex: =0
+                        Width: =Parent.Width
+                        Y: =cntFooter.Y
+                  - cntContent_2:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: |-
+                          =If(
+                              Self.Visible,
+                              If(cmpEnhancedDialog.IsTextInputRequired, 90, 70),
+                              0
+                          )
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                        Visible: =cmpEnhancedDialog.DialogType = "Form"
+                        Width: =Parent.Width - 40
+                        X: =20
+                        Y: =cntHeader.Height + cntMessage.Height + 10
+                      Children:
+                        - lblAsterisk:
+                            Control: Text@0.0.51
+                            Properties:
+                              FontColor: =ColorValue("#EF4444")
+                              Height: =20
+                              Size: =12
+                              Text: ="*"
+                              Visible: =cmpEnhancedDialog.IsTextInputRequired
+                              Weight: ='TextCanvas.Weight'.Semibold
+                              Width: =10
+                        - lblRequiredLabel:
+                            Control: Text@0.0.51
+                            Properties:
+                              FontColor: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    ColorValue("#D1D5DB"),
+                                    ColorValue("#374151")
+                                )
+                              Height: =20
+                              Size: =12
+                              Text: =cmpEnhancedDialog.PlaceholderText & " (required)"
+                              Visible: =cmpEnhancedDialog.IsTextInputRequired
+                              Weight: ='TextCanvas.Weight'.Medium
+                              Width: =Parent.Width - 10
+                              X: =10
+                        - txtInput:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              AccessibleLabel: ="Input"
+                              BasePaletteColor: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    ColorValue("#3B82F6"),
+                                    ColorValue("#0078d4")
+                                )
+                              BorderColor: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    ColorValue("#4B5563"),
+                                    ColorValue("#D1D5DB")
+                                )
+                              Fill: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    ColorValue("#374151"),
+                                    ColorValue("#FFFFFF")
+                                )
+                              FontColor: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    ColorValue("#F3F4F6"),
+                                    ColorValue("#1F2937")
+                                )
+                              Height: =70
+                              Mode: ='TextInputCanvas.Mode'.Multiline
+                              Placeholder: =cmpEnhancedDialog.PlaceholderText & "..."
+                              Required: =cmpEnhancedDialog.IsTextInputRequired
+                              TriggerOutput: ='TextInputCanvas.TriggerOutput'.Delayed
+                              Width: =Parent.Width
+                              Y: =If(cmpEnhancedDialog.IsTextInputRequired, 20, 0)
+                  - cntMessage:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =lblMessage.Height + 20
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                        Width: =Parent.Width
+                        Y: =cntHeader.Height
+                      Children:
+                        - lblMessage:
+                            Control: Text@0.0.51
+                            Properties:
+                              Align: |-
+                                =If(
+                                    cmpEnhancedDialog.DialogType = "Alert",
+                                    Align.Center,
+                                    Align.Left
+                                )
+                              AutoHeight: =true
+                              FontColor: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    ColorValue("#D1D5DB"),
+                                    ColorValue("#374151")
+                                )
+                              Height: =
+                              Size: =16
+                              Text: =cmpEnhancedDialog.MessageText
+                              VerticalAlign: =VerticalAlign.Middle
+                              Width: =Parent.Width - 40
+                              X: =20
+                              Y: =10
+                  - rectDividerHeader:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        AccessibleLabel: ="Divider Header divider"
+                        Fill: =If(cmpEnhancedDialog.Theme = "Dark", ColorValue("#374151"), ColorValue("#E5E7EB"))
+                        FocusedBorderThickness: =0.5
+                        Height: =1
+                        TabIndex: =0
+                        Visible: =cmpEnhancedDialog.DialogType <> "Alert"
+                        Width: =Parent.Width
+                        Y: =cntHeader.Height
+                  - cntHeader:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: |-
+                          =If(
+                              cmpEnhancedDialog.DialogType = "Alert",
+                              If(cmpEnhancedDialog.IconName = "None", 60, 100),
+                              60
+                          )
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: |-
+                          =If(
+                              cmpEnhancedDialog.DialogType = "Alert",
+                              LayoutDirection.Vertical,
+                              LayoutDirection.Horizontal
+                          )
+                        LayoutGap: |-
+                          =If(
+                              cmpEnhancedDialog.DialogType = "Alert",
+                              12,
+                              10
+                          )
+                        LayoutJustifyContent: |-
+                          =If(
+                              cmpEnhancedDialog.DialogType = "Alert",
+                              LayoutJustifyContent.Center,
+                              LayoutJustifyContent.Start
+                          )
+                        PaddingLeft: =20
+                        PaddingRight: =20
+                        PaddingTop: =15
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                        Width: =Parent.Width
+                      Children:
+                        - cntIconCircle:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              AlignInContainer: =AlignInContainer.SetByContainer
+                              DropShadow: =DropShadow.None
+                              Fill: |
+                                =Switch(
+                                    cmpEnhancedDialog.IconName,
+                                    "Warning",    If(cmpEnhancedDialog.Theme = "Dark", ColorValue("#7C2D12"), ColorValue("#FEF2F2")),
+                                    "Error",      If(cmpEnhancedDialog.Theme = "Dark", ColorValue("#7F1D1D"), ColorValue("#FEF2F2")),
+                                    "Success",    If(cmpEnhancedDialog.Theme = "Dark", ColorValue("#14532D"), ColorValue("#F0FDF4")),
+                                    "Info",       If(cmpEnhancedDialog.Theme = "Dark", ColorValue("#1E3A8A"), ColorValue("#EFF6FF")),
+                                    "Restricted", If(cmpEnhancedDialog.Theme = "Dark", ColorValue("#831843"), ColorValue("#FDF2F8")),
+                                    "NoAccess",   If(cmpEnhancedDialog.Theme = "Dark", ColorValue("#7F1D1D"), ColorValue("#FEE2E2")),
+                                    RGBA(0, 0, 0, 0)
+                                )
+                              FillPortions: =0
+                              Height: |-
+                                =If(
+                                    cmpEnhancedDialog.DialogType = "Alert",
+                                    48,
+                                    35
+                                )
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              RadiusBottomLeft: =Self.Height / 2
+                              RadiusBottomRight: =Self.Height / 2
+                              RadiusTopLeft: =Self.Height / 2
+                              RadiusTopRight: =Self.Height / 2
+                              Visible: =cmpEnhancedDialog.IconName <> "None"
+                              Width: |-
+                                =If(
+                                    cmpEnhancedDialog.DialogType = "Alert",
+                                    48,
+                                    35
+                                )
+                            Children:
+                              - imgIcon_2:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="Dialog icon"
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    BorderStyle: =BorderStyle.None
+                                    BorderThickness: =2
+                                    DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                                    DisabledFill: =RGBA(0, 0, 0, 0)
+                                    DisplayMode: =DisplayMode.Disabled
+                                    FocusedBorderThickness: =0.5
+                                    Height: =Parent.Height / 1.5
+                                    HoverBorderColor: =RGBA(0, 0, 0, 0)
+                                    HoverFill: =RGBA(0, 0, 0, 0)
+                                    Image: |-
+                                      ="data:image/svg+xml;utf8," & EncodeUrl(
+                                          Switch(
+                                              cmpEnhancedDialog.IconName,
+                                              "Error",
+                                              "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpEnhancedDialog.Theme = "Dark", "#F87171", "#B91C1C") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='8' x2='12' y2='12'/><line x1='12' y1='16' x2='12.01' y2='16'/></svg>",
+                                              "Info",
+                                              "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpEnhancedDialog.Theme = "Dark", "#93C5FD", "#2563EB") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='16' x2='12' y2='12'/><line x1='12' y1='8' x2='12.01' y2='8'/></svg>",
+                                              "Success",
+                                              "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpEnhancedDialog.Theme = "Dark", "#86EFAC", "#16A34A") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M9 12l2 2 4-4'/></svg>",
+                                              "Warning",
+                                              "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpEnhancedDialog.Theme = "Dark", "#FCD34D", "#D97706") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg>",
+                                              "Danger",
+                                              "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpEnhancedDialog.Theme = "Dark", "#FCA5A5", "#DC2626") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='15' y1='9' x2='9' y2='15'/><line x1='9' y1='9' x2='15' y2='15'/></svg>",
+                                              "Restricted",
+                                              "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpEnhancedDialog.Theme = "Dark", "#F9A8D4", "#DB2777") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='11' width='18' height='11' rx='2' ry='2'/><path d='M7 11V7a5 5 0 0 1 10 0v4'/></svg>",
+                                              "NoAccess",
+                                              "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpEnhancedDialog.Theme = "Dark", "#F87171", "#B91C1C") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='5' y1='5' x2='19' y2='19'/></svg>",
+                                              "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpEnhancedDialog.Theme = "Dark", "#9CA3AF", "#6B7280") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='16' x2='12' y2='12'/><line x1='12' y1='8' x2='12.01' y2='8'/></svg>"
+                                          )
+                                      )
+                                    PressedBorderColor: =RGBA(0, 0, 0, 0)
+                                    PressedFill: =RGBA(0, 0, 0, 0)
+                                    TabIndex: =0
+                                    Width: =Parent.Width / 1.5
+                                    X: =(Parent.Width - Self.Width) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
+                        - lblHeader:
+                            Control: Text@0.0.51
+                            Properties:
+                              Align: |-
+                                =If(
+                                    cmpEnhancedDialog.DialogType = "Alert",
+                                    Align.Center,
+                                    Align.Left
+                                )
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              FillPortions: =1
+                              FontColor: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    ColorValue("#F3F4F6"),
+                                    ColorValue("#111827")
+                                )
+                              Height: =Parent.Height
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              LayoutMinHeight: =40
+                              Size: =20
+                              Text: =cmpEnhancedDialog.HeaderText
+                              Weight: ='TextCanvas.Weight'.Semibold
+                  - cntCloseIcon:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =30
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Visible: =cmpEnhancedDialog.ShowCloseIcon
+                        Width: =30
+                        X: =Parent.Width - Self.Width - 10
+                        Y: =10
+                      Children:
+                        - icnClose:
+                            Control: Classic/Icon@2.5.0
+                            Properties:
+                              AccessibleLabel: ="Remove"
+                              Color: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    ColorValue("#9CA3AF"),
+                                    ColorValue("#6B7280")
+                                )
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height
+                              Icon: =Icon.Cancel
+                              OnSelect: =cmpEnhancedDialog.OnCloseSelect(); Reset(txtInput)
+                              PaddingBottom: =5
+                              PaddingLeft: =5
+                              PaddingRight: =5
+                              PaddingTop: =5
+                              TabIndex: =0
+                              Width: =Parent.Width
+                        - btnCloseHit:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              Color: =RGBA(0, 0, 0, 0)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              DisabledFill: =Self.Fill
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Open Sans'
+                              Height: =Parent.Height
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    RGBA(255, 255, 255, 0.1),
+                                    RGBA(0, 0, 0, 0.1)
+                                )
+                              OnSelect: =cmpEnhancedDialog.OnCloseSelect(); Reset(txtInput)
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: |-
+                                =If(
+                                    cmpEnhancedDialog.Theme = "Dark",
+                                    RGBA(255, 255, 255, 0.15),
+                                    RGBA(0, 0, 0, 0.15)
+                                )
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Text: =""
+                              Tooltip: ="Remove"
+                              Width: =Parent.Width

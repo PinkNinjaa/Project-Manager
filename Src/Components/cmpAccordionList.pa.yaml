@@ -1,0 +1,1410 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpAccordionList:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      ActionKey:
+        PropertyKind: Output
+        DisplayName: ActionKey
+        Description: The GroupKey or ItemKey of the row whose action was just pressed. Read it inside OnMoveUp, OnMoveDown, OnEdit or OnDelete, alongside ActionRowType.
+        DataType: Number
+      ActionRowType:
+        PropertyKind: Output
+        DisplayName: ActionRowType
+        Description: Whether the last action came from a group row or a child row. The literal text group or item, so your handler can branch without guessing.
+        DataType: Text
+      Config:
+        PropertyKind: Input
+        DisplayName: Config
+        Description: Look and behaviour. Every field is Coalesced internally against the defaults below, because a pasted instance receives a BLANK record and an unguarded read would hide every switch at once. Theme is light or dark. Accent is a hex string, blank falls back to blue. Radius rounds the cards. RowHeight sets every row. ShowHeader, ShowTags and ShowMeta hide those pieces entirely, which is what you want on a narrow screen. ShowExpandAll shows the expand-all toggle in the header. AllowReorder, AllowEdit and AllowDelete turn the row actions on and off; with all three false the component is a pure viewer and reserves no space for them.
+        DataType: Record
+        Default: |-
+          ={
+              Theme: "light",
+              Accent: "",
+              Radius: 12,
+              RowHeight: 76,
+              ShowHeader: true,
+              ShowTags: true,
+              ShowMeta: true,
+              ShowExpandAll: true,
+              AllowReorder: true,
+              AllowEdit: true,
+              AllowDelete: true
+          }
+      ExpandedGroupKey:
+        PropertyKind: Output
+        DisplayName: ExpandedGroupKey
+        Description: The GroupKey currently open, or blank when everything is collapsed. One group opens at a time.
+        DataType: Number
+      GroupCount:
+        PropertyKind: Output
+        DisplayName: GroupCount
+        Description: How many groups were passed in.
+        DataType: Number
+      Groups:
+        PropertyKind: Input
+        DisplayName: Groups
+        Description: The parent rows. Needs GroupKey (number, unique and never zero, since zero means nothing-expanded), GroupOrder (number), Marker, Title, Subtitle, Tag, Tone, Meta and Locked. Locked true hides every row action on that row, which is how you express a record the user may look at but not change. Tone is one of positive, warning, danger, info or blank for neutral. Meta is yours to compute; leave it blank and the component counts the children instead. Ships with sample rows so it works on paste with no setup.
+        DataType: Table
+        Default: |-
+          =Table(
+              {
+                  GroupKey: 1,
+                  GroupOrder: 1,
+                  Marker: "1",
+                  Title: "ORD-4417   Northwind Traders",
+                  Subtitle: "Placed 14 May, net 30",
+                  Tag: "Shipped",
+                  Tone: "positive",
+                  Meta: "",
+                  Locked: true
+              },
+              {
+                  GroupKey: 2,
+                  GroupOrder: 2,
+                  Marker: "2",
+                  Title: "ORD-4418   Contoso Manufacturing",
+                  Subtitle: "Placed 16 May, net 60",
+                  Tag: "Partial",
+                  Tone: "warning",
+                  Meta: "",
+                  Locked: false
+              },
+              {
+                  GroupKey: 3,
+                  GroupOrder: 3,
+                  Marker: "3",
+                  Title: "ORD-4419   Fabrikam Supply",
+                  Subtitle: "Placed 19 May, prepaid",
+                  Tag: "On hold",
+                  Tone: "danger",
+                  Meta: "",
+                  Locked: false
+              },
+              {
+                  GroupKey: 4,
+                  GroupOrder: 4,
+                  Marker: "4",
+                  Title: "ORD-4420   Litware Group",
+                  Subtitle: "Draft, not yet submitted",
+                  Tag: "Draft",
+                  Tone: "",
+                  Meta: "No lines yet",
+                  Locked: false
+              }
+          )
+      IsExpandAll:
+        PropertyKind: Output
+        DisplayName: IsExpandAll
+        Description: True while every group is open. ExpandedGroupKey is blank in that state, because no single group is the open one.
+        DataType: Boolean
+      ItemCount:
+        PropertyKind: Output
+        DisplayName: ItemCount
+        Description: How many child rows were passed in, across every group.
+        DataType: Number
+      Items:
+        PropertyKind: Input
+        DisplayName: Items
+        Description: The child rows. Needs ItemKey (number, unique), GroupKey matching a row in Groups, ItemOrder (number), Marker, Title, Subtitle, Tag, Tone, Meta and Locked. Same column shape as Groups on purpose, so one record projection serves both.
+        DataType: Table
+        Default: |-
+          =Table(
+              {
+                  ItemKey: 101,
+                  GroupKey: 1,
+                  ItemOrder: 1,
+                  Marker: "12",
+                  Title: "Hex bolt M8, zinc",
+                  Subtitle: "SKU 44-1180",
+                  Tag: "Picked",
+                  Tone: "positive",
+                  Meta: "$142.80",
+                  Locked: false
+              },
+              {
+                  ItemKey: 102,
+                  GroupKey: 1,
+                  ItemOrder: 2,
+                  Marker: "4",
+                  Title: "Flange nut M8",
+                  Subtitle: "SKU 44-2210",
+                  Tag: "Picked",
+                  Tone: "positive",
+                  Meta: "$31.20",
+                  Locked: false
+              },
+              {
+                  ItemKey: 103,
+                  GroupKey: 1,
+                  ItemOrder: 3,
+                  Marker: "1",
+                  Title: "Torque wrench, 1/2 inch",
+                  Subtitle: "SKU 71-0043",
+                  Tag: "Picked",
+                  Tone: "positive",
+                  Meta: "$1,066.00",
+                  Locked: false
+              },
+              {
+                  ItemKey: 201,
+                  GroupKey: 2,
+                  ItemOrder: 1,
+                  Marker: "50",
+                  Title: "Steel plate, 3mm",
+                  Subtitle: "SKU 09-3300",
+                  Tag: "Shipped",
+                  Tone: "positive",
+                  Meta: "$2,450.00",
+                  Locked: false
+              },
+              {
+                  ItemKey: 202,
+                  GroupKey: 2,
+                  ItemOrder: 2,
+                  Marker: "8",
+                  Title: "Weld consumable pack",
+                  Subtitle: "SKU 09-8812",
+                  Tag: "Backorder",
+                  Tone: "warning",
+                  Meta: "$318.40",
+                  Locked: false
+              },
+              {
+                  ItemKey: 301,
+                  GroupKey: 3,
+                  ItemOrder: 1,
+                  Marker: "2",
+                  Title: "Pallet jack, 2.5t",
+                  Subtitle: "SKU 55-0021",
+                  Tag: "Credit hold",
+                  Tone: "danger",
+                  Meta: "$1,780.00",
+                  Locked: false
+              },
+              {
+                  ItemKey: 302,
+                  GroupKey: 3,
+                  ItemOrder: 2,
+                  Marker: "6",
+                  Title: "Safety harness, large",
+                  Subtitle: "SKU 62-4417",
+                  Tag: "Credit hold",
+                  Tone: "danger",
+                  Meta: "$894.00",
+                  Locked: false
+              }
+          )
+      OnDelete:
+        PropertyKind: Event
+        DisplayName: OnDelete
+        Description: The delete action was pressed. Read ActionKey and ActionRowType and do the removal, or open your own confirm dialog first. The component deletes nothing and shows no confirmation of its own, because what a delete costs is the host's business.
+        ReturnType: None
+        Default: =false
+      OnEdit:
+        PropertyKind: Event
+        DisplayName: OnEdit
+        Description: The edit action was pressed. Read ActionKey and ActionRowType and open your own editor.
+        ReturnType: None
+        Default: =false
+      OnMoveDown:
+        PropertyKind: Event
+        DisplayName: OnMoveDown
+        Description: The move-down action was pressed. Read ActionKey and ActionRowType and renumber your own data. The component never reorders anything, because Groups and Items are inputs and it has nothing to write to.
+        ReturnType: None
+        Default: =false
+      OnMoveUp:
+        PropertyKind: Event
+        DisplayName: OnMoveUp
+        Description: The move-up action was pressed. Read ActionKey and ActionRowType and renumber your own data. The button is already disabled on the first row of its scope, so you do not have to guard the edges.
+        ReturnType: None
+        Default: =false
+      OnSelectGroup:
+        PropertyKind: Event
+        DisplayName: OnSelectGroup
+        Description: Fires when a group row is tapped, after ExpandedGroupKey has already changed, so reading it here gives the new value.
+        ReturnType: None
+        Default: =false
+      OnSelectItem:
+        PropertyKind: Event
+        DisplayName: OnSelectItem
+        Description: Fires when a child row is tapped. Read SelectedItemKey here. This is the drill-in hook; the component never edits anything.
+        ReturnType: None
+        Default: =false
+      SelectedItemKey:
+        PropertyKind: Output
+        DisplayName: SelectedItemKey
+        Description: The ItemKey of the last child row tapped, or blank. Reset() clears it.
+        DataType: Number
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: Heading above the list. Hidden along with the rest of the header when Config.ShowHeader is false.
+        DataType: Text
+        Default: ="Orders"
+    Properties:
+      ActionKey: =If(_cmpAlActionKey = 0, Blank(), _cmpAlActionKey)
+      ActionRowType: =_cmpAlActionType
+      ExpandedGroupKey: |-
+        =If(_cmpAlAll || _cmpAlExpanded = 0, Blank(), _cmpAlExpanded)
+        // ZERO IS THE INTERNAL SENTINEL, BLANK IS THE PUBLIC CONTRACT. Callers get
+        // a blank when nothing is open, which is what a caller expects; the
+        // component never stores a blank, which is what keeps the variable typed.
+      GroupCount: =CountRows(cmpAccordionList.Groups)
+      Height: =480
+      IsExpandAll: =_cmpAlAll
+      ItemCount: =CountRows(cmpAccordionList.Items)
+      OnReset: |-
+        =Set(_cmpAlExpanded, 0);
+        Set(_cmpAlItemKey, 0);
+        Set(_cmpAlActionKey, 0);
+        Set(_cmpAlActionType, "");
+        Set(_cmpAlAll, false)
+        // ZERO, NOT Blank(). These two literals are the ONLY place either variable
+        // is assigned from outside galAlRows, so they are where Power Fx gets the
+        // type from. Every other Set sits inside the gallery template, and that
+        // template is driven by Items, which reads _cmpAlExpanded, so the type
+        // would depend on a formula that depends on the variable being typed.
+        // Blank() carries no type, the circle never closes, and the component
+        // fails to compile with "No type found for variable".
+        //
+        // NOTHING ELSE TO CLEAR. The component holds two numbers and no
+        // collections, so Reset is genuinely just this.
+      SelectedItemKey: =If(_cmpAlItemKey = 0, Blank(), _cmpAlItemKey)
+      Width: =720
+    Children:
+      - conAlRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            Fill: |-
+              =If(
+                  cmpAccordionList.Config.Theme = "dark",
+                  RGBA(15, 23, 42, 1),
+                  RGBA(248, 250, 252, 1)
+              )
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            Width: =Parent.Width
+          Children:
+            - conAlHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =56
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =12
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =12
+                  PaddingLeft: =16
+                  PaddingRight: =16
+                  PaddingTop: =12
+                  Visible: =Coalesce(cmpAccordionList.Config.ShowHeader, true)
+                Children:
+                  - lblAlTitle:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Center
+                        Color: |-
+                          =If(
+                              cmpAccordionList.Config.Theme = "dark",
+                              RGBA(241, 245, 249, 1),
+                              RGBA(15, 23, 42, 1)
+                          )
+                        FillPortions: =1
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Text: =cmpAccordionList.Title
+                        Wrap: =false
+                  - lblAlTotals:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        Align: =Align.Right
+                        AlignInContainer: =AlignInContainer.Center
+                        Color: |-
+                          =If(
+                              cmpAccordionList.Config.Theme = "dark",
+                              RGBA(148, 163, 184, 1),
+                              RGBA(100, 116, 139, 1)
+                          )
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =11
+                        Text: |-
+                          =cmpAccordionList.GroupCount
+                          & If(cmpAccordionList.GroupCount = 1, " group   ", " groups   ")
+                          & cmpAccordionList.ItemCount
+                          & If(cmpAccordionList.ItemCount = 1, " item", " items")
+                        Visible: =Parent.Width >= 400
+                        Wrap: =false
+                  - btnAlExpandAll:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: =If(_cmpAlAll, "Collapse all groups", "Expand all groups")
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Subtle
+                        Color: |-
+                          =If(
+                              IsBlank(cmpAccordionList.Config.Accent),
+                              RGBA(59, 130, 246, 1),
+                              ColorValue(cmpAccordionList.Config.Accent)
+                          )
+                        FontWeight: =FontWeight.Semibold
+                        Icon: =If(_cmpAlAll, "ChevronUp", "ChevronDown")
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Set(_cmpAlAll, !_cmpAlAll);
+                          Set(_cmpAlExpanded, 0)
+                          // COLLAPSING ALL CLEARS THE SINGLE SELECTION TOO, so the list
+                          // does not snap back to whichever group happened to be open
+                          // before expand-all was pressed. Leaving it set is the kind of
+                          // state that only shows up as a bug report months later.
+                        Size: =11
+                        Text: =If(_cmpAlAll, "Collapse all", "Expand all")
+                        Tooltip: |-
+                          =If(
+                              _cmpAlAll,
+                              "Close every group",
+                              "Open every group at once"
+                          )
+                        Visible: |-
+                          =Coalesce(cmpAccordionList.Config.ShowExpandAll, true)
+                          && cmpAccordionList.GroupCount > 1
+                        Width: =116
+            - shpAlRule:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(
+                        cmpAccordionList.Config.Theme = "dark",
+                        RGBA(51, 65, 85, 1),
+                        RGBA(226, 232, 240, 1)
+                    )
+                  FillPortions: =0
+                  Height: =1
+                  Visible: =Coalesce(cmpAccordionList.Config.ShowHeader, true)
+            - galAlRows:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: =cmpAccordionList.Title
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  DelayItemLoading: =false
+                  Items: |-
+                    =With(
+                        {
+                            gi: ForAll(
+                                Sort(cmpAccordionList.Groups, GroupOrder) As x,
+                                {
+                                    GroupKey: x.GroupKey,
+                                    Pos: CountRows(
+                                        Filter(cmpAccordionList.Groups, GroupOrder <= x.GroupOrder)
+                                    ),
+                                    Cnt: If(
+                                        _cmpAlAll || x.GroupKey = _cmpAlExpanded,
+                                        CountRows(
+                                            Filter(cmpAccordionList.Items, GroupKey = x.GroupKey)
+                                        ),
+                                        0
+                                    ),
+                                    Before: Coalesce(
+                                        Sum(
+                                            ForAll(
+                                                Filter(
+                                                    cmpAccordionList.Groups,
+                                                    GroupOrder < x.GroupOrder
+                                                ) As y,
+                                                If(
+                                                    _cmpAlAll || y.GroupKey = _cmpAlExpanded,
+                                                    CountRows(
+                                                        Filter(
+                                                            cmpAccordionList.Items,
+                                                            GroupKey = y.GroupKey
+                                                        )
+                                                    ),
+                                                    0
+                                                )
+                                            ),
+                                            Value
+                                        ),
+                                        0
+                                    )
+                                }
+                            )
+                        },
+                        ForAll(
+                            Sequence(
+                                CountRows(cmpAccordionList.Groups) + Coalesce(Sum(gi, Cnt), 0)
+                            ) As s,
+                            With(
+                                { o: Last(Sort(Filter(gi, Pos + Before <= s.Value), Pos + Before)) },
+                                With(
+                                    {
+                                        g: LookUp(
+                                            cmpAccordionList.Groups,
+                                            GroupKey = o.GroupKey
+                                        ),
+                                        ci: s.Value - (o.Pos + o.Before)
+                                    },
+                                    With(
+                                        {
+                                            isChild: ci > 0,
+                                            c: Last(
+                                                FirstN(
+                                                    Sort(
+                                                        Filter(
+                                                            cmpAccordionList.Items,
+                                                            GroupKey = o.GroupKey
+                                                        ),
+                                                        ItemOrder
+                                                    ),
+                                                    Max(ci, 1)
+                                                )
+                                            )
+                                        },
+                                        {
+                                            RowType: If(isChild, "item", "group"),
+                                            SortOrder: g.GroupOrder,
+                                            GroupKey: g.GroupKey,
+                                            RowKey: If(isChild, c.ItemKey, g.GroupKey),
+                                            Marker: If(isChild, c.Marker, g.Marker),
+                                            Title: If(isChild, c.Title, g.Title),
+                                            Subtitle: If(isChild, c.Subtitle, g.Subtitle),
+                                            Tag: If(isChild, c.Tag, g.Tag),
+                                            Tone: If(isChild, c.Tone, g.Tone),
+                                            IsExpanded: _cmpAlAll || g.GroupKey = _cmpAlExpanded,
+                                            Locked: If(isChild, c.Locked, g.Locked),
+                                            CanMoveUp: If(
+                                                isChild,
+                                                CountRows(
+                                                    Filter(
+                                                        cmpAccordionList.Items,
+                                                        GroupKey = g.GroupKey,
+                                                        ItemOrder < c.ItemOrder
+                                                    )
+                                                ) > 0,
+                                                CountRows(
+                                                    Filter(
+                                                        cmpAccordionList.Groups,
+                                                        GroupOrder < g.GroupOrder
+                                                    )
+                                                ) > 0
+                                            ),
+                                            CanMoveDown: If(
+                                                isChild,
+                                                CountRows(
+                                                    Filter(
+                                                        cmpAccordionList.Items,
+                                                        GroupKey = g.GroupKey,
+                                                        ItemOrder > c.ItemOrder
+                                                    )
+                                                ) > 0,
+                                                CountRows(
+                                                    Filter(
+                                                        cmpAccordionList.Groups,
+                                                        GroupOrder > g.GroupOrder
+                                                    )
+                                                ) > 0
+                                            ),
+                                            ChildCount: CountRows(
+                                                Filter(
+                                                    cmpAccordionList.Items,
+                                                    GroupKey = g.GroupKey
+                                                )
+                                            ),
+                                            Meta: If(
+                                                isChild,
+                                                c.Meta,
+                                                If(
+                                                    IsBlank(g.Meta),
+                                                    With(
+                                                        {
+                                                            n: CountRows(
+                                                                Filter(
+                                                                    cmpAccordionList.Items,
+                                                                    GroupKey = g.GroupKey
+                                                                )
+                                                            )
+                                                        },
+                                                        n & If(n = 1, " item", " items")
+                                                    ),
+                                                    g.Meta
+                                                )
+                                            )
+                                        }
+                                    )
+                                )
+                            )
+                        )
+                    )
+                    // NO STRING COLUMN NAMES ANYWHERE IN THIS FORMULA, which is the whole
+                    // reason it looks like this. Ungroup, SortByColumns, ShowColumns and
+                    // AddColumns all take a column NAME, and whether that name is written
+                    // bare or quoted depends on the Formula-level column names app
+                    // setting. The same formula is therefore valid in one app and
+                    // rejected in the next, which is fatal for a component meant to be
+                    // pasted into somebody else's environment. Sequence, Sort, Filter and
+                    // a record literal all take formulas, and formulas do not care.
+                    //
+                    // gi IS THE PREFIX SUM, and building it as a ForAll over a record
+                    // literal is what makes ANY set of groups expandable rather than one
+                    // at a time. Pos is the group's position, Cnt is how many child rows
+                    // it currently contributes, and Before is how many child rows every
+                    // expanded group ahead of it contributes. Pos + Before is therefore
+                    // the row index of that group's own header, and the arithmetic holds
+                    // whether one group is open or all of them are.
+                    //
+                    // AddColumns would have expressed gi in a quarter of the space. It is
+                    // banned here for the reason above, and a ForAll over a record literal
+                    // is the portable equivalent.
+                    //
+                    // o IS THE OWNING GROUP: the last group whose header index has not
+                    // passed this row yet. ci is the distance from that header, so zero
+                    // means the header itself and anything above it is that child.
+                    //
+                    // NO COLLECTION AND NO REBUILD STEP. The flat list is a pure formula
+                    // over the two input tables, so a host that swaps Groups or Items
+                    // sees the change immediately. A component has no OnVisible, so
+                    // anything built with ClearCollect needs an action property the caller
+                    // must remember to invoke, and a caller who forgets gets an empty
+                    // control and no error to explain it.
+                    //
+                    // NO NESTED GALLERY EITHER, which is the usual way this shape gets
+                    // built and the reason it usually goes wrong. One flat gallery means
+                    // one scroll container, working keyboard order, and no flexible height
+                    // measurement to fight.
+                    //
+                    // THE COST IS REAL. gi is rebuilt per row rather than once, so this is
+                    // quadratic in the group count. It is comfortable into the low
+                    // hundreds of groups and is the wrong control above that; a list that
+                    // big wants server side paging, not an accordion.
+                    //
+                    // THE EDGE FLAGS ARE COMPUTED HERE, not in each button. CanMoveUp and
+                    // CanMoveDown ask whether any sibling sits before or after this row IN
+                    // ITS OWN SCOPE: other groups for a group, other children of the same
+                    // group for a child. Doing it once means the disabled state cannot
+                    // disagree between the group and item templates.
+                    //
+                    // ORDER VALUES NEED NOT BE CONTIGUOUS. The test is whether a smaller
+                    // or larger order exists, never whether it is exactly one away, so
+                    // orders of 10, 20, 30 reorder correctly.
+                    //
+                    // ONE RECORD SHAPE, branched per field. Groups and Items carry the
+                    // SAME COLUMN NAMES precisely so this projection stays one literal;
+                    // building two and hoping they match is how column sets drift apart,
+                    // and a table whose rows disagree on columns widens silently.
+                  LayoutMinHeight: =0
+                  LoadingSpinner: =LoadingSpinner.None
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: =Coalesce(cmpAccordionList.Config.RowHeight, 76)
+                  Visible: =cmpAccordionList.GroupCount > 0
+                Children:
+                  - conAlGroup:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: |-
+                          =If(
+                              ThisItem.IsExpanded,
+                              If(
+                                  IsBlank(cmpAccordionList.Config.Accent),
+                                  RGBA(59, 130, 246, 1),
+                                  ColorValue(cmpAccordionList.Config.Accent)
+                              ),
+                              If(
+                                  cmpAccordionList.Config.Theme = "dark",
+                                  RGBA(51, 65, 85, 1),
+                                  RGBA(226, 232, 240, 1)
+                              )
+                          )
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Fill: |-
+                          =If(
+                              cmpAccordionList.Config.Theme = "dark",
+                              RGBA(30, 41, 59, 1),
+                              RGBA(255, 255, 255, 1)
+                          )
+                        Height: =Parent.TemplateHeight - 8
+                        RadiusBottomLeft: =Coalesce(cmpAccordionList.Config.Radius, 12)
+                        RadiusBottomRight: =Coalesce(cmpAccordionList.Config.Radius, 12)
+                        RadiusTopLeft: =Coalesce(cmpAccordionList.Config.Radius, 12)
+                        RadiusTopRight: =Coalesce(cmpAccordionList.Config.Radius, 12)
+                        Visible: =ThisItem.RowType = "group"
+                        Width: =Parent.TemplateWidth - 32
+                        X: =16
+                        Y: =4
+                      Children:
+                        - lblAlGpMarker:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              Color: =RGBA(255, 255, 255, 1)
+                              Fill: |-
+                                =If(
+                                    IsBlank(cmpAccordionList.Config.Accent),
+                                    RGBA(59, 130, 246, 1),
+                                    ColorValue(cmpAccordionList.Config.Accent)
+                                )
+                              FontWeight: =FontWeight.Bold
+                              Height: =28
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              RadiusBottomLeft: =14
+                              RadiusBottomRight: =14
+                              RadiusTopLeft: =14
+                              RadiusTopRight: =14
+                              Size: =11
+                              Text: =ThisItem.Marker
+                              Visible: =!IsBlank(ThisItem.Marker)
+                              Width: =28
+                              Wrap: =false
+                              X: =44
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblAlGpTag:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              Color: |-
+                                =Switch(
+                                    Lower(ThisItem.Tone),
+                                    "positive", RGBA(21, 128, 61, 1),
+                                    "warning", RGBA(180, 83, 9, 1),
+                                    "danger", RGBA(185, 28, 28, 1),
+                                    "info", RGBA(29, 78, 216, 1),
+                                    RGBA(71, 85, 105, 1)
+                                )
+                              Fill: |-
+                                =Switch(
+                                    Lower(ThisItem.Tone),
+                                    "positive", RGBA(220, 252, 231, 1),
+                                    "warning", RGBA(254, 243, 199, 1),
+                                    "danger", RGBA(254, 226, 226, 1),
+                                    "info", RGBA(219, 234, 254, 1),
+                                    RGBA(241, 245, 249, 1)
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              PaddingBottom: =0
+                              PaddingLeft: =4
+                              PaddingRight: =4
+                              PaddingTop: =0
+                              RadiusBottomLeft: =11
+                              RadiusBottomRight: =11
+                              RadiusTopLeft: =11
+                              RadiusTopRight: =11
+                              Size: =10
+                              Text: =ThisItem.Tag
+                              Visible: |-
+                                =Coalesce(cmpAccordionList.Config.ShowTags, true)
+                                && !IsBlank(ThisItem.Tag)
+                                && Parent.Width >= 560 + If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      )
+                              Width: =104
+                              Wrap: =false
+                              X: |-
+                                =Parent.Width - 300 - If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      )
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblAlGpMeta:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Right
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =11
+                              Text: =ThisItem.Meta
+                              Visible: |-
+                                =Coalesce(cmpAccordionList.Config.ShowMeta, true)
+                                && Parent.Width >= 420 + If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      )
+                              Width: =176
+                              Wrap: =false
+                              X: |-
+                                =Parent.Width - 188 - If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      )
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblAlGpTitle:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(241, 245, 249, 1),
+                                    RGBA(15, 23, 42, 1)
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              Height: =20
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =13
+                              Text: =ThisItem.Title
+                              Width: |-
+                                =With(
+                                    { act: If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      ) },
+                                    Max(
+                                        72,
+                                        Parent.Width - 80 - act
+                                        - If(
+                                              Coalesce(cmpAccordionList.Config.ShowTags, true) && Parent.Width >= 560 + act, 308,
+                                              Coalesce(cmpAccordionList.Config.ShowMeta, true) && Parent.Width >= 420 + act, 196,
+                                              12
+                                          )
+                                    )
+                                )
+                              Wrap: =false
+                              X: =80
+                              Y: =(Parent.Height - 38) / 2
+                        - lblAlGpSubtitle:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              Height: =18
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =11
+                              Text: =ThisItem.Subtitle
+                              Visible: =!IsBlank(ThisItem.Subtitle)
+                              Width: =lblAlGpTitle.Width
+                              Wrap: =false
+                              X: =lblAlGpTitle.X
+                              Y: =lblAlGpTitle.Y + lblAlGpTitle.Height
+                        - btnAlGpChevron:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: |-
+                                =If(
+                                    ThisItem.IsExpanded,
+                                    "Collapse " & ThisItem.Title,
+                                    "Expand " & ThisItem.Title
+                                )
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              Icon: =If(ThisItem.IsExpanded, "ChevronDown", "ChevronRight")
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: =Select(btnAlGpTap)
+                              Size: =12
+                              Text: =""
+                              Tooltip: =If(ThisItem.IsExpanded, "Collapse", "Expand")
+                              Width: =32
+                              X: =8
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlGpUp:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Move up " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              DisplayMode: |-
+                                =If(
+                                    ThisItem.CanMoveUp,
+                                    DisplayMode.Edit,
+                                    DisplayMode.Disabled
+                                )
+                              Icon: ="ChevronUp"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAlActionKey, ThisItem.RowKey);
+                                Set(_cmpAlActionType, ThisItem.RowType);
+                                cmpAccordionList.OnMoveUp()
+                              Size: =12
+                              Text: =""
+                              Tooltip: ="Move up"
+                              Visible: =Coalesce(cmpAccordionList.Config.AllowReorder, true) && !ThisItem.Locked
+                              Width: =32
+                              X: =Parent.Width - 164
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlGpDown:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Move down " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              DisplayMode: |-
+                                =If(
+                                    ThisItem.CanMoveDown,
+                                    DisplayMode.Edit,
+                                    DisplayMode.Disabled
+                                )
+                              Icon: ="ChevronDown"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAlActionKey, ThisItem.RowKey);
+                                Set(_cmpAlActionType, ThisItem.RowType);
+                                cmpAccordionList.OnMoveDown()
+                              Size: =12
+                              Text: =""
+                              Tooltip: ="Move down"
+                              Visible: =Coalesce(cmpAccordionList.Config.AllowReorder, true) && !ThisItem.Locked
+                              Width: =32
+                              X: =Parent.Width - 124
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlGpEdit:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Edit " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              Icon: ="Edit"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAlActionKey, ThisItem.RowKey);
+                                Set(_cmpAlActionType, ThisItem.RowType);
+                                cmpAccordionList.OnEdit()
+                              Size: =12
+                              Text: =""
+                              Tooltip: ="Edit"
+                              Visible: =Coalesce(cmpAccordionList.Config.AllowEdit, true) && !ThisItem.Locked
+                              Width: =32
+                              X: =Parent.Width - 84
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlGpDelete:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Delete " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              Icon: ="Delete"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAlActionKey, ThisItem.RowKey);
+                                Set(_cmpAlActionType, ThisItem.RowType);
+                                cmpAccordionList.OnDelete()
+                              Size: =12
+                              Text: =""
+                              Tooltip: ="Delete"
+                              Visible: =Coalesce(cmpAccordionList.Config.AllowDelete, true) && !ThisItem.Locked
+                              Width: =32
+                              X: =Parent.Width - 44
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlGpTap:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: |-
+                                =ThisItem.Title
+                                & ", "
+                                & ThisItem.Meta
+                                & If(
+                                    IsBlank(ThisItem.Tag),
+                                    "",
+                                    ", " & ThisItem.Tag
+                                )
+                                & If(ThisItem.IsExpanded, ". Expanded.", ". Collapsed.")
+                              Appearance: =ButtonAppearance.Transparent
+                              Height: =Parent.Height - 2
+                              Layout: =ButtonLayout.TextOnly
+                              OnSelect: |-
+                                =Set(
+                                    _cmpAlExpanded,
+                                    If(
+                                        _cmpAlAll,
+                                        ThisItem.GroupKey,
+                                        ThisItem.IsExpanded,
+                                        0,
+                                        ThisItem.GroupKey
+                                    )
+                                );
+                                Set(_cmpAlAll, false);
+                                cmpAccordionList.OnSelectGroup()
+                                // TAPPING A ROW WHILE EVERYTHING IS OPEN drops back to
+                                // single-expand on the row that was tapped, rather than
+                                // collapsing it inside a still-expanded list. Collapsing
+                                // one group out of many would need an expanded SET rather
+                                // than one key, and a set means a collection, which is the
+                                // one thing this component does not have.
+                                //
+                                // _cmpAlAll IS READ BEFORE IT IS WRITTEN. Set is not
+                                // synchronous for downstream formula evaluation, so the
+                                // branch that depends on the old value has to be the
+                                // earlier statement.
+                                // THE EVENT FIRES AFTER THE STATE CHANGES, so a host reading
+                                // ExpandedGroupKey inside OnSelectGroup sees the new value
+                                // rather than the one it just replaced.
+                              Text: =""
+                              Tooltip: |-
+                                =If(
+                                    ThisItem.IsExpanded,
+                                    "Select to collapse",
+                                    "Select to see the " & ThisItem.ChildCount & " rows inside"
+                                )
+                              Width: |-
+                                =Parent.Width - 2
+                                - If(
+                                      Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                          || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                          || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                      172,
+                                      0
+                                  )
+                                // THE OVERLAY STOPS SHORT OF THE ACTION CLUSTER. A
+                                // full width transparent button declared after the
+                                // action buttons would sit on top of them and swallow
+                                // every click, and the failure looks like the icons
+                                // simply do nothing.
+                              X: =1
+                              Y: =1
+                  - conAlItem:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: |-
+                          =If(
+                              cmpAccordionList.Config.Theme = "dark",
+                              RGBA(51, 65, 85, 1),
+                              RGBA(226, 232, 240, 1)
+                          )
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Fill: |-
+                          =If(
+                              cmpAccordionList.Config.Theme = "dark",
+                              RGBA(15, 23, 42, 1),
+                              RGBA(248, 250, 252, 1)
+                          )
+                        Height: =Parent.TemplateHeight - 12
+                        RadiusBottomLeft: =Coalesce(cmpAccordionList.Config.Radius, 12)
+                        RadiusBottomRight: =Coalesce(cmpAccordionList.Config.Radius, 12)
+                        RadiusTopLeft: =Coalesce(cmpAccordionList.Config.Radius, 12)
+                        RadiusTopRight: =Coalesce(cmpAccordionList.Config.Radius, 12)
+                        Visible: =ThisItem.RowType = "item"
+                        Width: =Parent.TemplateWidth - 72
+                        X: =56
+                        Y: =6
+                      Children:
+                        - lblAlItMarker:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              BorderColor: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(71, 85, 105, 1),
+                                    RGBA(203, 213, 225, 1)
+                                )
+                              BorderStyle: =BorderStyle.Solid
+                              BorderThickness: =1
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              Fill: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(30, 41, 59, 1),
+                                    RGBA(255, 255, 255, 1)
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              Height: =26
+                              PaddingBottom: =0
+                              PaddingLeft: =2
+                              PaddingRight: =2
+                              PaddingTop: =0
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =10
+                              Text: =ThisItem.Marker
+                              Visible: =!IsBlank(ThisItem.Marker)
+                              Width: =34
+                              Wrap: =false
+                              X: =10
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblAlItTag:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              Color: |-
+                                =Switch(
+                                    Lower(ThisItem.Tone),
+                                    "positive", RGBA(21, 128, 61, 1),
+                                    "warning", RGBA(180, 83, 9, 1),
+                                    "danger", RGBA(185, 28, 28, 1),
+                                    "info", RGBA(29, 78, 216, 1),
+                                    RGBA(71, 85, 105, 1)
+                                )
+                              Fill: |-
+                                =Switch(
+                                    Lower(ThisItem.Tone),
+                                    "positive", RGBA(220, 252, 231, 1),
+                                    "warning", RGBA(254, 243, 199, 1),
+                                    "danger", RGBA(254, 226, 226, 1),
+                                    "info", RGBA(219, 234, 254, 1),
+                                    RGBA(241, 245, 249, 1)
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              Height: =22
+                              PaddingBottom: =0
+                              PaddingLeft: =4
+                              PaddingRight: =4
+                              PaddingTop: =0
+                              RadiusBottomLeft: =11
+                              RadiusBottomRight: =11
+                              RadiusTopLeft: =11
+                              RadiusTopRight: =11
+                              Size: =10
+                              Text: =ThisItem.Tag
+                              Visible: |-
+                                =Coalesce(cmpAccordionList.Config.ShowTags, true)
+                                && !IsBlank(ThisItem.Tag)
+                                && Parent.Width >= 520 + If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      )
+                              Width: =104
+                              Wrap: =false
+                              X: |-
+                                =Parent.Width - 228 - If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      )
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblAlItMeta:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Right
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(203, 213, 225, 1),
+                                    RGBA(51, 65, 85, 1)
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =11
+                              Text: =ThisItem.Meta
+                              Visible: =Coalesce(cmpAccordionList.Config.ShowMeta, true)
+                              Width: =104
+                              Wrap: =false
+                              X: |-
+                                =Parent.Width - 116 - If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      )
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblAlItTitle:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(241, 245, 249, 1),
+                                    RGBA(15, 23, 42, 1)
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              Height: =18
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =12
+                              Text: =ThisItem.Title
+                              Width: |-
+                                =With(
+                                    { act: If(
+                                          Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                              || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                          172,
+                                          0
+                                      ) },
+                                    Max(
+                                        64,
+                                        Parent.Width - 54 - act
+                                        - If(
+                                              Coalesce(cmpAccordionList.Config.ShowTags, true) && Parent.Width >= 520 + act, 240,
+                                              Coalesce(cmpAccordionList.Config.ShowMeta, true), 128,
+                                              12
+                                          )
+                                    )
+                                )
+                              Wrap: =false
+                              X: =54
+                              Y: =(Parent.Height - 34) / 2
+                        - lblAlItSubtitle:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(100, 116, 139, 1),
+                                    RGBA(148, 163, 184, 1)
+                                )
+                              Height: =16
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =10
+                              Text: =ThisItem.Subtitle
+                              Visible: =!IsBlank(ThisItem.Subtitle)
+                              Width: =lblAlItTitle.Width
+                              Wrap: =false
+                              X: =lblAlItTitle.X
+                              Y: =lblAlItTitle.Y + lblAlItTitle.Height
+                        - btnAlItUp:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Move up " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              DisplayMode: |-
+                                =If(
+                                    ThisItem.CanMoveUp,
+                                    DisplayMode.Edit,
+                                    DisplayMode.Disabled
+                                )
+                              Icon: ="ChevronUp"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAlActionKey, ThisItem.RowKey);
+                                Set(_cmpAlActionType, ThisItem.RowType);
+                                cmpAccordionList.OnMoveUp()
+                              Size: =12
+                              Text: =""
+                              Tooltip: ="Move up"
+                              Visible: =Coalesce(cmpAccordionList.Config.AllowReorder, true) && !ThisItem.Locked
+                              Width: =32
+                              X: =Parent.Width - 164
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlItDown:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Move down " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              DisplayMode: |-
+                                =If(
+                                    ThisItem.CanMoveDown,
+                                    DisplayMode.Edit,
+                                    DisplayMode.Disabled
+                                )
+                              Icon: ="ChevronDown"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAlActionKey, ThisItem.RowKey);
+                                Set(_cmpAlActionType, ThisItem.RowType);
+                                cmpAccordionList.OnMoveDown()
+                              Size: =12
+                              Text: =""
+                              Tooltip: ="Move down"
+                              Visible: =Coalesce(cmpAccordionList.Config.AllowReorder, true) && !ThisItem.Locked
+                              Width: =32
+                              X: =Parent.Width - 124
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlItEdit:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Edit " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              Icon: ="Edit"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAlActionKey, ThisItem.RowKey);
+                                Set(_cmpAlActionType, ThisItem.RowType);
+                                cmpAccordionList.OnEdit()
+                              Size: =12
+                              Text: =""
+                              Tooltip: ="Edit"
+                              Visible: =Coalesce(cmpAccordionList.Config.AllowEdit, true) && !ThisItem.Locked
+                              Width: =32
+                              X: =Parent.Width - 84
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlItDelete:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Delete " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: |-
+                                =If(
+                                    cmpAccordionList.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              Icon: ="Delete"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAlActionKey, ThisItem.RowKey);
+                                Set(_cmpAlActionType, ThisItem.RowType);
+                                cmpAccordionList.OnDelete()
+                              Size: =12
+                              Text: =""
+                              Tooltip: ="Delete"
+                              Visible: =Coalesce(cmpAccordionList.Config.AllowDelete, true) && !ThisItem.Locked
+                              Width: =32
+                              X: =Parent.Width - 44
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnAlItTap:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: |-
+                                =ThisItem.Title
+                                & If(IsBlank(ThisItem.Subtitle), "", ", " & ThisItem.Subtitle)
+                                & If(IsBlank(ThisItem.Meta), "", ", " & ThisItem.Meta)
+                                & If(IsBlank(ThisItem.Tag), "", ", " & ThisItem.Tag)
+                              Appearance: =ButtonAppearance.Transparent
+                              Height: =Parent.Height - 2
+                              Layout: =ButtonLayout.TextOnly
+                              OnSelect: |-
+                                =Set(_cmpAlItemKey, ThisItem.RowKey);
+                                cmpAccordionList.OnSelectItem()
+                              Text: =""
+                              Width: |-
+                                =Parent.Width - 2
+                                - If(
+                                      Coalesce(cmpAccordionList.Config.AllowReorder, true)
+                                          || Coalesce(cmpAccordionList.Config.AllowEdit, true)
+                                          || Coalesce(cmpAccordionList.Config.AllowDelete, true),
+                                      172,
+                                      0
+                                  )
+                              X: =1
+                              Y: =1
+            - lblAlEmpty:
+                Control: ModernText@1.0.0
+                Properties:
+                  AccessibleLabel: =Self.Text
+                  Align: =Align.Center
+                  Color: |-
+                    =If(
+                        cmpAccordionList.Config.Theme = "dark",
+                        RGBA(148, 163, 184, 1),
+                        RGBA(100, 116, 139, 1)
+                    )
+                  FillPortions: =1
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =32
+                  PaddingRight: =32
+                  Size: =12
+                  Text: ="Nothing to show. Pass a table into the Groups property, or clear it to see the sample data."
+                  Visible: =cmpAccordionList.GroupCount = 0

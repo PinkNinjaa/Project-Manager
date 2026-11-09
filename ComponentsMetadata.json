@@ -1,0 +1,164 @@
+{
+  "Components": [
+    {
+      "Name": "cmpFileUpload",
+      "TemplateName": "c80caca65c3340119af4737e42fbda3a",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpDetFinish",
+      "TemplateName": "579a77ac6c7843b8a49f7a7c9d96c891",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpDetEditWorkflow",
+      "TemplateName": "1cda693fb78a427192a9892eece0ba1c",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpSendEmail",
+      "TemplateName": "fff2ae88712a4cf2b2eafbc05b561104",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpMyTable",
+      "TemplateName": "123a4b375bfb4fedbeb45088a1eabe61",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpFloatingActionButton",
+      "TemplateName": "2281b7b6855546e5bf55795341fd270f",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpBottomNavigation",
+      "TemplateName": "1dd71806ab67480f912b7fb910fe7bbd",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpLoadingSpinner",
+      "TemplateName": "96831c7121e44c089e78d2f290f64e7f",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpBarList",
+      "TemplateName": "783c1f2039e648f1b27093982b13dfd3",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpKPI",
+      "TemplateName": "41e7057728df4a2fa3ec4c45abe2d024",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "Badge",
+      "TemplateName": "63b734d676704e49b17ef6f0261a95e3",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpAccordionList",
+      "TemplateName": "f122e2cbcc014be8a9f59756a6f99752",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": false
+    },
+    {
+      "Name": "cmpEnhancedDialog",
+      "TemplateName": "932a471f7c9544298461492037224cb7",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpStepper",
+      "TemplateName": "b264c54a47ba48b8baf5b3723f09caf1",
+      "Description": "Progress stepper with bar and circle modes. Labels, connectors, sizes, themes, and jump-to-step navigation built in.",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpProgressRail",
+      "TemplateName": "a93c10c2425c4f289a691666a7956d18",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpSidebar",
+      "TemplateName": "f513a641f2ca4e3c9f83fc857018de39",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpDetReroute",
+      "TemplateName": "ceaaa09bcbc0490a9658651033e87504",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpPieChart",
+      "TemplateName": "ebe0d9bafe2248fda682cde26414e7bf",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "cmpBreadcrumbs",
+      "TemplateName": "b4766829423348179aa920540997069f",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": false
+    },
+    {
+      "Name": "cmpActivityTimeline",
+      "TemplateName": "fce14e95820f4ab786e8e2afc087493d",
+      "Description": "",
+      "AllowCustomization": true,
+      "IsWidget": false,
+      "AllowAccessToGlobals": true
+    }
+  ]
+}

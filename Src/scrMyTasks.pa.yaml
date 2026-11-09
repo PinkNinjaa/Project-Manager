@@ -1,0 +1,1417 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrMyTasks:
+    Properties:
+      Fill: =nfColor.Canvas
+      OnVisible: |-
+        =Set(_cmpNavSelID, 2);
+        UpdateContext(
+            {
+                locTskLoading: true,
+                locTskTab: "pending",
+                locTskExpandedKey: "",
+                locTskRerouteOpen: false,
+                locTskRerouteKey: "",
+                locTskFinishOpen: false,
+                locTskFinishKey: ""
+            }
+        );
+        ClearCollect(colTskSelected, { AssignmentKey: "" });
+        Clear(colTskSelected);
+        ClearCollect(colTskPending, nfTskPending);
+        ClearCollect(colTskCompleted, nfTskCompleted);
+        UpdateContext({ locTskLoading: false })
+    Children:
+      - conTskRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Canvas
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            PaddingLeft: =If(nfIsDesktop, conTskNavHost.Width, 0)
+            Width: =Parent.Width
+          Children:
+            - conTskMiddle:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                Children:
+                  - conTskRight:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - conTskTopBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderStyle: =If(nfIsMobile, BorderStyle.None, BorderStyle.Solid)
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =If(nfIsMobile, nfColor.Transparent, nfColor.Surface)
+                              FillPortions: =0
+                              Height: =nfHeights.topBar
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =If(nfIsMobile, nfSpace.Sm, nfSpace.Md)
+                              LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                              LayoutMaxHeight: =nfHeights.topBar
+                              LayoutMinHeight: =nfHeights.topBar
+                              LayoutMinWidth: =0
+                              PaddingRight: =If(nfIsMobile, nfSpace.Md, nfSpace.Xxl)
+                            Children:
+                              - conTskTitleGroup:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =2.5
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                  Children:
+                                    - cmpTskCrumbs:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpBreadcrumbs
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          CharWidths: =nfCharWidths
+                                          Config: |-
+                                            ={
+                                                Theme: If(nfIsDark, "dark", "light"),
+                                                SeparatorIcon: "chevron",
+                                                Gap: 4,
+                                                Size: nfType.ChromeTitle,
+                                                MaxItems: 4,
+                                                ItemsBeforeCollapse: 1,
+                                                ItemsAfterCollapse: 2,
+                                                ActiveLastItem: false,
+                                                BackButton: false
+                                            }
+                                          CurrentColor: =If(nfIsDark, "#F1F5F9", "#1E293B")
+                                          Height: =nfHeights.breadcrumb
+                                          Icons: =nfBreadcrumbIcons
+                                          Items: |-
+                                            =Table(
+                                                { id: "home", label: "Home" },
+                                                { id: "tasks", label: "My Tasks" }
+                                            )
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          LinkColor: =If(nfIsDark, "#94A3B8", "#64748B")
+                                          OnBack: =
+                                          OnSelect: |-
+                                            =If(
+                                                cmpTskCrumbs.SelectedItem.id = "home",
+                                                Navigate(scrHome, ScreenTransition.None)
+                                            )
+                                          Width: =Parent.Width
+                              - cmpTskBell:
+                                  Control: CanvasComponent
+                                  ComponentName: Badge
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BadgeColor: =nfColor.DangerSolid
+                                    BadgeCount: =0
+                                    HasNotifications: =false
+                                    Height: =Self.Size
+                                    HoverText: ="Notifications"
+                                    IconColor: =
+                                    IconSvg: =
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =false
+                                      // INERT ON PURPOSE. Same reason as scrHome: CLAUDE.md
+                                      // open question 2 is unresolved and colAudit is the wrong
+                                      // shape. Do NOT bind this to colAudit.
+                                    Size: =If(nfIsMobile, 32, 35)
+                                    Theme: =nfThemeName
+                                    Width: =Self.Size
+                              - conTskAvatar:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Primary
+                                    FillPortions: =0
+                                    Height: =nfHeights.avatar
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    RadiusBottomLeft: =nfHeights.avatar / 2
+                                    RadiusBottomRight: =nfHeights.avatar / 2
+                                    RadiusTopLeft: =nfHeights.avatar / 2
+                                    RadiusTopRight: =nfHeights.avatar / 2
+                                    Width: =nfHeights.avatar
+                                  Children:
+                                    - lblTskInitials:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          Color: =nfColor.TextOnPrimary
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =Parent.Height
+                                          Size: =nfType.Initials
+                                          Text: =nfInitials
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                        - conTskGutter:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Canvas
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =nfSpace.Lg
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              LayoutOverflowY: =LayoutOverflow.Scroll
+                              PaddingBottom: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingLeft: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingRight: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingTop: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              Width: =Parent.Width
+                            Children:
+                              - conTskHeader:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: |-
+                                      =Max(
+                                          lblTskTitle.Height + lblTskSub.Height + conTskHeaderText.LayoutGap,
+                                          btnTskExport.Height
+                                      )
+                                      + Self.PaddingTop
+                                      + Self.PaddingBottom
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =nfSpace.Lg
+                                    LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - conTskHeaderText:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Transparent
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Xxs
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                        Children:
+                                          - lblTskTitle:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextStrong
+                                                FontWeight: =FontWeight.Semibold
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =If(nfIsDesktop, nfType.PageTitle, 20)
+                                                Text: ="My Tasks"
+                                                Wrap: =false
+                                          - lblTskSub:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextMuted
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Body
+                                                Text: ="Tasks assigned to you across all requests"
+                                                Wrap: =false
+                                    - btnTskExport:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="Export"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          Appearance: =ButtonAppearance.Secondary
+                                          Color: =nfColor.TextBody
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =nfSize.Row
+                                          Icon: ="ArrowDownload"
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          OnSelect: |-
+                                            =false
+                                            // CALL SITE, NOT BUILT. Export needs a flow to produce the file, and
+                                            // flows are not designed yet. See CLAUDE.md Flows. Do not guess a name
+                                            // or a response shape.
+                                          Size: =nfType.Body
+                                          Text: ="Export"
+                                          Visible: =nfIsDesktop
+                                          Width: =120
+                              - cmpTskStats:
+                                  Control: CanvasComponent
+                                  ComponentName: cmpKPI
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    AnimationEffect: ="None"
+                                    ColumnsLayout: |-
+                                      =With(
+                                          {
+                                              _capOffset: If(nfIsDesktop, conTskNavHost.Width, 0) +
+                                                          If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl)
+                                          },
+                                          {
+                                              Mobile: 2,
+                                              Tablet: 2,
+                                              Desktop: 4,
+                                              MobileBreakpoint:  640 + _capOffset,
+                                              TabletBreakpoint:  1024 + _capOffset,
+                                              DesktopBreakpoint: 1366 + _capOffset
+                                          }
+                                      )
+                                    Data: |-
+                                      =Table(
+                                          {
+                                              ID: 1,
+                                              Icon: "Warning",
+                                              Value: nfMyOverdueCount,
+                                              Label: "Overdue",
+                                              PercentChange: Blank(),
+                                              PercentLabel: "",
+                                              IconBg: "#FEE2E2",
+                                              IconColor: "#B91C1C",
+                                              SparklineData: "",
+                                              isHidden: false
+                                          },
+                                          {
+                                              ID: 2,
+                                              Icon: "Clock",
+                                              Value: nfMyDueTodayCount,
+                                              Label: "Due Today",
+                                              PercentChange: Blank(),
+                                              PercentLabel: "",
+                                              IconBg: "#FEF3C7",
+                                              IconColor: "#B45309",
+                                              SparklineData: "",
+                                              isHidden: false
+                                          },
+                                          {
+                                              ID: 3,
+                                              Icon: "Target",
+                                              Value: nfMyUpcomingCount,
+                                              Label: "Upcoming",
+                                              PercentChange: Blank(),
+                                              PercentLabel: "",
+                                              IconBg: "#DBEAFE",
+                                              IconColor: "#1D4ED8",
+                                              SparklineData: "",
+                                              isHidden: false
+                                          },
+                                          {
+                                              ID: 4,
+                                              Icon: "Users",
+                                              Value: nfMyDoneCount,
+                                              Label: "Completed",
+                                              PercentChange: Blank(),
+                                              PercentLabel: "",
+                                              IconBg: "#DCFCE7",
+                                              IconColor: "#15803D",
+                                              SparklineData: "",
+                                              isHidden: false
+                                          }
+                                      )
+                                    Height: |-
+                                      =With(
+                                          {
+                                              bp: Self.ColumnsLayout,
+                                              w: App.Width,
+                                              cardCount: CountRows(Filter(Self.Data, !IfError(isHidden, false)))
+                                          },
+                                          With(
+                                              {
+                                                  cols: Max(
+                                                      1,
+                                                      If(
+                                                          w < bp.MobileBreakpoint, bp.Mobile,
+                                                          w < bp.TabletBreakpoint, bp.Tablet,
+                                                          bp.Desktop
+                                                      )
+                                                  )
+                                              },
+                                              With(
+                                                  { rows: RoundUp(cardCount / cols, 0) },
+                                                  If(
+                                                      Or(Self.Style = "Compact", Self.Style = "Minimal"),
+                                                      rows * (96 + Self.StyleConfig.space.md) + Self.StyleConfig.space.md,
+                                                      rows * (Self.StyleConfig.heights.statsCardMax + Self.StyleConfig.space.lg) + Self.StyleConfig.space.lg
+                                                  )
+                                              )
+                                          )
+                                      )
+                                    Icons: |-
+                                      =Table(
+                                          { Name: "Target", SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='6'/><circle cx='12' cy='12' r='2'/></svg>" },
+                                          { Name: "Users", SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 0 0-3-3.87'/><path d='M16 3.13a4 4 0 0 1 0 7.75'/></svg>" },
+                                          { Name: "Clock", SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>" },
+                                          { Name: "Warning", SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg>" }
+                                      )
+                                    IsLoading: =false
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnCardClick: |-
+                                      =Switch(
+                                          ClickedItem.ID,
+                                          1, Navigate(scrMyTasks, ScreenTransition.None),
+                                          2, Navigate(scrAllRequests, ScreenTransition.None, { locMyRequestsOnly: true })
+                                      )
+                                    Style: ="Compact"
+                                    StyleConfig: |-
+                                      ={
+                                          colors: {
+                                              cardBg: nfColor.Surface,
+                                              border: nfColor.Border,
+                                              text: nfColor.TextStrong,
+                                              textMuted: nfColor.TextMuted,
+                                              positive: nfColor.SuccessSolid,
+                                              negative: nfColor.DangerSolid,
+                                              neutral: nfColor.TextFaint,
+                                              skeletonBase: nfColor.Border,
+                                              skeletonShine: nfColor.SurfaceAlt
+                                          },
+                                          space: { xs: nfSpace.Xs, sm: nfSpace.Sm, md: nfSpace.Md, lg: nfSpace.Lg, xl: nfSpace.Xxl },
+                                          radius: { md: nfRadius.Md, lg: nfRadius.Lg },
+                                          type: {
+                                              value: { size: 32, sizeCompact: 20 },
+                                              label: { size: nfType.Caption },
+                                              body:  { size: nfType.Caption }
+                                          },
+                                          heights: { statsCardMax: 190 },
+                                          abbreviateThreshold: 10000
+                                      }
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                              - tabTskTabs:
+                                  Control: ModernTabList@1.0.1
+                                  Properties:
+                                    AccessibleLabel: ="Task status"
+                                    AlignInContainer: =AlignInContainer.Center
+                                    FontWeight: =""
+                                    Height: =nfSize.Row
+                                    ItemDisplayText: =ThisItem.'ItemDisplayName'
+                                    Items: |-
+                                      =SortByColumns(Table(
+                                          {
+                                              ItemKey: "pending",
+                                              ItemDisplayName: "Pending Tasks (" & Text(CountRows(colTskPending)) & ")"
+                                          },
+                                          {
+                                              ItemKey: "completed",
+                                              ItemDisplayName: "Completed (" & Text(CountRows(colTskCompleted)) & ")"
+                                          }
+                                      ), "ItemDisplayName")
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =UpdateContext(
+                                          {
+                                              locTskTab: Self.Selected.ItemKey,
+                                              locTskExpandedKey: ""
+                                          }
+                                      )
+                                    Size: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                              - conTskBulkBar:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderColor: =nfColor.PrimaryBorder
+                                    BorderThickness: =nfSize.Border
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.PrimarySoft
+                                    FillPortions: =0
+                                    Height: =nfSize.Row + 2 * nfSpace.Sm
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =nfSpace.Sm
+                                    LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =nfSpace.Sm
+                                    PaddingLeft: =nfSpace.Md
+                                    PaddingRight: =nfSpace.Md
+                                    PaddingTop: =nfSpace.Sm
+                                    RadiusBottomLeft: =nfRadius.Lg
+                                    RadiusBottomRight: =nfRadius.Lg
+                                    RadiusTopLeft: =nfRadius.Lg
+                                    RadiusTopRight: =nfRadius.Lg
+                                    Visible: =CountRows(colTskSelected) > 0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblTskBulkCount:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          Color: =nfColor.Primary
+                                          FillPortions: =1
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height - Parent.PaddingTop - Parent.PaddingBottom
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =nfType.Small
+                                          Text: |-
+                                            =Text(CountRows(colTskSelected))
+                                            & If(CountRows(colTskSelected) = 1, " task selected", " tasks selected")
+                                          Wrap: =false
+                                    - btnTskCompleteAll:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="Complete All"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =nfSize.RowSm
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          OnSelect: |-
+                                            =false
+                                            // CALL SITE, NOT BUILT. Completing a task is a status transition, and
+                                            // Flow owns every status transition. See CLAUDE.md, Canvas writes
+                                            // intent, Flow owns truth. Do not patch StatusKey here.
+                                          Size: =nfType.Small
+                                          Text: ="Complete All"
+                                          Visible: =!nfIsMobile
+                                          Width: =132
+                                    - btnTskRerouteAll:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="Reroute All"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          Appearance: =ButtonAppearance.Secondary
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =nfSize.RowSm
+                                          Layout: =ButtonLayout.TextOnly
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          OnSelect: |-
+                                            =false
+                                            // CALL SITE, NOT BUILT. Reroute sets RerouteReturnTo and moves the
+                                            // active assignment, both owned by Flow. Same reasoning as above.
+                                          Size: =nfType.Small
+                                          Text: ="Reroute All"
+                                          Visible: =!nfIsMobile
+                                          Width: =124
+                                    - btnTskClearSel:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="Clear"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          Appearance: =ButtonAppearance.Subtle
+                                          Color: =nfColor.Primary
+                                          FontWeight: =FontWeight.Normal
+                                          Height: =nfSize.RowSm
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          OnSelect: =Clear(colTskSelected)
+                                          Size: =nfType.Small
+                                          Text: ="Clear"
+                                          Width: =72
+                              - galTskTasks:
+                                  Control: Gallery@2.15.0
+                                  Variant: Vertical
+                                  Properties:
+                                    AccessibleLabel: ="Tasks list"
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderColor: =nfColor.Transparent
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: |-
+                                      =Max(
+                                          Self.TemplateHeight + Self.TemplatePadding,
+                                          Self.AllItemsCount * (Self.TemplateHeight + Self.TemplatePadding)
+                                      )
+                                    Items: =If(locTskTab = "completed", colTskCompleted, colTskPending)
+                                    ShowScrollbar: =false
+                                    TabIndex: =0
+                                    TemplatePadding: =nfSpace.Sm
+                                    TemplateSize: |-
+                                      =If(
+                                          IsBlank(locTskExpandedKey),
+                                          2 * nfSize.Row + 3 * nfSpace.Md,
+                                          2 * nfSize.Row + 3 * nfSpace.Md + nfSize.RowLg + nfSpace.Sm
+                                      )
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - conTskCard:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: ManualLayout
+                                        Properties:
+                                          BorderColor: |-
+                                            =If(
+                                                ThisItem.AssignmentKey in colTskSelected.AssignmentKey,
+                                                nfColor.PrimaryBorder,
+                                                nfColor.Border
+                                            )
+                                          BorderThickness: =nfSize.Border
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Surface
+                                          Height: =Parent.TemplateHeight - nfSpace.Xs
+                                          RadiusBottomLeft: =nfRadius.Lg
+                                          RadiusBottomRight: =nfRadius.Lg
+                                          RadiusTopLeft: =nfRadius.Lg
+                                          RadiusTopRight: =nfRadius.Lg
+                                          Width: =Parent.TemplateWidth - nfSpace.Xs
+                                          X: =nfSpace.Xxs
+                                          Y: =nfSpace.Xxs
+                                        Children:
+                                          - conTskSelect:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: ManualLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: |-
+                                                  =If(
+                                                      ThisItem.AssignmentKey in colTskSelected.AssignmentKey,
+                                                      nfColor.Primary,
+                                                      nfColor.Surface
+                                                  )
+                                                Height: =nfSize.IconSm
+                                                RadiusBottomLeft: =nfRadius.Sm
+                                                RadiusBottomRight: =nfRadius.Sm
+                                                RadiusTopLeft: =nfRadius.Sm
+                                                RadiusTopRight: =nfRadius.Sm
+                                                Visible: =locTskTab = "pending"
+                                                Width: =nfSize.IconSm
+                                                X: =nfSpace.Sm
+                                                Y: =nfSpace.Md + nfSpace.Xs
+                                              Children:
+                                                - imgTskSelectTick:
+                                                    Control: Image@2.2.3
+                                                    Properties:
+                                                      AccessibleLabel: ="Select icon"
+                                                      FocusedBorderThickness: =0.5
+                                                      Height: =nfSpace.Md
+                                                      Image: ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>")
+                                                      TabIndex: =0
+                                                      Visible: =ThisItem.AssignmentKey in colTskSelected.AssignmentKey
+                                                      Width: =nfSpace.Md
+                                                      X: =(Parent.Width - Self.Width) / 2
+                                                      Y: =(Parent.Height - Self.Height) / 2
+                                                - btnTskSelect:
+                                                    Control: Classic/Button@2.2.0
+                                                    Properties:
+                                                      BorderColor: =nfColor.BorderStrong
+                                                      BorderThickness: =nfSize.Border
+                                                      Color: =nfColor.Transparent
+                                                      Fill: =nfColor.Transparent
+                                                      FocusedBorderThickness: =0.5
+                                                      Height: =Parent.Height - 2 * nfSize.FocusRing
+                                                      HoverBorderColor: =nfColor.Primary
+                                                      HoverColor: =nfColor.Transparent
+                                                      HoverFill: =nfColor.Transparent
+                                                      OnSelect: |-
+                                                        =If(
+                                                            ThisItem.AssignmentKey in colTskSelected.AssignmentKey,
+                                                            RemoveIf(colTskSelected, AssignmentKey = ThisItem.AssignmentKey),
+                                                            Collect(colTskSelected, { AssignmentKey: ThisItem.AssignmentKey })
+                                                        )
+                                                      PressedBorderColor: =nfColor.Primary
+                                                      PressedColor: =nfColor.Transparent
+                                                      PressedFill: =nfColor.Transparent
+                                                      Text: =""
+                                                      Tooltip: ="Select"
+                                                      Width: =Parent.Width - 2 * nfSize.FocusRing
+                                                      X: =nfSize.FocusRing
+                                                      Y: =nfSize.FocusRing
+                                          - conTskDept:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: ManualLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: |-
+                                                  =Switch(
+                                                      ThisItem.PriorityKey,
+                                                      "High", nfColor.DangerFill,
+                                                      "Medium", nfColor.WarnFill,
+                                                      nfColor.NeutralFill
+                                                  )
+                                                Height: =nfSize.IconTile
+                                                RadiusBottomLeft: =nfRadius.Md
+                                                RadiusBottomRight: =nfRadius.Md
+                                                RadiusTopLeft: =nfRadius.Md
+                                                RadiusTopRight: =nfRadius.Md
+                                                Width: =nfSize.IconTile
+                                                X: =(nfSpace.Sm + nfSize.IconSm + nfSpace.Sm)
+                                                Y: =nfSpace.Md
+                                              Children:
+                                                - lblTskDept:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      Align: =Align.Center
+                                                      Color: |-
+                                                        =Switch(
+                                                            ThisItem.PriorityKey,
+                                                            "High", nfColor.DangerText,
+                                                            "Medium", nfColor.WarnText,
+                                                            nfColor.NeutralText
+                                                        )
+                                                      FontWeight: =FontWeight.Bold
+                                                      Height: =Parent.Height
+                                                      Size: =nfType.Caption
+                                                      Text: =ThisItem.DepartmentCode
+                                                      Width: =Parent.Width
+                                                      Wrap: =false
+                                          - conTskTextBlock:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                Height: |-
+                                                  =lblTskAction.Height
+                                                  + lblTskRequest.Height
+                                                  + lblTskKey.Height
+                                                  + 2 * Self.LayoutGap
+                                                  + Self.PaddingTop
+                                                  + Self.PaddingBottom
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                Width: =(Parent.Width - (nfSpace.Sm + nfSize.IconSm + nfSpace.Sm + nfSize.IconTile + nfSpace.Md) - 200 - nfSize.Icon - (3 * nfSpace.Md))
+                                                X: =(nfSpace.Sm + nfSize.IconSm + nfSpace.Sm + nfSize.IconTile + nfSpace.Md)
+                                                Y: =nfSpace.Md
+                                              Children:
+                                                - lblTskAction:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextStrong
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Body
+                                                      Text: =ThisItem.Goal
+                                                      Wrap: =false
+                                                - lblTskRequest:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextMuted
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Small
+                                                      Text: =ThisItem.RequestTitle
+                                                      Wrap: =false
+                                                - lblTskKey:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextFaint
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Micro
+                                                      Text: =ThisItem.RequestKey
+                                                      Wrap: =false
+                                          - conTskDueBlock:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                Height: |-
+                                                  =lblTskDue.Height
+                                                  + lblTskAssignedBy.Height
+                                                  + Self.LayoutGap
+                                                  + Self.PaddingTop
+                                                  + Self.PaddingBottom
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                Width: =200
+                                                X: =(Parent.Width - 200 - nfSize.Icon - (2 * nfSpace.Md))
+                                                Y: =nfSpace.Md
+                                              Children:
+                                                - lblTskDue:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      Align: =Align.Right
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: |-
+                                                        =If(
+                                                            ThisItem.IsOverdue,
+                                                            nfColor.DangerText,
+                                                            nfColor.TextBody
+                                                        )
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Small
+                                                      Text: =ThisItem.DueLabel
+                                                      Wrap: =false
+                                                - lblTskAssignedBy:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      Align: =Align.Right
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextFaint
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Micro
+                                                      Text: ="Assigned by " & ThisItem.AssigneeName
+                                                      Wrap: =false
+                                          - lblTskGoal:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextBody
+                                                Size: =nfType.Small
+                                                Text: |-
+                                                  ="Goal: " & ThisItem.Goal
+                                                VerticalAlign: =VerticalAlign.Top
+                                                Visible: =ThisItem.AssignmentKey = locTskExpandedKey
+                                                Width: =Parent.Width - 2 * nfSpace.Md
+                                                X: =nfSpace.Md
+                                                Y: =conTskTextBlock.Height + conTskTextBlock.Y
+                                          - conTskExpand:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: ManualLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                Height: =nfSize.Icon
+                                                Width: =nfSize.Icon
+                                                X: =Parent.Width - nfSize.Icon - nfSpace.Md
+                                                Y: =nfSpace.Md
+                                              Children:
+                                                - imgTskExpand:
+                                                    Control: Image@2.2.3
+                                                    Properties:
+                                                      AccessibleLabel: ="Expand icon"
+                                                      FocusedBorderThickness: =0.5
+                                                      Height: =nfSize.IconSm
+                                                      Image: |-
+                                                        =If(
+                                                            ThisItem.AssignmentKey = locTskExpandedKey,
+                                                            "data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#64748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='18 15 12 9 6 15'/></svg>"),
+                                                            "data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#64748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>")
+                                                        )
+                                                      TabIndex: =0
+                                                      Width: =nfSize.IconSm
+                                                      X: =(Parent.Width - Self.Width) / 2
+                                                      Y: =(Parent.Height - Self.Height) / 2
+                                                - btnTskExpand:
+                                                    Control: Classic/Button@2.2.0
+                                                    Properties:
+                                                      BorderColor: =nfColor.Transparent
+                                                      BorderThickness: =0
+                                                      Color: =nfColor.Transparent
+                                                      Fill: =nfColor.Transparent
+                                                      FocusedBorderThickness: =0.5
+                                                      Height: =Parent.Height
+                                                      HoverBorderColor: =nfColor.Transparent
+                                                      HoverColor: =nfColor.Transparent
+                                                      HoverFill: =nfColor.Transparent
+                                                      OnSelect: |-
+                                                        =UpdateContext(
+                                                            {
+                                                                locTskExpandedKey: If(
+                                                                    locTskExpandedKey = ThisItem.AssignmentKey,
+                                                                    "",
+                                                                    ThisItem.AssignmentKey
+                                                                )
+                                                            }
+                                                        )
+                                                      PressedBorderColor: =nfColor.Transparent
+                                                      PressedColor: =nfColor.Transparent
+                                                      PressedFill: =nfColor.Transparent
+                                                      Text: =""
+                                                      Tooltip: ="Expand"
+                                                      Width: =Parent.Width
+                                          - conTskFooter:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: ManualLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.SurfaceAlt
+                                                Height: =nfSize.Row
+                                                RadiusBottomLeft: =nfRadius.Lg
+                                                RadiusBottomRight: =nfRadius.Lg
+                                                RadiusTopLeft: =0
+                                                RadiusTopRight: =0
+                                                Width: =Parent.Width
+                                                Y: =Parent.Height - nfSize.Row
+                                              Children:
+                                                - btnTskComplete:
+                                                    Control: ModernButton@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: ="Complete"
+                                                      FontWeight: =FontWeight.Semibold
+                                                      Height: =nfSize.RowSm
+                                                      OnSelect: |-
+                                                        =UpdateContext(
+                                                            {
+                                                                locTskFinishOpen: true,
+                                                                locTskFinishKey: ThisItem.AssignmentKey
+                                                            }
+                                                        )
+                                                        // OPENS cmpTskFinish, the same component scrDetails uses.
+                                                        // The status transition itself is still owned by Flow: the
+                                                        // dialog collects the outcome and closes. See the call site
+                                                        // note on cmpTskFinish.OnSubmit.
+                                                      Size: =nfType.Small
+                                                      Text: ="Complete"
+                                                      Visible: =locTskTab = "pending"
+                                                      Width: =If(nfIsMobile, 92, 108)
+                                                      X: =nfSpace.Md
+                                                      Y: =(Parent.Height - Self.Height) / 2
+                                                - btnTskReroute:
+                                                    Control: ModernButton@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: ="Reroute"
+                                                      Appearance: =ButtonAppearance.Secondary
+                                                      FontWeight: =FontWeight.Semibold
+                                                      Height: =nfSize.RowSm
+                                                      Layout: =ButtonLayout.TextOnly
+                                                      OnSelect: |-
+                                                        =UpdateContext(
+                                                            {
+                                                                locTskRerouteOpen: true,
+                                                                locTskRerouteKey: ThisItem.AssignmentKey
+                                                            }
+                                                        )
+                                                      Size: =nfType.Small
+                                                      Text: ="Reroute"
+                                                      Visible: =locTskTab = "pending"
+                                                      Width: =If(nfIsMobile, 88, 104)
+                                                      X: =nfSpace.Md + If(nfIsMobile, 92, 108) + nfSpace.Sm
+                                                      Y: =(Parent.Height - Self.Height) / 2
+                                                - btnTskView:
+                                                    Control: ModernButton@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: ="View request"
+                                                      Appearance: =ButtonAppearance.Subtle
+                                                      Color: =nfColor.Primary
+                                                      FontWeight: =FontWeight.Normal
+                                                      Height: =nfSize.RowSm
+                                                      OnSelect: |-
+                                                        =Navigate(
+                                                            scrDetails,
+                                                            ScreenTransition.None,
+                                                            {
+                                                                locRequestKey: ThisItem.RequestKey,
+                                                                locOriginScreen: "scrMyTasks"
+                                                            }
+                                                        )
+                                                      Size: =nfType.Small
+                                                      Text: ="View request"
+                                                      Width: =If(nfIsMobile, 96, 128)
+                                                      X: =Parent.Width - If(nfIsMobile, 96, 128) - nfSpace.Md
+                                                      Y: =(Parent.Height - Self.Height) / 2
+                        - conTskBottomBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Surface
+                              FillPortions: =0
+                              Height: =nfHeights.bottomNav + nfSpace.Lg
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =nfSpace.Sm
+                              PaddingTop: =nfSpace.Sm
+                              Visible: =!nfIsDesktop
+                            Children:
+                              - cmpTskBottomNav:
+                                  Control: CanvasComponent
+                                  ComponentName: cmpBottomNavigation
+                                  Properties:
+                                    ActiveColor: =nfColor.Primary
+                                    ActiveColorHex: =If(nfIsDark, "3B82F6", "2563EB")
+                                    ActiveIndicator: ="bar"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    BadgeColor: =nfColor.DangerSolid
+                                    FillPortions: =1
+                                    InactiveColorHex: =If(nfIsDark, "94A3B8", "64748B")
+                                    Items: |-
+                                      =ForAll(
+                                          nfNavMobile As m,
+                                          {
+                                              Icon: m.Icon,
+                                              Label: m.Label,
+                                              Badge: If(
+                                                  m.ID = 2,
+                                                  nfMyOpenCount,
+                                                  0
+                                              )
+                                          }
+                                      )
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =Set(
+                                          _cmpNavSelID,
+                                          LookUp(nfNavMobile, Idx = cmpTskBottomNav.SelectedItemIndex).ID
+                                      );
+                                      nfRoute(_cmpNavSelID)
+                                    SelectedIndex: =Coalesce(LookUp(nfNavMobile, ID = _cmpNavSelID).Idx, 3)
+                                    ShowLabels: ="always"
+                                    Theme: =nfThemeName
+      - conTskNavHost:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Sidebar
+            Height: =Parent.Height
+            Visible: =nfIsDesktop
+            Width: =cmpTskSidebar.Width
+          Children:
+            - cmpTskSidebar:
+                Control: CanvasComponent
+                ComponentName: cmpSidebar
+                Properties:
+                  AccentColor: =nfColor.Primary
+                  AppLogo: =
+                  AppName: ="DocRouter"
+                  AppNameAccent: =""
+                  Expanded: =true
+                  Height: =Parent.Height
+                  Icons: =nfSidebarIcons
+                  Items: |-
+                    =Table(
+                        { ID: 1,  Title: "Home",         Icon: "Home",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 2,  Title: "My Tasks",     Icon: "CheckSquare",     Letter: "",
+                          Badge: nfMyOpenCount,
+                          BadgeColor: nfColor.DangerSolid, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 3,  Title: "All Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 7,  Title: "My Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: 3, Visible: true },
+                        { ID: 4,  Title: "Reports",      Icon: "Chart",    Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 90, Title: "",             Icon: "",         Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: true,  ParentID: -1, Visible: true },
+                        { ID: 5,  Title: "Settings",     Icon: "Settings", Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 6,  Title: "Help",         Icon: "Help",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true }
+                    )
+                  OnFooterSettings: =
+                  OnHelp: =
+                  OnNavSelect: =nfRoute(cmpTskSidebar.SelectedID)
+                  OnThemeToggle: |-
+                    =Patch(
+                        colUserPrefs,
+                        First(colUserPrefs),
+                        { ThemeName: If(nfIsDark, "Light", "Dark") }
+                    );
+                    ClearCollect(
+                        colUserPrefs,
+                        Filter(colUserPrefs, UserEmail = Lower(nfUserEmail))
+                    )
+                  OnToggle: =
+                  ShowFooterMenu: =true
+                  ShowHeader: =true
+                  ShowSearch: =false
+                  ShowToggle: =true
+                  ShowUser: =true
+                  Theme: =If(nfIsDark, "Light", "Dark")
+                  Width: =If(_cmpNavIsExpanded, 260, 64)
+      - cmpTskFab:
+          Control: CanvasComponent
+          ComponentName: cmpFloatingActionButton
+          Properties:
+            Color: =nfColor.Primary
+            Disabled: =false
+            Height: |-
+              =With(
+                  {
+                      _fabSize: Switch(
+                          Self.Size,
+                          "small", 40,
+                          "regular", 56,
+                          "large", 72,
+                          56
+                      )
+                  },
+                  If(
+                      _fabOpen && CountRows(Self.SpeedDialItems) > 0,
+                      _fabSize + 12 + CountRows(Self.SpeedDialItems) * Self.ItemSize,
+                      _fabSize
+                  )
+              )
+            Icon: ="Plus"
+            IconColor: ="#FFFFFF"
+            ItemSize: =52
+            Label: ="New Request"
+            OnSelect: =Navigate(scrNewRequest, ScreenTransition.None)
+            OnSpeedDialSelect: =false
+            Size: ="regular"
+            SpeedDialItems: |-
+              =FirstN(
+                  Table({ Icon: "Plus", Label: "New Request", Color: nfColor.Primary }),
+                  0
+              )
+            Style: ="standard"
+            Theme: =nfThemeName
+            Visible: =!nfIsDesktop
+            Width: |-
+              =With(
+                  {
+                      _fabSize: Switch(
+                          Self.Size,
+                          "small", 40,
+                          "regular", 56,
+                          "large", 72,
+                          56
+                      ),
+                      _iconSize: Switch(
+                          Self.Size,
+                          "small", 20,
+                          "regular", 24,
+                          "large", 36,
+                          24
+                      ),
+                      _labelPad: Switch(
+                          Self.Size,
+                          "small", 20,
+                          "regular", 28,
+                          "large", 36,
+                          28
+                      ),
+                      _maxLabelChars: If(
+                          CountRows(Self.SpeedDialItems) > 0,
+                          Max(Self.SpeedDialItems, Len(Label)),
+                          0
+                      )
+                  },
+                  If(
+                      _fabOpen && CountRows(Self.SpeedDialItems) > 0,
+                      Min(
+                          Min(_maxLabelChars * 8 + 64, 240) + _labelPad + 20,
+                          App.Width
+                      ),
+                      If(
+                          Self.Style = "extended",
+                          16 + _iconSize + 8 + Min(Len(Self.Label) * 8, 220) + 20,
+                          _fabSize
+                      )
+                  )
+              )
+            X: =Parent.Width - Self.Width - nfSpace.Xl
+            Y: =Parent.Height - Self.Height - (nfSpace.Xxl + nfHeights.bottomNav)
+      - cmpTskReroute:
+          Control: CanvasComponent
+          ComponentName: cmpDetReroute
+          Properties:
+            AssignmentKey: =locTskRerouteKey
+            Height: =Parent.Height
+            OnCancel: |-
+              =UpdateContext(
+                  {
+                      locTskRerouteOpen: false,
+                      locTskRerouteKey: ""
+                  }
+              );
+              Reset(cmpTskReroute)
+              // RESET ON CLOSE. A canvas component has no OnHidden, so both close
+              // paths call Reset and OnReset clears the mode, the chosen person, the
+              // reason and the picker.
+            OnSubmit: |-
+              =UpdateContext(
+                  {
+                      locTskRrBusy: true
+                  }
+              )
+              // CAPTURE AND HAND OFF to tmrTskReroute, mirroring scrDetails. The
+              // outputs are only readable while this event runs, so they are copied
+              // into context variables rather than read from the timer.
+              //
+              // NO TOAST HERE. My Tasks has no toast surface, so the result is
+              // reported with Notify on both paths rather than only on failure.
+            Visible: =locTskRerouteOpen
+            Width: =Parent.Width
+      - cmpTskFinish:
+          Control: CanvasComponent
+          ComponentName: cmpDetFinish
+          Properties:
+            AssignmentKey: =locTskFinishKey
+            Height: =Parent.Height
+            OnCancel: |-
+              =UpdateContext(
+                  {
+                      locTskFinishOpen: false,
+                      locTskFinishKey: ""
+                  }
+              );
+              Reset(cmpTskFinish)
+              // RESET ON CLOSE, same reason as the reroute dialog above. Miss it and
+              // the dialog reopens on the NEXT task still showing this one's outcome
+              // and comment, which is one tap from completing the wrong task the
+              // wrong way.
+            OnSubmit: |-
+              =// Hand off to tmrTskFinish and END THE CHAIN. Canvas does not repaint while
+              // a behaviour formula runs, so calling the flow from here would freeze the
+              // screen and the overlay would never appear.
+              //
+              // Self is the component and is not addressable from the timer, so the
+              // outcome and comment are copied into context on the way past.
+              //
+              // The dialog is NOT closed here. On a failure the timer leaves it open so
+              // the typed comment survives a retry.
+              //
+              // The old note here said this call site was deliberately not built, because
+              // copying btnDetFinishApply would duplicate the advance rules onto a second
+              // screen. That was right, and the flow owns the advance now, so this is one
+              // function call and duplicates nothing.
+              UpdateContext(
+                  {
+                      locTskFinishOutcome: Self.OutcomeKey,
+                      locTskFinishComment: Coalesce(Self.Comment, ""),
+                      locTskFinBusy: true
+                  }
+              )
+            Visible: =locTskFinishOpen
+            Width: =Parent.Width
+      - tmrTskReroute:
+          Control: Timer@2.1.0
+          Properties:
+            Duration: =60
+            Height: =1
+            OnTimerEnd: |-
+              =IfError(
+                  UpdateContext(
+                      {
+                          locTskRrRes:
+                              { ok: false, code: "unreachable", message: "Rerouting would reassign this task and log the change to the audit trail. " & nfGateSuffix, requeststatus: "" }
+                      }
+                  ),
+                  UpdateContext(
+                      {
+                          locTskRrRes:
+                              {
+                                  ok: false,
+                                  code: "unreachable",
+                                  message: "Could not reach the workflow. " & FirstError.Message,
+                                  assignee: ""
+                              }
+                      }
+                  )
+              );
+              If(
+                  !locTskRrRes.ok,
+                  UpdateContext({ locTskRrBusy: false });
+                  Notify(locTskRrRes.message, NotificationType.Warning),
+                  UpdateContext(
+                      {
+                          locTskRerouteOpen: false,
+                          locTskRerouteKey: "",
+                          locTskRrBusy: false
+                      }
+                  );
+                  // Refresh IS REQUIRED. An earlier comment here said the opposite: that the
+                  // galleries read the list directly so they would pick the change up on their
+                  // own. They do read the list, and that is not the same thing.
+                  //
+                  // The FLOW changed the row SERVER SIDE, and Canvas holds a client-side cache of
+                  // 'RequestAssignments' that a server-side write does not invalidate, so formulas
+                  // kept answering from the old snapshot. The symptom was two figures on this
+                  // screen disagreeing after a reroute.
+                  ClearCollect(colTskPending, nfTskPending);
+                  ClearCollect(colTskCompleted, nfTskCompleted);
+                  Reset(cmpTskReroute);
+                  Notify(locTskRrRes.message, NotificationType.Success)
+              )
+              // THE REQUEST KEY IS LOOKED UP, not passed. My Tasks holds an AssignmentKey
+              // and nothing else about the request. AssignmentKey is indexed, so this is a
+              // single-row delegable read.
+              //
+              // NO RELOAD AND NO NAVIGATE. Every gallery and count on this screen reads
+              // nfTskPending or nfTskCompleted, which query the list directly, so they pick
+              // the change up on their own. There is no collection here to refresh.
+            Reset: =!locTskRrBusy
+            Start: =locTskRrBusy
+            Text: =""
+            Visible: =false
+            Width: =1
+            X: =-20
+            Y: =-20
+      - tmrTskFinish:
+          Control: Timer@2.1.0
+          Properties:
+            Duration: =60
+            Height: =1
+            OnTimerEnd: |-
+              =Patch(
+                  colAssignments,
+                  LookUp(colAssignments, AssignmentKey = locTskFinishKey),
+                  {
+                      StatusKey: "Completed",
+                      OutcomeKey: locTskFinishOutcome,
+                      Comments: locTskFinishComment,
+                      CompletedDate: Today(),
+                      ActedByEmail: nfUserEmail
+                  }
+              );
+              Collect(
+                  colAudit,
+                  {
+                      ActionKey: "task",
+                      ActorName: nfUserName,
+                      Detail: LookUp(colAssignments, AssignmentKey = locTskFinishKey).Goal,
+                      EntryStamp: Now(),
+                      Meta: "",
+                      RequestKey: LookUp(colAssignments, AssignmentKey = locTskFinishKey).RequestKey,
+                      Title:
+                          Switch(
+                              locTskFinishOutcome,
+                              "Approve", "Task Completed",
+                              "Reject", "Task Rejected",
+                              "SendBack", "Task Sent Back",
+                              "Task Completed"
+                          )
+                  }
+              );
+              ForAll(
+                  Filter(
+                      colPhases,
+                      RequestKey = LookUp(colAssignments, AssignmentKey = locTskFinishKey).RequestKey
+                  ) As ph,
+                  Patch(
+                      colPhases,
+                      LookUp(colPhases, PhaseKey = ph.PhaseKey),
+                      {
+                          PhaseStatusKey:
+                              If(
+                                  CountRows(
+                                      Filter(
+                                          colAssignments,
+                                          PhaseKey = ph.PhaseKey,
+                                          Required,
+                                          StatusKey <> "Completed"
+                                      )
+                                  ) = 0,
+                                  "Completed",
+                                  ph.PhaseStatusKey
+                              )
+                      }
+                  )
+              );
+              IfError(
+                  UpdateContext(
+                      {
+                          locTskFinRes:
+                              { ok: true, code: "ok", message: "", requeststatus: "" }
+                      }
+                  ),
+                  UpdateContext(
+                      {
+                          locTskFinRes:
+                              {
+                                  ok: false,
+                                  code: "unreachable",
+                                  message: "Could not reach the workflow. " & FirstError.Message,
+                                  requeststatus: ""
+                              }
+                      }
+                  )
+              );
+              If(
+                  locTskFinRes.code = "notactive" || locTskFinRes.code = "unreachable",
+
+                  // Nothing was written. Drop the overlay and leave the dialog open so the
+                  // typed comment survives. Same two codes scrDetails treats this way.
+                  UpdateContext({ locTskFinBusy: false });
+                  Notify(locTskFinRes.message, NotificationType.Warning),
+
+                  // The flow completed the task and may have advanced the phase, which can
+                  // change this user's open work. Refresh before anything re-reads: the write
+                  // was SERVER SIDE and the client-side cache does not notice, so the counts
+                  // would otherwise disagree with the list.
+                  ClearCollect(colTskPending, nfTskPending);
+                  ClearCollect(colTskCompleted, nfTskCompleted);
+                  UpdateContext(
+                      {
+                          locTskFinishOpen: false,
+                          locTskFinishKey: "",
+                          locTskFinBusy: false
+                      }
+                  );
+                  Reset(cmpTskFinish);
+                  Notify(locTskFinRes.message, NotificationType.Success)
+              )
+              // THE REQUEST KEY IS LOOKED UP, not passed, exactly as the reroute timer does
+              // it. My Tasks holds an AssignmentKey and nothing else about the request, and
+              // AssignmentKey is indexed, so this is a single-row delegable read.
+            Reset: =!locTskFinBusy
+            Start: =locTskFinBusy
+            Text: =""
+            Visible: =false
+            Width: =1
+            X: =-20
+            Y: =-20
+      - cmpTskLoading:
+          Control: CanvasComponent
+          ComponentName: cmpLoadingSpinner
+          Properties:
+            Height: =Parent.Height
+            LoadingText: |-
+              =If(
+                  locTskLoading,
+                  "Loading your tasks",
+                  locTskFinBusy,
+                  "Completing your task and refreshing",
+                  "Moving the task"
+              )
+            OverlayOpacity: =0.6
+            ShowBlur: =true
+            Theme: =nfThemeName
+            Visible: =locTskLoading || locTskRrBusy || locTskFinBusy
+            Width: =Parent.Width

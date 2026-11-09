@@ -1,0 +1,945 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrHelp:
+    Properties:
+      Fill: =nfColor.Canvas
+      OnVisible: |-
+        =Set(_cmpNavSelID, 6);
+        UpdateContext({ locHlpFaq: 0 })
+    Children:
+      - conHlpRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Canvas
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            PaddingLeft: =If(nfIsDesktop, conHlpNavHost.Width, 0)
+            Width: =Parent.Width
+          Children:
+            - conHlpMiddle:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                Children:
+                  - conHlpRight:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - conHlpTopBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderStyle: =If(nfIsMobile, BorderStyle.None, BorderStyle.Solid)
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =If(nfIsMobile, nfColor.Transparent, nfColor.Surface)
+                              FillPortions: =0
+                              Height: =nfHeights.topBar
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =If(nfIsMobile, nfSpace.Sm, nfSpace.Md)
+                              LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                              LayoutMaxHeight: =nfHeights.topBar
+                              LayoutMinHeight: =nfHeights.topBar
+                              LayoutMinWidth: =0
+                              PaddingRight: =If(nfIsMobile, nfSpace.Md, nfSpace.Xxl)
+                            Children:
+                              - conHlpTitleGroup:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =2.5
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                  Children:
+                                    - cmpHlpCrumbs:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpBreadcrumbs
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          CharWidths: =nfCharWidths
+                                          Config: |-
+                                            ={
+                                                Theme: If(nfIsDark, "dark", "light"),
+                                                SeparatorIcon: "chevron",
+                                                Gap: 4,
+                                                Size: nfType.ChromeTitle,
+                                                MaxItems: 4,
+                                                ItemsBeforeCollapse: 1,
+                                                ItemsAfterCollapse: 2,
+                                                ActiveLastItem: false,
+                                                BackButton: false
+                                            }
+                                          CurrentColor: =If(nfIsDark, "#F1F5F9", "#1E293B")
+                                          Height: =nfHeights.breadcrumb
+                                          Icons: =nfBreadcrumbIcons
+                                          Items: |-
+                                            =Table(
+                                                { id: "home", label: "Home" },
+                                                { id: "help", label: "Help" }
+                                            )
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          LinkColor: =If(nfIsDark, "#94A3B8", "#64748B")
+                                          OnBack: =
+                                          OnSelect: |-
+                                            =If(
+                                                cmpHlpCrumbs.SelectedItem.id = "home",
+                                                Navigate(scrHome, ScreenTransition.None)
+                                            )
+                                          Width: =Parent.Width
+                              - cmpHlpBell:
+                                  Control: CanvasComponent
+                                  ComponentName: Badge
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BadgeColor: =nfColor.DangerSolid
+                                    BadgeCount: =0
+                                    HasNotifications: =false
+                                    Height: =Self.Size
+                                    HoverText: ="Notifications"
+                                    IconColor: =
+                                    IconSvg: =
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =false
+                                      // INERT ON PURPOSE. Same reason as scrHome: CLAUDE.md
+                                      // open question 2 is unresolved and colAudit is the wrong
+                                      // shape. Do NOT bind this to colAudit.
+                                    Size: =If(nfIsMobile, 32, 35)
+                                    Theme: =nfThemeName
+                                    Width: =Self.Size
+                              - conHlpAvatar:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Primary
+                                    FillPortions: =0
+                                    Height: =nfHeights.avatar
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    RadiusBottomLeft: =nfHeights.avatar / 2
+                                    RadiusBottomRight: =nfHeights.avatar / 2
+                                    RadiusTopLeft: =nfHeights.avatar / 2
+                                    RadiusTopRight: =nfHeights.avatar / 2
+                                    Width: =nfHeights.avatar
+                                  Children:
+                                    - lblHlpInitials:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          Color: =nfColor.TextOnPrimary
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =Parent.Height
+                                          Size: =nfType.Initials
+                                          Text: =nfInitials
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                        - conHlpGutter:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Canvas
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =nfSpace.Lg
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              LayoutOverflowY: =LayoutOverflow.Scroll
+                              PaddingBottom: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingLeft: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingRight: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingTop: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              Width: =Parent.Width
+                            Children:
+                              - conHlpHead:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: |-
+                                      =lblHlpTitle.Height
+                                      + lblHlpSubtitle.Height
+                                      + conHlpSearchRow.Height
+                                      + 2 * Self.LayoutGap
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutGap: =nfSpace.Md
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblHlpTitle:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          AlignInContainer: =AlignInContainer.Center
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextStrong
+                                          FontWeight: =FontWeight.Bold
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =If(nfIsDesktop, nfType.PageTitle, nfType.SectionHead)
+                                          Text: ="Help Center"
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                                    - lblHlpSubtitle:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          AlignInContainer: =AlignInContainer.Center
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextMuted
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =nfType.Body
+                                          Text: ="Find answers and learn how to use DocRouter"
+                                          Width: =Parent.Width
+                                    - conHlpSearchRow:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Center
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Transparent
+                                          FillPortions: =0
+                                          Height: =nfSize.RowLg
+                                          LayoutAlignItems: =LayoutAlignItems.Center
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutGap: =nfSpace.Sm
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Width: =Min(Parent.Width, 560)
+                                        Children:
+                                          - conHlpSearchIcon:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: ManualLayout
+                                              Properties:
+                                                AlignInContainer: =AlignInContainer.Center
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                FillPortions: =0
+                                                Height: =nfSize.IconLg
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Width: =nfSize.IconLg
+                                              Children:
+                                                - imgHlpSearchIcon:
+                                                    Control: Image@2.2.3
+                                                    Properties:
+                                                      AccessibleLabel: ="Search icon"
+                                                      Height: =nfSize.Icon
+                                                      Image: ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><line x1='16.5' y1='16.5' x2='21' y2='21'/></svg>")
+                                                      TabIndex: =0
+                                                      Width: =nfSize.Icon
+                                                      X: =(Parent.Width - Self.Width) / 2
+                                                      Y: =(Parent.Height - Self.Height) / 2
+                                          - txtHlpSearch:
+                                              Control: ModernTextInput@1.1.1
+                                              Properties:
+                                                AccessibleLabel: ="Search help topics"
+                                                AlignInContainer: =AlignInContainer.Center
+                                                Appearance: =Appearance.Outline
+                                                Color: =nfColor.TextStrong
+                                                FillPortions: =1
+                                                Height: =nfSize.RowLg
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Placeholder: ="Search for help..."
+                                                Size: =nfType.Subhead
+                                                Type: =TextInputType.Search
+                              - galHlpGuides:
+                                  Control: Gallery@2.15.0
+                                  Variant: Vertical
+                                  Properties:
+                                    AccessibleLabel: ="Help guides"
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderColor: =nfColor.Transparent
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: |-
+                                      =If(nfIsDesktop, 2, If(nfIsMobile, 6, 3))
+                                      * (Self.TemplateHeight + Self.TemplatePadding)
+                                    Items: |-
+                                      =Table(
+                                          {
+                                              Id: 1,
+                                              Title: "Getting Started",
+                                              Blurb: "Learn the basics"
+                                          },
+                                          {
+                                              Id: 2,
+                                              Title: "Creating Requests",
+                                              Blurb: "How to create new requests"
+                                          },
+                                          {
+                                              Id: 3,
+                                              Title: "Managing Tasks",
+                                              Blurb: "Complete and track tasks"
+                                          },
+                                          {
+                                              Id: 4,
+                                              Title: "Workflow Management",
+                                              Blurb: "Edit and manage workflows"
+                                          },
+                                          {
+                                              Id: 5,
+                                              Title: "Reports",
+                                              Blurb: "Understanding analytics"
+                                          },
+                                          {
+                                              Id: 6,
+                                              Title: "Admin Guide",
+                                              Blurb: "Configuration settings"
+                                          }
+                                      )
+                                    LayoutMinHeight: =0
+                                    ShowScrollbar: =false
+                                    TabIndex: =0
+                                    TemplatePadding: =nfSpace.Md
+                                    TemplateSize: =2 * nfSize.Row + nfSpace.Section
+                                    Transition: =Transition.Pop
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                    WrapCount: =If(nfIsDesktop, 3, If(nfIsMobile, 1, 2))
+                                  Children:
+                                    - conHlpGuideCard:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =nfColor.Border
+                                          BorderThickness: =nfSize.Border
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Surface
+                                          Height: =Parent.TemplateHeight - nfSpace.Xs
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Xs
+                                          PaddingBottom: =nfSpace.Md
+                                          PaddingLeft: =nfSpace.Md
+                                          PaddingRight: =nfSpace.Md
+                                          PaddingTop: =nfSpace.Md
+                                          RadiusBottomLeft: =nfRadius.Lg
+                                          RadiusBottomRight: =nfRadius.Lg
+                                          RadiusTopLeft: =nfRadius.Lg
+                                          RadiusTopRight: =nfRadius.Lg
+                                          Width: =Parent.TemplateWidth - nfSpace.Md
+                                        Children:
+                                          - imgHlpGuideIcon:
+                                              Control: Image@2.2.3
+                                              Properties:
+                                                AccessibleLabel: ="Hlp Guide Icon icon"
+                                                AlignInContainer: =AlignInContainer.Start
+                                                Height: =nfSize.Icon
+                                                Image: |-
+                                                  =Switch(
+                                                      ThisItem.Id,
+                                                      1,
+                                                      "data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M10 8.5l6 3.5-6 3.5z'/></svg>"),
+                                                      2,
+                                                      "data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/></svg>"),
+                                                      3,
+                                                      "data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 4h6v3H9z'/><path d='M15 5h3v15H6V5h3'/><path d='M9 13l2 2 4-4'/></svg>"),
+                                                      4,
+                                                      "data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='6' cy='6' r='2.5'/><circle cx='18' cy='6' r='2.5'/><circle cx='12' cy='18' r='2.5'/><path d='M6 8.5v3a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-3'/><path d='M12 13.5v2'/></svg>"),
+                                                      5,
+                                                      "data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='4' y1='20' x2='20' y2='20'/><rect x='6' y='11' width='3' height='6'/><rect x='11' y='7' width='3' height='10'/><rect x='16' y='13' width='3' height='4'/></svg>"),
+                                                      6,
+                                                      "data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'/><path d='M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1'/></svg>"),
+                                                      ""
+                                                  )
+                                                TabIndex: =0
+                                                Width: =nfSize.Icon
+                                          - lblHlpGuideTitle:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Start
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextStrong
+                                                FontWeight: =FontWeight.Semibold
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingRight: =0
+                                                PaddingTop: =0
+                                                Size: =nfType.Subhead
+                                                Text: =ThisItem.Title
+                                                Width: =Parent.Width - 2 * nfSpace.Md
+                                                Wrap: =false
+                                          - lblHlpGuideBlurb:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Start
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextMuted
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingRight: =0
+                                                PaddingTop: =0
+                                                Size: =nfType.Small
+                                                Text: =ThisItem.Blurb
+                                                Width: =Parent.Width - 2 * nfSpace.Md
+                              - conHlpFaqCard:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderColor: =nfColor.Border
+                                    BorderThickness: =nfSize.Border
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Surface
+                                    FillPortions: =0
+                                    Height: |-
+                                      =lblHlpFaqHeading.Height
+                                      + galHlpFaq.Height
+                                      + Self.LayoutGap
+                                      + Self.PaddingTop
+                                      + Self.PaddingBottom
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutGap: =nfSpace.Md
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =nfSpace.Lg
+                                    PaddingLeft: =nfSpace.Lg
+                                    PaddingRight: =nfSpace.Lg
+                                    PaddingTop: =nfSpace.Lg
+                                    RadiusBottomLeft: =nfRadius.Lg
+                                    RadiusBottomRight: =nfRadius.Lg
+                                    RadiusTopLeft: =nfRadius.Lg
+                                    RadiusTopRight: =nfRadius.Lg
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblHlpFaqHeading:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Start
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextStrong
+                                          FontWeight: =FontWeight.Semibold
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =nfType.SectionHead
+                                          Text: ="Frequently Asked Questions"
+                                          Width: =Parent.Width - 2 * nfSpace.Lg
+                                          Wrap: =false
+                                    - galHlpFaq:
+                                        Control: Gallery@2.15.0
+                                        Variant: VariableHeight
+                                        Properties:
+                                          AccessibleLabel: ="Frequently asked questions"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          BorderColor: =nfColor.Transparent
+                                          Fill: =nfColor.Transparent
+                                          FillPortions: =0
+                                          Height: |-
+                                            =Coalesce(Sum(Self.AllItems, lblHlpFaqRowH.Text), 0)
+                                            + nfSize.RowLg
+                                          Items: |-
+                                            =Filter(
+                                                Table(
+                                                    {
+                                                        Id: 1,
+                                                        Question: "How do I create a new request?",
+                                                        Answer: "Click the New Request button on the dashboard or All Requests page. Fill in the required fields and select a category to start the workflow."
+                                                    },
+                                                    {
+                                                        Id: 2,
+                                                        Question: "How do I reroute a task?" & If(nfIsFullVersion, "", " (Full version)"),
+                                                        Answer: "Open the request details, find the task you want to reroute, and click the Reroute button. Select the new assignee and add a reason." & If(nfIsFullVersion, "", " " & nfGateSuffix)
+                                                    },
+                                                    {
+                                                        Id: 3,
+                                                        Question: "What do the phase indicators mean?",
+                                                        Answer: "Phase indicators show workflow progress. Blue segments are completed, grey are pending. The numbers show current phase versus total phases."
+                                                    },
+                                                    {
+                                                        Id: 4,
+                                                        Question: "How do I suspend a workflow?" & If(nfIsFullVersion, "", " (Full version)"),
+                                                        Answer: "Open the request details and click Suspend Workflow in the actions area. Only Request Admins and POCs can suspend workflows." & If(nfIsFullVersion, "", " " & nfGateSuffix)
+                                                    },
+                                                    {
+                                                        Id: 5,
+                                                        Question: "How do I edit the workflow structure?" & If(nfIsFullVersion, "", " (Full version)"),
+                                                        Answer: "Click Edit Workflow on the details page. You can add or remove phases, add or remove workers, and change the worker order." & If(nfIsFullVersion, "", " " & nfGateSuffix)
+                                                    }
+                                                ),
+                                                IsBlank(Trim(txtHlpSearch.Text))
+                                                    || Trim(txtHlpSearch.Text) in Question
+                                                    || Trim(txtHlpSearch.Text) in Answer
+                                            )
+                                          LayoutMinHeight: =0
+                                          ShowScrollbar: =false
+                                          TabIndex: =0
+                                          TemplatePadding: =nfSpace.Sm
+                                          TemplateSize: =nfSize.RowLg
+                                          Width: =Parent.Width - 2 * nfSpace.Lg
+                                        Children:
+                                          - lblHlpFaqRowH:
+                                              Control: Label@2.5.1
+                                              Properties:
+                                                FocusedBorderThickness: =2
+                                                Height: =nfSize.Border
+                                                TabIndex: =0
+                                                Text: =conHlpFaqRow.Y + conHlpFaqRow.Height + Parent.TemplatePadding
+                                                Visible: =false
+                                                Width: =nfSize.Border
+                                                Wrap: =false
+                                          - conHlpFaqRow:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                BorderColor: |-
+                                                  =If(
+                                                      ThisItem.Id = locHlpFaq,
+                                                      nfColor.PrimaryBorder,
+                                                      nfColor.Border
+                                                  )
+                                                BorderThickness: =nfSize.Border
+                                                DropShadow: =DropShadow.None
+                                                Fill: |-
+                                                  =If(
+                                                      ThisItem.Id = locHlpFaq,
+                                                      nfColor.SurfaceAlt,
+                                                      nfColor.Surface
+                                                  )
+                                                Height: |-
+                                                  =If(
+                                                      ThisItem.Id = locHlpFaq,
+                                                      nfSize.RowLg + lblHlpFaqAnswer.Height + nfSpace.Md,
+                                                      nfSize.RowLg
+                                                  )
+                                                LayoutAlignItems: =LayoutAlignItems.Center
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                RadiusBottomLeft: =nfRadius.Md
+                                                RadiusBottomRight: =nfRadius.Md
+                                                RadiusTopLeft: =nfRadius.Md
+                                                RadiusTopRight: =nfRadius.Md
+                                                Width: =Parent.TemplateWidth
+                                              Children:
+                                                - conHlpFaqHead:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      AlignInContainer: =AlignInContainer.Center
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =nfSize.RowLg
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Width: =Parent.Width
+                                                    Children:
+                                                      - lblHlpFaqQuestion:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            Color: =nfColor.TextStrong
+                                                            FontWeight: =FontWeight.Semibold
+                                                            Height: =nfSize.RowLg
+                                                            PaddingBottom: =0
+                                                            PaddingLeft: =0
+                                                            PaddingRight: =0
+                                                            PaddingTop: =0
+                                                            Size: =nfType.Body
+                                                            Text: =ThisItem.Question
+                                                            Width: =Parent.Width - nfSize.RowLg - nfSpace.Md
+                                                            Wrap: =false
+                                                            X: =nfSpace.Md
+                                                      - imgHlpFaqChevronDown:
+                                                          Control: Image@2.2.3
+                                                          Properties:
+                                                            AccessibleLabel: ="Hlp Faq Chevron Down icon"
+                                                            Height: =nfSize.Icon
+                                                            Image: ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>")
+                                                            TabIndex: =0
+                                                            Visible: =ThisItem.Id <> locHlpFaq
+                                                            Width: =nfSize.Icon
+                                                            X: =Parent.Width - nfSize.RowLg + nfSpace.Sm
+                                                            Y: =(Parent.Height - Self.Height) / 2
+                                                      - imgHlpFaqChevronUp:
+                                                          Control: Image@2.2.3
+                                                          Properties:
+                                                            AccessibleLabel: ="Hlp Faq Chevron Up icon"
+                                                            Height: =nfSize.Icon
+                                                            Image: ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(100,116,139)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M18 15l-6-6-6 6'/></svg>")
+                                                            TabIndex: =0
+                                                            Visible: =ThisItem.Id = locHlpFaq
+                                                            Width: =nfSize.Icon
+                                                            X: =Parent.Width - nfSize.RowLg + nfSpace.Sm
+                                                            Y: =(Parent.Height - Self.Height) / 2
+                                                      - btnHlpFaqToggle:
+                                                          Control: Classic/Button@2.2.0
+                                                          Properties:
+                                                            BorderColor: =nfColor.Transparent
+                                                            BorderThickness: =0
+                                                            Color: =nfColor.Transparent
+                                                            Fill: =nfColor.Transparent
+                                                            FocusedBorderThickness: =nfSize.FocusRing
+                                                            Height: =Parent.Height
+                                                            HoverBorderColor: =nfColor.Transparent
+                                                            HoverColor: =nfColor.Transparent
+                                                            HoverFill: =nfColor.Transparent
+                                                            OnSelect: |-
+                                                              =UpdateContext(
+                                                                  {
+                                                                      locHlpFaq:
+                                                                          If(
+                                                                              locHlpFaq = ThisItem.Id,
+                                                                              0,
+                                                                              ThisItem.Id
+                                                                          )
+                                                                  }
+                                                              )
+                                                            PressedBorderColor: =nfColor.Transparent
+                                                            PressedColor: =nfColor.Transparent
+                                                            PressedFill: =nfColor.Transparent
+                                                            Text: =""
+                                                            Tooltip: =ThisItem.Question
+                                                            Width: =Parent.Width
+                                                - lblHlpFaqAnswer:
+                                                    Control: Label@2.5.1
+                                                    Properties:
+                                                      AlignInContainer: =AlignInContainer.Center
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextBody
+                                                      FocusedBorderThickness: =2
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Micro
+                                                      TabIndex: =0
+                                                      Text: =ThisItem.Answer
+                                                      Visible: =ThisItem.Id = locHlpFaq
+                                                      Width: =Parent.Width - 2 * nfSpace.Md
+                              - conHlpSupport:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderColor: =nfColor.PrimaryBorder
+                                    BorderThickness: =nfSize.Border
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.PrimarySoft
+                                    FillPortions: =0
+                                    Height: |-
+                                      =lblHlpSupportTitle.Height
+                                      + lblHlpSupportBlurb.Height
+                                      + btnHlpSupportEmail.Height
+                                      + 2 * Self.LayoutGap
+                                      + Self.PaddingTop
+                                      + Self.PaddingBottom
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutGap: =nfSpace.Md
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =nfSpace.Section
+                                    PaddingLeft: =nfSpace.Lg
+                                    PaddingRight: =nfSpace.Lg
+                                    PaddingTop: =nfSpace.Section
+                                    RadiusBottomLeft: =nfRadius.Xl
+                                    RadiusBottomRight: =nfRadius.Xl
+                                    RadiusTopLeft: =nfRadius.Xl
+                                    RadiusTopRight: =nfRadius.Xl
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblHlpSupportTitle:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          AlignInContainer: =AlignInContainer.Center
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextStrong
+                                          FontWeight: =FontWeight.Bold
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =nfType.SectionHead
+                                          Text: ="Still need help?"
+                                          Width: =Parent.Width - 2 * nfSpace.Lg
+                                          Wrap: =false
+                                    - lblHlpSupportBlurb:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          AlignInContainer: =AlignInContainer.Center
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextBody
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =nfType.Body
+                                          Text: ="Our support team is here to assist you"
+                                          Width: =Parent.Width - 2 * nfSpace.Lg
+                                    - btnHlpSupportEmail:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="Email support"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          Height: =nfSize.Row
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          OnSelect: =Launch("mailto:support@example.com")
+                                          Size: =nfType.Body
+                                          Text: ="Email Support"
+                                          Width: =200
+                        - conHlpBottomBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Surface
+                              FillPortions: =0
+                              Height: =nfHeights.bottomNav + nfSpace.Lg
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =nfSpace.Sm
+                              PaddingTop: =nfSpace.Sm
+                              Visible: =!nfIsDesktop
+                            Children:
+                              - cmpHlpBottomNav:
+                                  Control: CanvasComponent
+                                  ComponentName: cmpBottomNavigation
+                                  Properties:
+                                    ActiveColor: =nfColor.Primary
+                                    ActiveColorHex: =If(nfIsDark, "3B82F6", "2563EB")
+                                    ActiveIndicator: ="bar"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    BadgeColor: =nfColor.DangerSolid
+                                    FillPortions: =1
+                                    InactiveColorHex: =If(nfIsDark, "94A3B8", "64748B")
+                                    Items: |-
+                                      =ForAll(
+                                          nfNavMobile As m,
+                                          {
+                                              Icon: m.Icon,
+                                              Label: m.Label,
+                                              Badge: If(
+                                                  m.ID = 2,
+                                                  nfMyOpenCount,
+                                                  0
+                                              )
+                                          }
+                                      )
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =Set(
+                                          _cmpNavSelID,
+                                          LookUp(nfNavMobile, Idx = cmpHlpBottomNav.SelectedItemIndex).ID
+                                      );
+                                      nfRoute(_cmpNavSelID)
+                                    SelectedIndex: =Coalesce(LookUp(nfNavMobile, ID = _cmpNavSelID).Idx, 3)
+                                    ShowLabels: ="always"
+                                    Theme: =nfThemeName
+      - conHlpNavHost:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Sidebar
+            Height: =Parent.Height
+            Visible: =nfIsDesktop
+            Width: =cmpHlpSidebar.Width
+          Children:
+            - cmpHlpSidebar:
+                Control: CanvasComponent
+                ComponentName: cmpSidebar
+                Properties:
+                  AccentColor: =nfColor.Primary
+                  AppLogo: =
+                  AppName: ="DocRouter"
+                  AppNameAccent: =""
+                  Expanded: =true
+                  Height: =Parent.Height
+                  Icons: =nfSidebarIcons
+                  Items: |-
+                    =Table(
+                        { ID: 1,  Title: "Home",         Icon: "Home",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 2,  Title: "My Tasks",     Icon: "CheckSquare",     Letter: "",
+                          Badge: nfMyOpenCount,
+                          BadgeColor: nfColor.DangerSolid, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 3,  Title: "All Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 7,  Title: "My Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: 3, Visible: true },
+                        { ID: 4,  Title: "Reports",      Icon: "Chart",    Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 90, Title: "",             Icon: "",         Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: true,  ParentID: -1, Visible: true },
+                        { ID: 5,  Title: "Settings",     Icon: "Settings", Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 6,  Title: "Help",         Icon: "Help",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true }
+                    )
+                  OnFooterSettings: =
+                  OnHelp: =
+                  OnNavSelect: =nfRoute(cmpHlpSidebar.SelectedID)
+                  OnThemeToggle: |-
+                    =Patch(
+                        colUserPrefs,
+                        First(colUserPrefs),
+                        { ThemeName: If(nfIsDark, "Light", "Dark") }
+                    );
+                    ClearCollect(
+                        colUserPrefs,
+                        Filter(colUserPrefs, UserEmail = Lower(nfUserEmail))
+                    )
+                  OnToggle: =
+                  ShowFooterMenu: =true
+                  ShowHeader: =true
+                  ShowSearch: =false
+                  ShowToggle: =true
+                  ShowUser: =true
+                  Theme: =If(nfIsDark, "Light", "Dark")
+                  Width: =If(_cmpNavIsExpanded, 260, 64)
+      - cmpHlpFab:
+          Control: CanvasComponent
+          ComponentName: cmpFloatingActionButton
+          Properties:
+            Color: =nfColor.Primary
+            Disabled: =false
+            Height: |-
+              =With(
+                  {
+                      _fabSize: Switch(
+                          Self.Size,
+                          "small", 40,
+                          "regular", 56,
+                          "large", 72,
+                          56
+                      )
+                  },
+                  If(
+                      _fabOpen && CountRows(Self.SpeedDialItems) > 0,
+                      _fabSize + 12 + CountRows(Self.SpeedDialItems) * Self.ItemSize,
+                      _fabSize
+                  )
+              )
+            Icon: ="Plus"
+            IconColor: ="#FFFFFF"
+            ItemSize: =52
+            Label: ="New Request"
+            OnSelect: =Navigate(scrNewRequest, ScreenTransition.None)
+            OnSpeedDialSelect: =false
+            Size: ="regular"
+            SpeedDialItems: |-
+              =FirstN(
+                  Table({ Icon: "Plus", Label: "New Request", Color: nfColor.Primary }),
+                  0
+              )
+            Style: ="standard"
+            Theme: =nfThemeName
+            Visible: =!nfIsDesktop
+            Width: |-
+              =With(
+                  {
+                      _fabSize: Switch(
+                          Self.Size,
+                          "small", 40,
+                          "regular", 56,
+                          "large", 72,
+                          56
+                      ),
+                      _iconSize: Switch(
+                          Self.Size,
+                          "small", 20,
+                          "regular", 24,
+                          "large", 36,
+                          24
+                      ),
+                      _labelPad: Switch(
+                          Self.Size,
+                          "small", 20,
+                          "regular", 28,
+                          "large", 36,
+                          28
+                      ),
+                      _maxLabelChars: If(
+                          CountRows(Self.SpeedDialItems) > 0,
+                          Max(Self.SpeedDialItems, Len(Label)),
+                          0
+                      )
+                  },
+                  If(
+                      _fabOpen && CountRows(Self.SpeedDialItems) > 0,
+                      Min(
+                          Min(_maxLabelChars * 8 + 64, 240) + _labelPad + 20,
+                          App.Width
+                      ),
+                      If(
+                          Self.Style = "extended",
+                          16 + _iconSize + 8 + Min(Len(Self.Label) * 8, 220) + 20,
+                          _fabSize
+                      )
+                  )
+              )
+            X: =Parent.Width - Self.Width - nfSpace.Xl
+            Y: =Parent.Height - Self.Height - (nfSpace.Xxl + nfHeights.bottomNav)

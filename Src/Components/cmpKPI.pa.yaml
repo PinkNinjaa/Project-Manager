@@ -1,0 +1,981 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpKPI:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      AnimationEffect:
+        PropertyKind: Input
+        DisplayName: Animation Effect
+        Description: 'Gallery transition effect. Valid values: "Pop" (scale in), "Push" (slide), "None" (instant). Default: "None"'
+        DataType: Text
+        Default: ="Pop"
+      ColumnsLayout:
+        PropertyKind: Input
+        DisplayName: Columns Layout
+        Description: 'Column configuration for responsive breakpoints: {Mobile, Tablet, Desktop}'
+        DataType: Record
+        Default: "={\n      Mobile: 1,\n      Tablet: 2,\n      Desktop: 4,\n      MobileBreakpoint:  IfError(Index(App.SizeBreakpoints, 1).Value, 640),\n      TabletBreakpoint:  IfError(Index(App.SizeBreakpoints, 2).Value, 1024),\n      DesktopBreakpoint: IfError(Index(App.SizeBreakpoints, 3).Value, 1366)\n  }\n\n  "
+      Data:
+        PropertyKind: Input
+        DisplayName: Data
+        Description: 'A table. SparklineData: comma-separated numbers e.g. "10,25,18,42". Shown automatically in Standard and Chart modes only.'
+        DataType: Table
+        Default: |-
+          =Table(
+              {
+                  ID: 1,
+                  Icon: "Box",
+                  Value: 1,
+                  Label: "One",
+                  PercentChange: Blank(),
+                  PercentLabel: "",
+                  IconBg: "",
+                  IconColor: "",
+                  SparklineData: "",
+                  isHidden: false
+              }
+          )
+      Icons:
+        PropertyKind: Input
+        DisplayName: Icons
+        Description: SVG icon definitions as a table with Name and SVG columns
+        DataType: Table
+        Default: |-
+          =Table(
+              {
+                  Name: "Box",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/><polyline points='3.29 7 12 12 20.71 7'/><line x1='12' y1='22' x2='12' y2='12'/></svg>"
+              },
+              {
+                  Name: "TrendLines",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='22 12 18 12 15 21 9 3 6 12 2 12'/></svg>"
+              },
+              {
+                  Name: "Package",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/><polyline points='3.29 7 12 12 20.71 7'/><line x1='12' y1='22' x2='12' y2='12'/></svg>"
+              },
+              {
+                  Name: "Warning",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg>"
+              },
+              {
+                  Name: "Dollar",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='12' y1='1' x2='12' y2='23'/><path d='M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'/></svg>"
+              },
+              {
+                  Name: "Quantity",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='8' y1='6' x2='21' y2='6'/><line x1='8' y1='12' x2='21' y2='12'/><line x1='8' y1='18' x2='21' y2='18'/><line x1='3' y1='6' x2='3.01' y2='6'/><line x1='3' y1='12' x2='3.01' y2='12'/><line x1='3' y1='18' x2='3.01' y2='18'/></svg>"
+              },
+              {
+                  Name: "BarChart",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"
+              },
+              {
+                  Name: "Users",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 0 0-3-3.87'/><path d='M16 3.13a4 4 0 0 1 0 7.75'/></svg>"
+              },
+              {
+                  Name: "Clock",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>"
+              },
+              {
+                  Name: "Heart",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>"
+              },
+              {
+                  Name: "HeartFilled",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='#E53E3E' stroke='#E53E3E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>"
+              },
+              {
+                  Name: "Shield",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"
+              },
+              {
+                  Name: "Target",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='6'/><circle cx='12' cy='12' r='2'/></svg>"
+              },
+              {
+                  Name: "Activity",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='23 6 13.5 15.5 8.5 10.5 1 18'/><polyline points='17 6 23 6 23 12'/></svg>"
+              },
+              {
+                  Name: "Percent",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='19' y1='5' x2='5' y2='19'/><circle cx='6.5' cy='6.5' r='2.5'/><circle cx='17.5' cy='17.5' r='2.5'/></svg>"
+              },
+              {
+                  Name: "Calendar",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='4' width='18' height='18' rx='2' ry='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>"
+              },
+              {
+                  Name: "Mail",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z'/><polyline points='22 6 12 13 2 6'/></svg>"
+              },
+              {
+                  Name: "Star",
+                  SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>"
+              }
+          )
+      IsLoading:
+        PropertyKind: Input
+        DisplayName: Is Loading
+        Description: When true renders skeleton placeholder cards instead of data
+        DataType: Boolean
+        Default: =false
+      OnCardClick:
+        PropertyKind: Event
+        DisplayName: On Card Click
+        Description: Fires when a KPI card is clicked
+        ReturnType: None
+        Default: =
+        Parameters:
+          - ClickedItem:
+              Description: The KPI item that was clicked
+              DataType: Record
+              Default: |-
+                ={
+                        ID: 1,
+                        Icon: "Box",
+                        Value: 118,
+                        Label: "All Assets",
+                        PercentChange: 14,
+                        PercentLabel: "vs last month",
+                        IconBg: "#EBF5FF",
+                        IconColor: "#2196F3",
+                        SparklineData: "",
+                        isHidden: false
+                    }
+      Style:
+        PropertyKind: Input
+        DisplayName: Style
+        Description: '"Standard" (value + small sparkline footer), "Compact" (dense, icon right), "Minimal" (dense, no icon), "Filled" (colored bg), "Chart" (sparkline hero, no icon)'
+        DataType: Text
+        Default: ="Standard"
+      StyleConfig:
+        PropertyKind: Input
+        DisplayName: Style Config
+        Description: Styling configuration for colors, spacing, radius, typography, and value formatting
+        DataType: Record
+        Default: |-
+          ={
+                  colors: {
+                      cardBg: ColorValue("#FFFFFF"),
+                      border: ColorValue("#E5E7EB"),
+                      text: ColorValue("#111827"),
+                      textMuted: ColorValue("#6B7280"),
+                      positive: ColorValue("#22C55E"),
+                      negative: ColorValue("#EF4444"),
+                      neutral: ColorValue("#9E9E9E"),
+                      skeletonBase: ColorValue("#E5E7EB"),
+                      skeletonShine: ColorValue("#F3F4F6")
+                  },
+                  space: {
+                      xs: 4,
+                      sm: 8,
+                      md: 12,
+                      lg: 16,
+                      xl: 24
+                  },
+                  radius: {
+                      md: 8,
+                      lg: 12
+                  },
+                  type: {
+                      value: {
+                          size: 32,
+                          sizeCompact: 20
+                      },
+                      label: {
+                          size: 12
+                      },
+                      body: {
+                          size: 12
+                      }
+                  },
+                  heights: {
+                      statsCardMax: 190
+                  },
+                  abbreviateThreshold: 10000
+              }
+    Properties:
+      Height: |-
+        =With(
+            {
+                bp: cmpKPI.ColumnsLayout,
+                w: App.Width,
+                cardCount: CountRows(Filter(cmpKPI.Data, !IfError(isHidden, false)))
+            },
+            With(
+                {
+                    cols: Max(1, If(
+                        w < bp.MobileBreakpoint, bp.Mobile,
+                        w < bp.TabletBreakpoint, bp.Tablet,
+                        bp.Desktop
+                    ))
+                },
+                With(
+                    {
+                        rows: RoundUp(cardCount / cols, 0)
+                    },
+                    If(
+                        Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                        rows * (96 + cmpKPI.StyleConfig.space.md) + cmpKPI.StyleConfig.space.md,
+                        rows * (cmpKPI.StyleConfig.heights.statsCardMax + cmpKPI.StyleConfig.space.lg) + cmpKPI.StyleConfig.space.lg
+                    )
+                )
+            )
+        )
+      Width: =App.Width
+    Children:
+      - cntStatsRow:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =cmpKPI.Height
+            LayoutDirection: '=LayoutDirection.Horizontal '
+            LayoutGap: =cmpKPI.StyleConfig.space.lg
+            LayoutWrap: =true
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Visible: =!cmpKPI.IsLoading
+            Width: =Parent.Width
+          Children:
+            - galKPIs:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Gal KPI"
+                  AlignInContainer: =AlignInContainer.Start
+                  BorderColor: =RGBA(245, 245, 245, 1)
+                  BorderStyle: =BorderStyle.None
+                  FillPortions: =0
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height
+                  ItemAccessibleLabel: ="Gallery KPI"
+                  Items: |-
+                    =Filter(
+                        cmpKPI.Data,
+                        !IfError(isHidden, false)
+                    )
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: |-
+                    =If(
+                        Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                        96 + cmpKPI.StyleConfig.space.md,
+                        cmpKPI.StyleConfig.heights.statsCardMax + cmpKPI.StyleConfig.space.lg
+                    )
+                  Transition: |-
+                    =Switch(
+                            cmpKPI.AnimationEffect,
+                            "Pop", Transition.Pop,
+                            "Push", Transition.Push,
+                            Transition.None
+                        )
+                  Width: =Parent.Width
+                  WrapCount: |-
+                    =With(
+                        {
+                            bp: cmpKPI.ColumnsLayout,
+                            w: App.Width
+                        },
+                        If(
+                            w < bp.MobileBreakpoint,
+                            bp.Mobile,
+                            If(
+                                w < bp.TabletBreakpoint,
+                                bp.Tablet,
+                                bp.Desktop
+                            )
+                        )
+                    )
+                Children:
+                  - conKPICard:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =cmpKPI.StyleConfig.colors.border
+                        BorderThickness: |-
+                          =If(
+                              cmpKPI.Style = "Filled",
+                              0,
+                              1
+                          )
+                        Fill: |-
+                          =If(
+                              cmpKPI.Style = "Filled",
+                              ColorValue(ThisItem.IconBg),
+                              cmpKPI.StyleConfig.colors.cardBg
+                          )
+                        Height: |-
+                          =If(
+                              Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                              88,
+                              cmpKPI.StyleConfig.heights.statsCardMax
+                          )
+                        RadiusBottomLeft: =cmpKPI.StyleConfig.radius.lg
+                        RadiusBottomRight: =cmpKPI.StyleConfig.radius.lg
+                        RadiusTopLeft: =cmpKPI.StyleConfig.radius.lg
+                        RadiusTopRight: =cmpKPI.StyleConfig.radius.lg
+                        Width: =Parent.TemplateWidth - cmpKPI.StyleConfig.space.lg
+                        X: =cmpKPI.StyleConfig.space.lg / 2
+                        Y: |-
+                          =If(
+                              Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                              cmpKPI.StyleConfig.space.md,
+                              cmpKPI.StyleConfig.space.lg
+                          )
+                      Children:
+                        - txtLabel:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Label"
+                              AutoHeight: =true
+                              Color: |-
+                                =If(
+                                    cmpKPI.Style = "Filled",
+                                    ColorValue(ThisItem.IconColor),
+                                    cmpKPI.StyleConfig.colors.textMuted
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              Height: |-
+                                =If(
+                                    Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                                    32,
+                                    20
+                                )
+                              Size: =cmpKPI.StyleConfig.type.label.size
+                              Text: =Upper(ThisItem.Label)
+                              VerticalAlign: =VerticalAlign.Top
+                              Width: |-
+                                =If(
+                                    cmpKPI.Style = "Compact",
+                                    conKPICard.Width - 92,
+                                    If(
+                                        cmpKPI.Style = "Minimal",
+                                        conKPICard.Width - 40,
+                                        If(
+                                            Or(cmpKPI.Style = "Filled", cmpKPI.Style = "Chart"),
+                                            conKPICard.Width - 48,
+                                            conKPICard.Width - 100
+                                        )
+                                    )
+                                )
+                              Wrap: =false
+                              X: |-
+                                =If(
+                                    cmpKPI.Style = "Compact",
+                                    76,
+                                    20
+                                )
+                              Y: |-
+                                =If(
+                                    Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                                    16,
+                                    20
+                                )
+                        - cntValueRow_1:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =Color.Transparent
+                              BorderStyle: =BorderStyle.None
+                              DropShadow: =DropShadow.None
+                              Height: |-
+                                =If(
+                                    Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal", cmpKPI.Style = "Chart"),
+                                    32,
+                                    48
+                                )
+                              LayoutAlignItems: =LayoutAlignItems.End
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =6
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Width: |-
+                                =If(
+                                    cmpKPI.Style = "Compact",
+                                    conKPICard.Width - 92,
+                                    If(
+                                        cmpKPI.Style = "Minimal",
+                                        conKPICard.Width - 40,
+                                        If(
+                                            cmpKPI.Style = "Standard",
+                                            conKPICard.Width - 100,
+                                            conKPICard.Width - 48
+                                        )
+                                    )
+                                )
+                              X: |-
+                                =If(
+                                    cmpKPI.Style = "Compact",
+                                    76,
+                                    20
+                                )
+                              Y: |-
+                                =If(
+                                    Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                                    52,
+                                    If(
+                                        cmpKPI.Style = "Chart",
+                                        46,
+                                        50
+                                    )
+                                )
+                            Children:
+                              - txtValue:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Value"
+                                    AutoHeight: =true
+                                    Color: |-
+                                      =If(
+                                          cmpKPI.Style = "Filled",
+                                          ColorValue(ThisItem.IconColor),
+                                          cmpKPI.StyleConfig.colors.text
+                                      )
+                                    FillPortions: =1
+                                    FontWeight: =FontWeight.Bold
+                                    Height: =Parent.Height
+                                    LayoutMinWidth: =90
+                                    Size: |-
+                                      =If(
+                                          Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal", cmpKPI.Style = "Chart"),
+                                          cmpKPI.StyleConfig.type.value.sizeCompact,
+                                          cmpKPI.StyleConfig.type.value.size
+                                      )
+                                    Text: |-
+                                      =With(
+                                          {
+                                              lbl: Lower(Text(ThisItem.Label)),
+                                              v: ThisItem.Value,
+                                              thresh: cmpKPI.StyleConfig.abbreviateThreshold
+                                          },
+                                          If(
+                                              thresh > 0 And Abs(v) >= 1000000,
+                                              Text(v / 1000000, "#,##0.0") & "M",
+                                              thresh > 0 And Abs(v) >= thresh,
+                                              Text(v / 1000, "#,##0.0") & "K",
+                                              Or("value" in Lower(lbl), "price" in lbl, "cost" in Lower(lbl)),
+                                              Text(v, "[$-en-US]$#,##0.00"),
+                                              Text(v)
+                                          )
+                                      )
+                              - txtPercentInline:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Percent Inline"
+                                    AutoHeight: =true
+                                    Color: |-
+                                      =Switch(
+                                          true,
+                                          IsBlank(ThisItem.PercentChange), Color.Transparent,
+                                          ThisItem.PercentChange > 0, cmpKPI.StyleConfig.colors.positive,
+                                          ThisItem.PercentChange < 0, cmpKPI.StyleConfig.colors.negative,
+                                          cmpKPI.StyleConfig.colors.neutral
+                                      )
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =Parent.Height
+                                    Size: =cmpKPI.StyleConfig.type.body.size
+                                    Text: |-
+                                      =If(
+                                          ThisItem.PercentChange = 0,
+                                          "0%",
+                                          If(
+                                              ThisItem.PercentChange > 0,
+                                              "↑ +" & ThisItem.PercentChange & "%",
+                                              "↓ " & ThisItem.PercentChange & "%"
+                                          )
+                                      )
+                                    Visible: |-
+                                      =And(
+                                          Or(cmpKPI.Style = "Compact",  cmpKPI.Style = "Chart"),
+                                          !IsBlankOrError(ThisItem.PercentChange)
+                                      )
+                                    Width: =70
+                        - imgSparkline_1:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Sparkline icon"
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              FocusedBorderThickness: =0.5
+                              Height: |-
+                                =If(
+                                    cmpKPI.Style = "Chart",
+                                    96,
+                                    36
+                                )
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              Image: |-
+                                =With(
+                                    { raw: Coalesce(ThisItem.SparklineData, "") },
+                                    If(
+                                        raw = "",
+                                        Blank(),
+                                        With(
+                                            {
+                                                nums: ForAll(MatchAll(raw, "-?\d+\.?\d*"), { n: Value(FullMatch) }),
+                                                w: 200,
+                                                h: If(cmpKPI.Style = "Chart", 96, 36),
+                                                clr: If(
+                                                    IsBlank(ThisItem.PercentChange) Or ThisItem.PercentChange = 0, "#9E9E9E",
+                                                    ThisItem.PercentChange > 0, "#22C55E",
+                                                    "#EF4444"
+                                                )
+                                            },
+                                            With(
+                                                {
+                                                    lo: Min(nums, n),
+                                                    hi: Max(nums, n),
+                                                    cnt: CountRows(nums)
+                                                },
+                                                With(
+                                                    { rng: If(hi = lo, 1, hi - lo) },
+                                                    "data:image/svg+xml;utf8," & EncodeUrl(
+                                                        "<svg viewBox='0 0 " & w & " " & h & "' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'>" &
+                                                        "<polygon fill='" & clr & "' fill-opacity='0.12' points='0," & h & " " &
+                                                        Concat(
+                                                            Sequence(cnt),
+                                                            Text(Round((Value - 1) / Max(cnt - 1, 1) * w, 1)) & "," &
+                                                            Text(Round(h - (Index(nums, Value).n - lo) / rng * (h - 4) - 2, 1)),
+                                                            " "
+                                                        ) &
+                                                        " " & w & "," & h & "'/>" &
+                                                        "<polyline fill='none' stroke='" & clr & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' points='" &
+                                                        Concat(
+                                                            Sequence(cnt),
+                                                            Text(Round((Value - 1) / Max(cnt - 1, 1) * w, 1)) & "," &
+                                                            Text(Round(h - (Index(nums, Value).n - lo) / rng * (h - 4) - 2, 1)),
+                                                            " "
+                                                        ) &
+                                                        "'/></svg>"
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              TabIndex: =0
+                              Visible: |-
+                                =And(
+                                    Or(cmpKPI.Style = "Standard", cmpKPI.Style = "Chart"),
+                                    ThisItem.SparklineData <> ""
+                                )
+                              Width: |-
+                                =If(
+                                    cmpKPI.Style = "Chart",
+                                    conKPICard.Width,
+                                    conKPICard.Width - 48
+                                )
+                              X: |-
+                                =If(
+                                    cmpKPI.Style = "Chart",
+                                    0,
+                                    20
+                                )
+                              Y: |-
+                                =If(
+                                    cmpKPI.Style = "Chart",
+                                    conKPICard.Height - 96,
+                                    106
+                                )
+                        - btnNoSparkline:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =cmpKPI.StyleConfig.colors.textMuted
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =cmpKPI.StyleConfig.colors.textMuted
+                              DisabledFill: =Self.Fill
+                              Fill: =ColorValue("#EEEFF1")
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              Height: =96
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =cmpKPI.StyleConfig.colors.textMuted
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =cmpKPI.StyleConfig.colors.textMuted
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Size: =11
+                              Text: ="No trend data"
+                              Visible: =cmpKPI.Style = "Chart" And Not(ThisItem.SparklineData <> "")
+                              Width: =conKPICard.Width
+                              Y: =conKPICard.Height - 96
+                        - cntKPIFooter_1:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =Color.Transparent
+                              BorderStyle: =BorderStyle.None
+                              DropShadow: =DropShadow.None
+                              Height: =24
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =4
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Visible: =Not(Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal", cmpKPI.Style = "Chart"))
+                              Width: =conKPICard.Width - 48
+                              X: =20
+                              Y: =conKPICard.Height - Self.Height - 16
+                            Children:
+                              - txtFooterPercent:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Footer Percent"
+                                    AutoHeight: =true
+                                    Color: |-
+                                      =Switch(
+                                          true,
+                                          IsBlank(ThisItem.PercentChange), Color.Transparent,
+                                          ThisItem.PercentChange > 0, cmpKPI.StyleConfig.colors.positive,
+                                          ThisItem.PercentChange < 0, cmpKPI.StyleConfig.colors.negative,
+                                          cmpKPI.StyleConfig.colors.neutral
+                                      )
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =Parent.Height
+                                    Size: =cmpKPI.StyleConfig.type.body.size
+                                    Text: |-
+                                      =If(
+                                          ThisItem.PercentChange = 0,
+                                          "0%",
+                                          If(
+                                              ThisItem.PercentChange > 0,
+                                              "↑ +" & ThisItem.PercentChange & "%",
+                                              "↓ " & ThisItem.PercentChange & "%"
+                                          )
+                                      )
+                                    Visible: =!IsBlankOrError(ThisItem.PercentChange)
+                                    Width: =70
+                              - txtFooterSub:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Footer Sub"
+                                    AutoHeight: =true
+                                    Color: |-
+                                      =If(
+                                          cmpKPI.Style = "Filled",
+                                          ColorValue(ThisItem.IconColor),
+                                          cmpKPI.StyleConfig.colors.neutral
+                                      )
+                                    FillPortions: =1
+                                    Height: =Parent.Height
+                                    Size: =cmpKPI.StyleConfig.type.body.size
+                                    Text: =ThisItem.PercentLabel
+                                    Visible: =!IsBlankOrError(ThisItem.PercentLabel)
+                                    Wrap: =false
+                        - btnIconBg:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(161, 159, 157, 1)
+                              DisabledFill: =Self.Fill
+                              Fill: =ColorValue(ThisItem.IconBg)
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              Height: =44
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 69, 120, 1)
+                              PressedColor: =RGBA(255, 255, 255, 1)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =22
+                              RadiusBottomRight: =22
+                              RadiusTopLeft: =22
+                              RadiusTopRight: =22
+                              Text: =
+                              Tooltip: ="Icon Bg"
+                              Visible: =Not(Or(cmpKPI.Style = "Filled", cmpKPI.Style = "Minimal", cmpKPI.Style = "Chart"))
+                              Width: =44
+                              X: |-
+                                =If(
+                                    cmpKPI.Style = "Compact",
+                                    16,
+                                    Parent.Width - Self.Width - 20
+                                )
+                              Y: |-
+                                =If(
+                                    cmpKPI.Style = "Compact",
+                                    (Parent.Height - Self.Height) / 2,
+                                    20
+                                )
+                        - imgIconKPI_1:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Open metric icon"
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              FocusedBorderThickness: =0.5
+                              Height: =22
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              Image: |-
+                                ="data:image/svg+xml;utf8," & EncodeUrl(
+                                    Substitute(
+                                        LookUp(
+                                            cmpKPI.Icons,
+                                            Name = ThisItem.Icon,
+                                            SVG
+                                        ),
+                                        "COLOR",
+                                        ThisItem.IconColor
+                                    )
+                                )
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              TabIndex: =0
+                              Visible: =Not(Or(cmpKPI.Style = "Filled", cmpKPI.Style = "Minimal", cmpKPI.Style = "Chart"))
+                              Width: =22
+                              X: =btnIconBg.X + 11
+                              Y: =btnIconBg.Y + 11
+                        - btnCardOverlay:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledColor: =RGBA(161, 159, 157, 1)
+                              DisabledFill: =RGBA(242, 242, 241, 0)
+                              Fill: =Color.Transparent
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              Height: =Parent.Height
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =RGBA(0, 0, 0, 0.03)
+                              OnSelect: =cmpKPI.OnCardClick(ThisItem)
+                              PressedBorderColor: =RGBA(0, 69, 120, 1)
+                              PressedColor: =RGBA(255, 255, 255, 1)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Text: =
+                              Tooltip: ="Open card"
+                              Width: =Parent.Width
+      - cntSkeletonOverlay:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =Color.Transparent
+            Height: =cmpKPI.Height
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Visible: =cmpKPI.IsLoading
+            Width: =Parent.Width
+          Children:
+            - galSkeleton:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Loading"
+                  BorderStyle: =BorderStyle.None
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height
+                  Items: =Sequence(8)
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: |-
+                    =If(
+                        Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                        96 + cmpKPI.StyleConfig.space.md,
+                        cmpKPI.StyleConfig.heights.statsCardMax + cmpKPI.StyleConfig.space.lg
+                    )
+                  Width: =Parent.Width
+                  WrapCount: |-
+                    =With(
+                        {
+                            bp: cmpKPI.ColumnsLayout,
+                            w: App.Width
+                        },
+                        If(
+                            w < bp.MobileBreakpoint,
+                            bp.Mobile,
+                            If(
+                                w < bp.TabletBreakpoint,
+                                bp.Tablet,
+                                bp.Desktop
+                            )
+                        )
+                    )
+                Children:
+                  - conSkeletonCard:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =cmpKPI.StyleConfig.colors.border
+                        BorderThickness: =1
+                        Fill: =cmpKPI.StyleConfig.colors.cardBg
+                        Height: |-
+                          =If(
+                              Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                              88,
+                              cmpKPI.StyleConfig.heights.statsCardMax
+                          )
+                        RadiusBottomLeft: =cmpKPI.StyleConfig.radius.lg
+                        RadiusBottomRight: =cmpKPI.StyleConfig.radius.lg
+                        RadiusTopLeft: =cmpKPI.StyleConfig.radius.lg
+                        RadiusTopRight: =cmpKPI.StyleConfig.radius.lg
+                        Width: =Parent.TemplateWidth - cmpKPI.StyleConfig.space.lg
+                        X: =cmpKPI.StyleConfig.space.lg / 2
+                        Y: |-
+                          =If(
+                              Or(cmpKPI.Style = "Compact", cmpKPI.Style = "Minimal"),
+                              cmpKPI.StyleConfig.space.md,
+                              cmpKPI.StyleConfig.space.lg
+                          )
+                      Children:
+                        - btnSkeletonLabel:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =cmpKPI.StyleConfig.colors.skeletonBase
+                              FocusedBorderThickness: =0.5
+                              Height: =10
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              Text: =
+                              Tooltip: ="Skeleton Label"
+                              Width: =72
+                              X: =20
+                              Y: =22
+                        - btnSkeletonValue:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =cmpKPI.StyleConfig.colors.skeletonBase
+                              FocusedBorderThickness: =0.5
+                              Height: =24
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              Text: =
+                              Tooltip: ="Skeleton Value"
+                              Width: =56
+                              X: =20
+                              Y: =46
+                        - btnSkeletonChart:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =ColorValue("#EEEFF1")
+                              FocusedBorderThickness: =0.5
+                              Height: =96
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Text: =
+                              Tooltip: ="Skeleton Chart"
+                              Visible: =cmpKPI.Style = "Chart"
+                              Width: =conSkeletonCard.Width
+                              Y: =conSkeletonCard.Height - 96
+                        - btnSkeletonFooter:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =cmpKPI.StyleConfig.colors.skeletonShine
+                              FocusedBorderThickness: =0.5
+                              Height: =10
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =4
+                              RadiusBottomRight: =4
+                              RadiusTopLeft: =4
+                              RadiusTopRight: =4
+                              Text: =
+                              Tooltip: ="Skeleton Footer"
+                              Visible: =cmpKPI.Style = "Standard"
+                              Width: =110
+                              X: =20
+                              Y: =conSkeletonCard.Height - 28
+                        - btnSkeletonIcon:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                              DisabledFill: =Self.Fill
+                              Fill: =cmpKPI.StyleConfig.colors.skeletonBase
+                              FocusedBorderThickness: =0.5
+                              Height: =44
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =Self.Fill
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =Self.Fill
+                              RadiusBottomLeft: =22
+                              RadiusBottomRight: =22
+                              RadiusTopLeft: =22
+                              RadiusTopRight: =22
+                              Text: =
+                              Tooltip: ="Skeleton Icon"
+                              Visible: =Not(Or(cmpKPI.Style = "Filled", cmpKPI.Style = "Minimal", cmpKPI.Style = "Chart"))
+                              Width: =44
+                              X: =Parent.Width - 64
+                              Y: =20

@@ -1,0 +1,1095 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpFileUpload:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      AcceptedText:
+        PropertyKind: Input
+        DisplayName: AcceptedText
+        Description: File types named in the hint line under the dropzone. The size limit is appended from MaxFileSize, so do not type it here. Purely cosmetic, the Attachments control does not enforce a type filter.
+        DataType: Text
+        Default: ="PDF, DOC, XLSX, PNG"
+      AllowDelete:
+        PropertyKind: Input
+        DisplayName: AllowDelete
+        Description: PERMISSION. The bin on each existing document row. False leaves a list the user can read, preview, download and add to, but not remove from, which is the usual shape when everyone contributes and only an owner deletes. Independent of AllowUpload; the four combinations of the two are all meaningful.
+        DataType: Boolean
+        Default: =true
+      AllowUpload:
+        PropertyKind: Input
+        DisplayName: AllowUpload
+        Description: PERMISSION AND LAYOUT AT ONCE. The dropzone and the Upload and Cancel buttons. False when the user may not add documents, and equally when uploading lives behind a button elsewhere on the screen and you simply want the zone out of the way. Existing rows keep their view and download icons either way.
+        DataType: Boolean
+        Default: =true
+      Colors:
+        PropertyKind: Input
+        DisplayName: Colors
+        Description: All ten keys are required. A missing key resolves blank and paints nothing with no error. DropBorder and DropFill are the dashed upload zone. RowFill and RowBorder are a document row. Accent is the Download All link.
+        DataType: Record
+        Default: |-
+          ={
+              Surface:    RGBA(255, 255, 255, 1),
+              RowFill:    RGBA(255, 255, 255, 1),
+              RowBorder:  RGBA(229, 231, 235, 1),
+              DropFill:   RGBA(255, 255, 255, 1),
+              DropBorder: RGBA(209, 213, 219, 1),
+              Text:       RGBA(17,  24,  39, 1),
+              Muted:      RGBA(107, 114, 128, 1),
+              Faint:      RGBA(156, 163, 175, 1),
+              Accent:     RGBA(37,  99, 235, 1),
+              Danger:     RGBA(220, 38,  38, 1)
+          }
+      DesiredHeight:
+        PropertyKind: Output
+        DisplayName: DesiredHeight
+        Description: Header plus dropzone plus both lists plus footer for the current flags and row counts. Bind the instance Height to this, or let a parent AutoLayout stretch the instance instead.
+        DataType: Number
+      DocCount:
+        PropertyKind: Output
+        DisplayName: DocCount
+        Description: Row count of Items, the documents that already exist. Does not include staged files.
+        DataType: Number
+      HeaderText:
+        PropertyKind: Input
+        DisplayName: HeaderText
+        Description: Heading above the dropzone. ShowHeader false hides it.
+        DataType: Text
+        Default: ="Documents"
+      Items:
+        PropertyKind: Input
+        DisplayName: Items
+        Description: Documents that ALREADY EXIST. The component does not query anything, so it carries no connector dependency. Schema is Id, Name, SizeBytes, UploadedOn, UploadedBy, Ext. SizeBytes is a number of bytes, not a formatted string, because the footer totals it. Ext drives the coloured type tile and is matched against TypeColors case insensitively.
+        DataType: Table
+        Default: |-
+          =Table(
+              { Id: "1", Name: "Requirements_v2.1.pdf", SizeBytes: 2516582, UploadedOn: DateValue("11/08/2024"), UploadedBy: "Jordan Mitchell", Ext: "pdf" },
+              { Id: "2", Name: "Budget_Breakdown.xlsx",  SizeBytes: 159744,  UploadedOn: DateValue("11/10/2024"), UploadedBy: "Sarah Johnson",  Ext: "xlsx" },
+              { Id: "3", Name: "Technical_Specs.docx",   SizeBytes: 1153434, UploadedOn: DateValue("11/12/2024"), UploadedBy: "Taylor Bennett", Ext: "docx" },
+              { Id: "4", Name: "System_Architecture.png",SizeBytes: 911360,  UploadedOn: DateValue("11/14/2024"), UploadedBy: "Mike Chen",      Ext: "png" }
+          )
+      MaxFileSize:
+        PropertyKind: Input
+        DisplayName: MaxFileSize
+        Description: Megabytes. Shown in the hint line AND passed to the Attachments control's MaxAttachmentSize, so it is genuinely enforced at the point of staging. Decimal MB, meaning 1,000,000 bytes, which is how the control counts. There is a platform ceiling above this near 50MB regardless of what you set. A Flow side check is still worth having, since this one only guards the picker.
+        DataType: Number
+        Default: =25
+      MaxFiles:
+        PropertyKind: Input
+        DisplayName: MaxFiles
+        Description: Cap on STAGED files, enforced in OnAddFile and passed to the Attachments control. Existing documents in Items are not counted against it.
+        DataType: Number
+        Default: =5
+      OnCancel:
+        PropertyKind: Event
+        DisplayName: OnCancel
+        Description: Fires after the staged list is cleared. The clear happens inside the component, so a handler only has to close whatever is hosting it.
+        ReturnType: None
+        Default: =false
+      OnDelete:
+        PropertyKind: Event
+        DisplayName: OnDelete
+        Description: Fires when the bin icon on an EXISTING document is tapped. Read TappedId and TappedName. The component removes nothing, deletion is the caller's to own. This is a natural place to call a Flow, or to show your own confirm dialog first and call it from there.
+        ReturnType: None
+        Default: =false
+      OnDownload:
+        PropertyKind: Event
+        DisplayName: OnDownload
+        Description: Fires when the download icon on an existing document is tapped. Read TappedId and TappedName. Call Download() on a URL you already hold, or run a Flow that returns one.
+        ReturnType: None
+        Default: =false
+      OnDownloadAll:
+        PropertyKind: Event
+        DisplayName: OnDownloadAll
+        Description: Fires when the footer Download All link is tapped. Usually a Flow that zips the library folder and returns a link.
+        ReturnType: None
+        Default: =false
+      OnSave:
+        PropertyKind: Event
+        DisplayName: OnSave
+        Description: Fires when Upload is tapped. Read StagedFiles in the handler and hand it to a Flow. The component does NOT clear the staged list, because the caller has to know the upload succeeded first. Call Reset() on the instance once it has.
+        ReturnType: None
+        Default: =false
+      OnView:
+        PropertyKind: Event
+        DisplayName: OnView
+        Description: Fires when the eye icon on an existing document is tapped. Read TappedId and TappedName.
+        ReturnType: None
+        Default: =false
+      ShowFooter:
+        PropertyKind: Input
+        DisplayName: ShowFooter
+        Description: The count and total size line, and the Download All link.
+        DataType: Boolean
+        Default: =true
+      ShowHeader:
+        PropertyKind: Input
+        DisplayName: ShowHeader
+        Description: The HeaderText line.
+        DataType: Boolean
+        Default: =false
+      ShowRowActions:
+        PropertyKind: Input
+        DisplayName: ShowRowActions
+        Description: The view, download and bin icons on each existing document row.
+        DataType: Boolean
+        Default: =true
+      StagedCount:
+        PropertyKind: Output
+        DisplayName: StagedCount
+        Description: Number of files staged but not yet saved.
+        DataType: Number
+      StagedFiles:
+        PropertyKind: Output
+        DisplayName: StagedFiles
+        Description: The staged attachments, in whatever shape the Attachments control produced. Read this inside OnSave and hand it to a Flow. It is NOT cleared on save, see OnSave.
+        DataType: Table
+      StagedFilesData:
+        PropertyKind: Output
+        DisplayName: StagedFilesData
+        Description: A TABLE of { Name, ContentBytes } with clean base64. POPULATED WHEN UPLOAD IS PRESSED and only meaningful inside the OnSave handler. Use this when your Flow takes a TEXT parameter. Loop it with ForAll for a one-file-per-run Flow, or wrap it in JSON() for a Flow that takes the whole batch at once. If your Flow's trigger has a FILE input instead, send StagedFiles and skip base64 entirely.
+        DataType: Table
+      Style:
+        PropertyKind: Input
+        DisplayName: Style
+        Description: All eleven keys are required. DropHeight is the dashed zone. RowHeight must exceed TileSize. ActionSize is one icon button, three sit at the right of a row. The four Size keys are pixels, this is a React family component.
+        DataType: Record
+        Default: |-
+          ={
+              DropHeight:   168,
+              RowHeight:    72,
+              TileSize:     48,
+              ActionSize:   32,
+              Gap:          12,
+              StackGap:     12,
+              Radius:       8,
+              HeaderSize:   15,
+              NameSize:     14,
+              MetaSize:     12,
+              TileTextSize: 11
+          }
+      TappedId:
+        PropertyKind: Output
+        DisplayName: TappedId
+        Description: Id of the document whose row action was last tapped. Only meaningful inside OnView, OnDownload or OnDelete.
+        DataType: Text
+      TappedName:
+        PropertyKind: Output
+        DisplayName: TappedName
+        Description: Name of the document whose row action was last tapped.
+        DataType: Text
+      TotalBytes:
+        PropertyKind: Output
+        DisplayName: TotalBytes
+        Description: Sum of SizeBytes across Items. Staged files are excluded, because the Attachments control does not expose a reliable size.
+        DataType: Number
+      TotalText:
+        PropertyKind: Output
+        DisplayName: TotalText
+        Description: TotalBytes formatted the same way a row is, KB under a megabyte and MB above.
+        DataType: Text
+      TypeColors:
+        PropertyKind: Input
+        DisplayName: TypeColors
+        Description: Maps a file extension to the colour of its tile. Ext is matched against Items.Ext case insensitively. A row with Ext default is REQUIRED and catches every unmapped extension. Fill is the tile, Text is the three or four letters on it.
+        DataType: Table
+        Default: |-
+          =Table(
+              { Ext: "pdf",  Fill: RGBA(254, 226, 226, 1), Text: RGBA(185, 28,  28,  1) },
+              { Ext: "xlsx", Fill: RGBA(220, 252, 231, 1), Text: RGBA(21,  128, 61,  1) },
+              { Ext: "xls",  Fill: RGBA(220, 252, 231, 1), Text: RGBA(21,  128, 61,  1) },
+              { Ext: "docx", Fill: RGBA(219, 234, 254, 1), Text: RGBA(29,  78,  216, 1) },
+              { Ext: "doc",  Fill: RGBA(219, 234, 254, 1), Text: RGBA(29,  78,  216, 1) },
+              { Ext: "png",  Fill: RGBA(243, 232, 255, 1), Text: RGBA(126, 34,  206, 1) },
+              { Ext: "jpg",  Fill: RGBA(243, 232, 255, 1), Text: RGBA(126, 34,  206, 1) },
+              { Ext: "default", Fill: RGBA(243, 244, 246, 1), Text: RGBA(75, 85, 99, 1) }
+          )
+    Properties:
+      DesiredHeight: |-
+        =If(cmpFileUpload.ShowHeader, RoundUp(Coalesce(cmpFileUpload.Style.HeaderSize, 15) * 1.6, 0) + Coalesce(cmpFileUpload.Style.StackGap, 12), 0)
+        + If(
+            Coalesce(cmpFileUpload.AllowUpload, true),
+            Coalesce(cmpFileUpload.Style.DropHeight, 168) + Coalesce(cmpFileUpload.Style.StackGap, 12),
+            0
+        )
+        + cmpFileUpload.DocCount * Coalesce(cmpFileUpload.Style.RowHeight, 72)
+        + cmpFileUpload.StagedCount * Coalesce(cmpFileUpload.Style.RowHeight, 72)
+        + If(Coalesce(cmpFileUpload.ShowFooter, true), Coalesce(cmpFileUpload.Style.ActionSize, 32) + Coalesce(cmpFileUpload.Style.StackGap, 12), 0)
+        + If(
+            Coalesce(cmpFileUpload.AllowUpload, true),
+            Coalesce(cmpFileUpload.Style.ActionSize, 32) + 8 + Coalesce(cmpFileUpload.Style.StackGap, 12),
+            0
+        )
+      DocCount: =CountRows(cmpFileUpload.Items)
+      Fill: =Coalesce(cmpFileUpload.Colors.Surface, RGBA(255, 255, 255, 1))
+      Height: =700
+      OnReset: |-
+        =Clear(_cmpDocStaged);
+        Clear(colCmpDocPayload);
+        Reset(attDocFiles)
+        // THE SUCCESS PATH FOR A SAVE. OnSave deliberately leaves the staged
+        // list alone, because the caller has to know the upload actually
+        // succeeded before the only copy of those files is thrown away. Once the
+        // Flow comes back clean, the caller calls Reset() on this instance and
+        // this clears both the collection AND the Attachments control.
+        //
+        // Without this the caller had to Clear(_cmpDocStaged) itself, reaching
+        // into a global that belongs to the component, and had no way at all to
+        // reset the Attachments control, which kept showing files that were no
+        // longer staged.
+        //
+        // A component has no lifecycle events, so Reset() is the only hook and
+        // something outside has to call it.
+      StagedCount: =CountRows(_cmpDocStaged)
+      StagedFiles: =_cmpDocStaged
+      StagedFilesData: |-
+        =colCmpDocPayload
+        // BUILT IN btnDocSave.OnSelect, NOT HERE, AND THAT IS FORCED.
+        // JSON with JSONFormat.IncludeBinaryData is legal ONLY in a BEHAVIOR
+        // formula. An output property is declarative, so computing it here fails
+        // outright: "the JSON function cannot serialize binary data in
+        // non-behavioral expression". The work has to happen on a button press
+        // and this output can only read what that press produced.
+        //
+        // CONSEQUENCE FOR CALLERS: it is populated when Upload is pressed and is
+        // only meaningful inside the OnSave handler. Read it at any other time
+        // and you get the previous batch, or nothing.
+      TappedId: =_cmpDocTappedId
+      TappedName: =_cmpDocTappedName
+      TotalBytes: =Sum(cmpFileUpload.Items, SizeBytes)
+      TotalText: |-
+        =If(
+            cmpFileUpload.TotalBytes < 1048576,
+            Text(RoundUp(cmpFileUpload.TotalBytes / 1024, 0)) & " KB",
+            Text(Round(cmpFileUpload.TotalBytes / 1048576, 1)) & " MB"
+        )
+      Width: |-
+        =760
+        // ONE INSTANCE PER SCREEN. AccessAppScope is true because the staged
+        // list and the tapped row live in globals, and the Attachments control
+        // needs app scope. Two instances on one screen therefore share one
+        // staged list. That is fine for a documents tab and wrong for a grid of
+        // upload boxes; if you need the second thing, the staging has to move
+        // out into an input the caller owns.
+        //
+        // MEASURED 2026-08: a pasted INSTANCE of any component does not reliably
+        // keep its Width. It arrives at 600 whatever the property says, while
+        // Height survives. Reproduced Studio to Studio by duplicating a screen,
+        // with no hand authored YAML involved. After adding the instance, set
+        // its Width by hand once. It holds after that.
+    Children:
+      - conDocRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =Coalesce(cmpFileUpload.Style.StackGap, 12)
+            LayoutOverflowY: =LayoutOverflow.Scroll
+            Width: =Parent.Width
+          Children:
+            - lblDocHeader:
+                Control: ModernText@1.0.0
+                Properties:
+                  AccessibleLabel: =Self.Text
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =Coalesce(cmpFileUpload.Colors.Text, RGBA(17, 24, 39, 1))
+                  FontWeight: =FontWeight.Semibold
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =Coalesce(cmpFileUpload.Style.HeaderSize, 15)
+                  Text: =cmpFileUpload.HeaderText
+                  Visible: =cmpFileUpload.ShowHeader
+                  Wrap: =false
+            - conDocDrop:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  BorderColor: |-
+                    =If(
+                        cmpFileUpload.StagedCount >= Coalesce(cmpFileUpload.MaxFiles, 5),
+                        Coalesce(cmpFileUpload.Colors.Faint, RGBA(156, 163, 175, 1)),
+                        Coalesce(cmpFileUpload.Colors.DropBorder, RGBA(209, 213, 219, 1))
+                    )
+                    // THE ZONE GOES FAINT WHEN THE CAP IS REACHED. The Attachments
+                    // control cannot be disabled from here, so the only honest
+                    // signal available is the border and the hint line under it.
+                  BorderStyle: =BorderStyle.Dashed
+                  BorderThickness: =2
+                  DropShadow: =DropShadow.None
+                  Fill: =Coalesce(cmpFileUpload.Colors.DropFill, RGBA(255, 255, 255, 1))
+                  FillPortions: =0
+                  Height: =Coalesce(cmpFileUpload.Style.DropHeight, 168)
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  RadiusBottomLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                  RadiusBottomRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                  RadiusTopLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                  RadiusTopRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                  Visible: =Coalesce(cmpFileUpload.AllowUpload, true)
+                Children:
+                  - imgDocUpload:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Upload documents"
+                        Height: =28
+                        Image: |-
+                          ="data:image/svg+xml;utf8,"
+                          & EncodeUrl(
+                              Substitute(
+                                  "<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='17 8 12 3 7 8'/><line x1='12' y1='3' x2='12' y2='15'/></svg>",
+                                  "SWAPCOLOR",
+                                  "#9CA3AF"
+                              )
+                          )
+                        TabIndex: =0
+                        Width: =28
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: =(Parent.Height - 96) / 2
+                  - lblDocDropTitle:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        Align: =Align.Center
+                        AutoHeight: =true
+                        Color: =Coalesce(cmpFileUpload.Colors.Text, RGBA(17, 24, 39, 1))
+                        FontWeight: =FontWeight.Semibold
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =Coalesce(cmpFileUpload.Style.NameSize, 14)
+                        Text: |-
+                          =If(
+                              cmpFileUpload.StagedCount >= Coalesce(cmpFileUpload.MaxFiles, 5),
+                              "Maximum files staged",
+                              "Drag files here or click to upload"
+                          )
+                        Width: =Parent.Width
+                        Wrap: =false
+                        Y: =imgDocUpload.Y + imgDocUpload.Height + 16
+                  - lblDocDropHint:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        Align: =Align.Center
+                        AutoHeight: =true
+                        Color: =Coalesce(cmpFileUpload.Colors.Faint, RGBA(156, 163, 175, 1))
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =Coalesce(cmpFileUpload.Style.MetaSize, 12)
+                        Text: |-
+                          =cmpFileUpload.AcceptedText
+                          & " up to "
+                          & Coalesce(cmpFileUpload.MaxFileSize, 25)
+                          & "MB"
+                          & "   •   "
+                          & cmpFileUpload.StagedCount
+                          & " of "
+                          & Coalesce(cmpFileUpload.MaxFiles, 5)
+                          & " staged"
+                        Width: =Parent.Width
+                        Wrap: =false
+                        Y: =lblDocDropTitle.Y + lblDocDropTitle.Height + 6
+                  - attDocFiles:
+                      Control: Attachments@2.3.0
+                      Properties:
+                        AccessibleLabel: ="Add files"
+                        AddAttachmentText: =""
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Fill: =RGBA(0, 0, 0, 0)
+                        Height: =Parent.Height
+                        Items: =Blank()
+                        MaxAttachmentSize: |-
+                          =Coalesce(cmpFileUpload.MaxFileSize, 25)
+                          // THIS LINE WAS MISSING AND THAT WAS A REAL BUG. The control
+                          // defaults MaxAttachmentSize to 10, so the hint line
+                          // advertised whatever MaxFileSize said while the control
+                          // rejected anything over 10MB with its own "file too large"
+                          // message. A stated limit that is not the enforced limit is
+                          // worse than no limit shown at all.
+                          //
+                          // MB HERE IS DECIMAL, 1,000,000 bytes, per the control's
+                          // documentation. The row and footer size labels in this
+                          // component divide by 1048576, which is binary MiB. The two
+                          // disagree by about 5 percent. Left alone deliberately: file
+                          // managers show binary, upload limits are quoted decimal, and
+                          // changing either would make one of the two lie.
+                          //
+                          // THERE IS STILL A PLATFORM CEILING ABOVE THIS. Reports put
+                          // it near 50MB, with failures well before that on slow
+                          // connections, so raising MaxFileSize past that will produce
+                          // uploads that fail for reasons this component cannot explain.
+                        MaxAttachments: =Coalesce(cmpFileUpload.MaxFiles, 5)
+                        NoAttachmentsText: =""
+                        OnAddFile: |-
+                          =If(
+                              CountRows(_cmpDocStaged) < Coalesce(cmpFileUpload.MaxFiles, 5),
+                              Collect(_cmpDocStaged, Self.Attachments),
+                              Notify(
+                                  "You can stage " & Coalesce(cmpFileUpload.MaxFiles, 5) & " files at a time. Upload these first.",
+                                  NotificationType.Warning
+                              )
+                          );
+                          Reset(Self)
+                          // PRESERVED VERBATIM FROM THE ORIGINAL, apart from the MaxFiles
+                          // guard and the collection rename. Attachments@2.3.0 is NOT in any
+                          // of the three project reference docs, so its property set is
+                          // unverifiable here. It works in your app, which is better evidence
+                          // than anything I could reason from, so I changed nothing about how
+                          // it is wired: Items Blank(), transparent fill, sized to the parent
+                          // so the whole dashed zone is the hit target.
+                          //
+                          // The guard is new. MaxAttachments alone did not stop the
+                          // collection growing past MaxFiles, because OnAddFile appends
+                          // whatever the control hands over.
+                          //
+                          // THE ELSE BRANCH NOW SAYS SO. Silently discarding a file somebody
+                          // just dropped is the worst version of enforcing a cap: nothing
+                          // appears, nothing explains why, and the natural read is that the
+                          // control is broken.
+                        Width: =Parent.Width
+            - galDocExisting:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Existing documents"
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  DelayItemLoading: =false
+                  FillPortions: =0
+                  Height: |-
+                    =CountRows(cmpFileUpload.Items) * Coalesce(cmpFileUpload.Style.RowHeight, 72)
+                    // WAS Self.AllItemsCount * Self.TemplateHeight, WHICH IS CIRCULAR.
+                    // AllItemsCount is how many rows the gallery has actually loaded, and
+                    // that depends on how tall the gallery is. Setting Height from it asks
+                    // the gallery how tall it should be in order to work out how tall it
+                    // is. Power Apps does not error, it just settles somewhere, and here it
+                    // settled at 4, one pixel per row, so every document rendered inside a
+                    // 4px viewport and nothing was visible.
+                    //
+                    // Counting the SOURCE breaks the cycle: Items is an input, its row
+                    // count does not depend on layout, and RowHeight is the same value
+                    // TemplateSize uses. DesiredHeight already computed 368 correctly from
+                    // exactly this arithmetic, which is what proved the Style record was
+                    // arriving intact and the fault was the self reference.
+                  Items: =cmpFileUpload.Items
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LoadingSpinner: =LoadingSpinner.None
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: =Coalesce(cmpFileUpload.Style.RowHeight, 72)
+                Children:
+                  - conDocRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =Coalesce(cmpFileUpload.Colors.RowBorder, RGBA(229, 231, 235, 1))
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Fill: =Coalesce(cmpFileUpload.Colors.RowFill, RGBA(255, 255, 255, 1))
+                        Height: =Parent.TemplateHeight - 8
+                        RadiusBottomLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                        RadiusBottomRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                        RadiusTopLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                        RadiusTopRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                        Width: =Parent.TemplateWidth
+                        Y: =4
+                      Children:
+                        - conDocTile:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Fill: |-
+                                =Coalesce(
+                                    First(
+                                        Filter(
+                                            cmpFileUpload.TypeColors,
+                                            Lower(Ext) = Lower(Coalesce(ThisItem.Ext, ""))
+                                        )
+                                    ).Fill,
+                                    LookUp(cmpFileUpload.TypeColors, Lower(Ext) = "default").Fill,
+                                    RGBA(243, 244, 246, 1)
+                                )
+                                // THREE FALLBACKS, AND THE LAST ONE IS THE POINT.
+                                // TypeColors is a TABLE input, so like Style and Colors its
+                                // default never reaches a pasted instance and it arrives
+                                // EMPTY. Both lookups then return blank, and a blank colour
+                                // paints BLACK, which is how a tidy row of coloured tiles
+                                // became a row of black squares with black letters on them.
+                                //
+                                // Coalesce walks: the matching extension, then the row whose
+                                // Ext is default, then a literal neutral grey that cannot
+                                // fail. The literal is what makes the component render
+                                // correctly with TypeColors omitted entirely.
+                                //
+                                // This also replaces the old With / CountRows shape. Coalesce
+                                // already stops at the first non blank, so counting rows to
+                                // decide which branch to take was doing by hand what the
+                                // function does.
+                              Height: =Coalesce(cmpFileUpload.Style.TileSize, 48)
+                              RadiusBottomLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                              RadiusBottomRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                              RadiusTopLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                              RadiusTopRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                              Width: =Coalesce(cmpFileUpload.Style.TileSize, 48)
+                              X: =Coalesce(cmpFileUpload.Style.Gap, 12)
+                              Y: =(Parent.Height - Self.Height) / 2
+                            Children:
+                              - lblDocTileText:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: =Self.Text
+                                    Align: =Align.Center
+                                    AutoHeight: =true
+                                    Color: |-
+                                      =Coalesce(
+                                          First(
+                                              Filter(
+                                                  cmpFileUpload.TypeColors,
+                                                  Lower(Ext) = Lower(Coalesce(ThisItem.Ext, ""))
+                                              )
+                                          ).Text,
+                                          LookUp(cmpFileUpload.TypeColors, Lower(Ext) = "default").Text,
+                                          RGBA(75, 85, 99, 1)
+                                      )
+                                    FontWeight: =FontWeight.Bold
+                                    PaddingBottom: =0
+                                    PaddingTop: =0
+                                    Size: =Coalesce(cmpFileUpload.Style.TileTextSize, 11)
+                                    Text: =Upper(Left(Coalesce(ThisItem.Ext, "?"), 4))
+                                    Width: =Parent.Width
+                                    Wrap: =false
+                                    Y: =(Parent.Height - Self.Height) / 2
+                        - lblDocName:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =Coalesce(cmpFileUpload.Colors.Text, RGBA(17, 24, 39, 1))
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =0
+                              PaddingTop: =0
+                              Size: =Coalesce(cmpFileUpload.Style.NameSize, 14)
+                              Text: =ThisItem.Name
+                              Width: |-
+                                =Parent.Width
+                                - Coalesce(cmpFileUpload.Style.TileSize, 48)
+                                - 2 * Coalesce(cmpFileUpload.Style.Gap, 12)
+                                - If(Coalesce(cmpFileUpload.ShowRowActions, true), 3 * Coalesce(cmpFileUpload.Style.ActionSize, 32) + 4 * 8, 8)
+                              Wrap: =false
+                              X: =Coalesce(cmpFileUpload.Style.TileSize, 48) + 2 * Coalesce(cmpFileUpload.Style.Gap, 12)
+                              Y: |-
+                                =(Parent.Height - Self.Height - lblDocMeta.Height) / 2
+                                // THE ORIGINAL READ Coalesce("File name", ThisItem.Name),
+                                // WHICH ALWAYS RETURNED "File name". Coalesce takes the first
+                                // non blank argument and a literal is never blank, so
+                                // ThisItem.Name was unreachable. lblFileSize had the same
+                                // inversion with "Ready". Both are now the real value.
+                        - lblDocMeta:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =Coalesce(cmpFileUpload.Colors.Muted, RGBA(107, 114, 128, 1))
+                              PaddingBottom: =0
+                              PaddingTop: =0
+                              Size: =Coalesce(cmpFileUpload.Style.MetaSize, 12)
+                              Text: |-
+                                =If(
+                                    ThisItem.SizeBytes < 1048576,
+                                    Text(RoundUp(ThisItem.SizeBytes / 1024, 0)) & " KB",
+                                    Text(Round(ThisItem.SizeBytes / 1048576, 1)) & " MB"
+                                )
+                                & "   •   "
+                                & nfDay(ThisItem.UploadedOn)
+                                & "   •   "
+                                & ThisItem.UploadedBy
+                              Width: =lblDocName.Width
+                              Wrap: =false
+                              X: =lblDocName.X
+                              Y: =lblDocName.Y + lblDocName.Height
+                        - conDocView:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                              Visible: =Coalesce(cmpFileUpload.ShowRowActions, true)
+                              Width: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                              X: =Parent.Width - 3 * Coalesce(cmpFileUpload.Style.ActionSize, 32) - 3 * 8
+                              Y: =(Parent.Height - Self.Height) / 2
+                            Children:
+                              - imgDocView:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="Doc View icon"
+                                    Height: =18
+                                    Image: |-
+                                      ="data:image/svg+xml;utf8,"
+                                      & EncodeUrl(
+                                          Substitute(
+                                              "<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3'/></svg>",
+                                              "SWAPCOLOR",
+                                              "#9CA3AF"
+                                          )
+                                      )
+                                    TabIndex: =0
+                                    Width: =18
+                                    X: =(Parent.Width - Self.Width) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
+                              - btnDocView:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    BorderThickness: =0
+                                    Color: =RGBA(0, 0, 0, 0)
+                                    Fill: =RGBA(0, 0, 0, 0)
+                                    FocusedBorderThickness: =0.5
+                                    Height: =Parent.Height
+                                    HoverBorderColor: =RGBA(0, 0, 0, 0)
+                                    HoverColor: =RGBA(0, 0, 0, 0)
+                                    HoverFill: =RGBA(0, 0, 0, 0.05)
+                                    OnSelect: |-
+                                      =Set(_cmpDocTappedId, ThisItem.Id);
+                                      Set(_cmpDocTappedName, ThisItem.Name);
+                                      cmpFileUpload.OnView()
+                                    PressedBorderColor: =RGBA(0, 0, 0, 0)
+                                    PressedColor: =RGBA(0, 0, 0, 0)
+                                    PressedFill: =RGBA(0, 0, 0, 0.1)
+                                    RadiusBottomLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusBottomRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusTopLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusTopRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    Text: =""
+                                    Tooltip: ="Preview " & ThisItem.Name
+                                    Width: =Parent.Width
+                        - conDocDownload:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                              Visible: =Coalesce(cmpFileUpload.ShowRowActions, true)
+                              Width: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                              X: =Parent.Width - 2 * Coalesce(cmpFileUpload.Style.ActionSize, 32) - 2 * 8
+                              Y: =(Parent.Height - Self.Height) / 2
+                            Children:
+                              - imgDocDownload:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="Doc Download icon"
+                                    Height: =18
+                                    Image: |-
+                                      ="data:image/svg+xml;utf8,"
+                                      & EncodeUrl(
+                                          Substitute(
+                                              "<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7 10 12 15 17 10'/><line x1='12' y1='15' x2='12' y2='3'/></svg>",
+                                              "SWAPCOLOR",
+                                              "#9CA3AF"
+                                          )
+                                      )
+                                    TabIndex: =0
+                                    Width: =18
+                                    X: =(Parent.Width - Self.Width) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
+                              - btnDocDownload:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    BorderThickness: =0
+                                    Color: =RGBA(0, 0, 0, 0)
+                                    Fill: =RGBA(0, 0, 0, 0)
+                                    FocusedBorderThickness: =0.5
+                                    Height: =Parent.Height
+                                    HoverBorderColor: =RGBA(0, 0, 0, 0)
+                                    HoverColor: =RGBA(0, 0, 0, 0)
+                                    HoverFill: =RGBA(0, 0, 0, 0.05)
+                                    OnSelect: |-
+                                      =Set(_cmpDocTappedId, ThisItem.Id);
+                                      Set(_cmpDocTappedName, ThisItem.Name);
+                                      cmpFileUpload.OnDownload()
+                                    PressedBorderColor: =RGBA(0, 0, 0, 0)
+                                    PressedColor: =RGBA(0, 0, 0, 0)
+                                    PressedFill: =RGBA(0, 0, 0, 0.1)
+                                    RadiusBottomLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusBottomRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusTopLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusTopRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    Text: =""
+                                    Tooltip: ="Download " & ThisItem.Name
+                                    Width: =Parent.Width
+                        - conDocDelete:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                              Visible: |-
+                                =Coalesce(cmpFileUpload.ShowRowActions, true)
+                                && Coalesce(cmpFileUpload.AllowDelete, true)
+                                // TWO INDEPENDENT PERMISSIONS, NOT ONE MODE. An earlier
+                                // version collapsed uploading and deleting into a single
+                                // three valued Mode on the reasoning that the fourth
+                                // combination was meaningless. It is not: upload yes,
+                                // delete no is the most common arrangement there is, where
+                                // everyone contributes and only an owner removes. Two
+                                // booleans express all four states, get their own toggles
+                                // in the properties pane, and read like the rule they
+                                // encode: AllowDelete: =gblIsAdmin.
+                                //
+                                // ShowRowActions is the LAYOUT switch for the icon
+                                // cluster; AllowDelete is the PERMISSION for the bin
+                                // inside it. Hiding the icons to save space and forbidding
+                                // deletion are different decisions.
+                              Width: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                              X: =Parent.Width - Coalesce(cmpFileUpload.Style.ActionSize, 32) - 8
+                              Y: =(Parent.Height - Self.Height) / 2
+                            Children:
+                              - imgDocDelete:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="Delete icon"
+                                    Height: =18
+                                    Image: |-
+                                      ="data:image/svg+xml;utf8,"
+                                      & EncodeUrl(
+                                          Substitute(
+                                              "<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><polyline points='3 6 5 6 21 6'/><path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'/></svg>",
+                                              "SWAPCOLOR",
+                                              "#9CA3AF"
+                                          )
+                                      )
+                                    TabIndex: =0
+                                    Width: =18
+                                    X: =(Parent.Width - Self.Width) / 2
+                                    Y: =(Parent.Height - Self.Height) / 2
+                              - btnDocDelete:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    BorderThickness: =0
+                                    Color: =RGBA(0, 0, 0, 0)
+                                    Fill: =RGBA(0, 0, 0, 0)
+                                    FocusedBorderThickness: =0.5
+                                    Height: =Parent.Height
+                                    HoverBorderColor: =RGBA(0, 0, 0, 0)
+                                    HoverColor: =RGBA(0, 0, 0, 0)
+                                    HoverFill: =RGBA(220, 38, 38, 0.08)
+                                    OnSelect: |-
+                                      =Set(_cmpDocTappedId, ThisItem.Id);
+                                      Set(_cmpDocTappedName, ThisItem.Name);
+                                      cmpFileUpload.OnDelete()
+                                      // FIRES AN EVENT, DELETES NOTHING. The original removed the
+                                      // row from the collection on the spot. A document already in
+                                      // the library is not the component's to delete, and in
+                                      // DocRouter that write belongs to Flow.
+                                    PressedBorderColor: =RGBA(0, 0, 0, 0)
+                                    PressedColor: =RGBA(0, 0, 0, 0)
+                                    PressedFill: =RGBA(220, 38, 38, 0.15)
+                                    RadiusBottomLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusBottomRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusTopLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    RadiusTopRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                                    Text: =""
+                                    Tooltip: ="Delete " & ThisItem.Name
+                                    Width: =Parent.Width
+            - galDocStaged:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Files staged for upload"
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  DelayItemLoading: =false
+                  FillPortions: =0
+                  Height: |-
+                    =CountRows(_cmpDocStaged) * Coalesce(cmpFileUpload.Style.RowHeight, 72)
+                    // Same circular reference as the gallery above, same fix.
+                  Items: =_cmpDocStaged
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LoadingSpinner: =LoadingSpinner.None
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: =Coalesce(cmpFileUpload.Style.RowHeight, 72)
+                  Visible: =cmpFileUpload.StagedCount > 0
+                Children:
+                  - imgDocStagedBlob:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Doc Staged Blob icon"
+                        Height: =1
+                        Image: |-
+                          =ThisItem.Value
+                          // A DIRECT CHILD OF THE GALLERY TEMPLATE, NOT TUCKED INSIDE
+                          // THE ROW CONTAINER, AND THAT IS NOT A STYLE CHOICE.
+                          // Gallery.AllItems exposes only the template's DIRECT children
+                          // as columns. Nest this one level deeper and
+                          // galDocStaged.AllItems As r has no r.imgDocStagedBlob at all:
+                          // "Name isn't valid" followed by "the . operator cannot be used
+                          // on Error values". Measured 2026-08.
+                          //
+                          // ONE PER STAGED ROW, AND IT HAS TO RENDER. This is the only
+                          // bridge from the Attachments control's blob link to actual
+                          // base64, and a control that never renders never loads its blob,
+                          // so it cannot be Visible false. It is 1x1 in the corner
+                          // instead, and TabIndex -1 because nobody should ever reach it.
+                        TabIndex: =0
+                        Width: =1
+                  - conDocStagedRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =Coalesce(cmpFileUpload.Colors.Accent, RGBA(37, 99, 235, 1))
+                        BorderStyle: =BorderStyle.Dashed
+                        BorderThickness: =1
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.TemplateHeight - 8
+                        RadiusBottomLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                        RadiusBottomRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                        RadiusTopLeft: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                        RadiusTopRight: =Coalesce(cmpFileUpload.Style.Radius, 8)
+                        Width: =Parent.TemplateWidth
+                        Y: =4
+                      Children:
+                        - lblDocStagedName:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =Coalesce(cmpFileUpload.Colors.Text, RGBA(17, 24, 39, 1))
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =0
+                              PaddingTop: =0
+                              Size: =Coalesce(cmpFileUpload.Style.NameSize, 14)
+                              Text: =ThisItem.Name
+                              Width: =Parent.Width - 2 * Coalesce(cmpFileUpload.Style.Gap, 12) - Coalesce(cmpFileUpload.Style.ActionSize, 32) - 8
+                              Wrap: =false
+                              X: =Coalesce(cmpFileUpload.Style.Gap, 12)
+                              Y: =(Parent.Height - Self.Height - lblDocStagedMeta.Height) / 2
+                        - lblDocStagedMeta:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =Coalesce(cmpFileUpload.Colors.Accent, RGBA(37, 99, 235, 1))
+                              PaddingBottom: =0
+                              PaddingTop: =0
+                              Size: =Coalesce(cmpFileUpload.Style.MetaSize, 12)
+                              Text: ="Staged, not uploaded yet"
+                              Width: =lblDocStagedName.Width
+                              Wrap: =false
+                              X: =lblDocStagedName.X
+                              Y: =lblDocStagedName.Y + lblDocStagedName.Height
+                        - btnDocStagedRemove:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              Color: =Coalesce(cmpFileUpload.Colors.Danger, RGBA(220, 38, 38, 1))
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =0.5
+                              Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =Coalesce(cmpFileUpload.Colors.Danger, RGBA(220, 38, 38, 1))
+                              HoverFill: =RGBA(220, 38, 38, 0.08)
+                              OnSelect: |-
+                                =Remove(_cmpDocStaged, ThisItem)
+                                // A STAGED FILE IS THE COMPONENT'S TO REMOVE, because it
+                                // exists only in _cmpDocStaged and has never been written
+                                // anywhere. That is why this one removes directly and the row
+                                // bin above only raises an event.
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =Coalesce(cmpFileUpload.Colors.Danger, RGBA(220, 38, 38, 1))
+                              PressedFill: =RGBA(220, 38, 38, 0.15)
+                              Size: =Coalesce(cmpFileUpload.Style.MetaSize, 12)
+                              Text: ="X"
+                              Tooltip: ="Remove " & ThisItem.Name & " from the staged list"
+                              Width: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                              X: =Parent.Width - Coalesce(cmpFileUpload.Style.ActionSize, 32) - 8
+                              Y: =(Parent.Height - Self.Height) / 2
+            - conDocFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =Coalesce(cmpFileUpload.Colors.RowBorder, RGBA(229, 231, 235, 1))
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =Coalesce(cmpFileUpload.Style.Gap, 12)
+                  LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =Coalesce(cmpFileUpload.ShowFooter, true)
+                Children:
+                  - lblDocTotals:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Center
+                        AutoHeight: =true
+                        Color: =Coalesce(cmpFileUpload.Colors.Muted, RGBA(107, 114, 128, 1))
+                        FillPortions: =1
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =Coalesce(cmpFileUpload.Style.MetaSize, 12)
+                        Text: |-
+                          =cmpFileUpload.DocCount
+                          & If(cmpFileUpload.DocCount = 1, " document", " documents")
+                          & "   •   "
+                          & cmpFileUpload.TotalText
+                          & " total"
+                          & If(
+                              cmpFileUpload.StagedCount > 0,
+                              "   •   " & cmpFileUpload.StagedCount & " staged",
+                              ""
+                          )
+                        Wrap: =false
+                  - btnDocDownloadAll:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Download all documents"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Subtle
+                        Color: =Coalesce(cmpFileUpload.Colors.Accent, RGBA(37, 99, 235, 1))
+                        FontWeight: =FontWeight.Semibold
+                        Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32)
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =cmpFileUpload.OnDownloadAll()
+                        Size: =Coalesce(cmpFileUpload.Style.MetaSize, 12)
+                        Text: ="Download All"
+                        Visible: =cmpFileUpload.DocCount > 0
+                        Width: =124
+            - conDocActions:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32) + 8
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =Coalesce(cmpFileUpload.Style.Gap, 12)
+                  LayoutJustifyContent: =LayoutJustifyContent.End
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =Coalesce(cmpFileUpload.AllowUpload, true)
+                Children:
+                  - btnDocCancel:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Discard staged files"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Secondary
+                        DisplayMode: |-
+                          =If(
+                              cmpFileUpload.StagedCount = 0,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                          // DISABLED WITH NOTHING STAGED, matching Upload. Cancel used to
+                          // stay live and fire OnCancel on an empty list, which on a host
+                          // that closes a panel in that handler meant the panel shut for
+                          // no reason.
+                        FontWeight: =FontWeight.Semibold
+                        Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32) + 8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Clear(_cmpDocStaged);
+                          Reset(attDocFiles);
+                          cmpFileUpload.OnCancel()
+                        Size: =Coalesce(cmpFileUpload.Style.MetaSize, 12)
+                        Text: ="Cancel"
+                        Tooltip: ="Remove every staged file without uploading"
+                        Width: =104
+                  - btnDocSave:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Upload staged files"
+                        AlignInContainer: =AlignInContainer.Center
+                        DisplayMode: |-
+                          =If(
+                              cmpFileUpload.StagedCount = 0,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        FontWeight: =FontWeight.Semibold
+                        Height: =Coalesce(cmpFileUpload.Style.ActionSize, 32) + 8
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =ClearCollect(
+                              colCmpDocPayload,
+                              ForAll(
+                                  galDocStaged.AllItems As r,
+                                  {
+                                      Name: r.Name,
+                                      ContentBytes: With(
+                                          { j: JSON(r.imgDocStagedBlob.Image, JSONFormat.IncludeBinaryData) },
+                                          Mid(j, Find(",", j) + 1, Len(j) - Find(",", j) - 1)
+                                      )
+                                  }
+                              )
+                          );
+                          cmpFileUpload.OnSave()
+                          // THE BASE64 PAYLOAD IS BUILT HERE BECAUSE IT CANNOT BE BUILT
+                          // ANYWHERE ELSE. JSON with IncludeBinaryData is legal only in a
+                          // behavior formula; in an output property it fails with "the
+                          // JSON function cannot serialize binary data in non-behavioral
+                          // expression". A button press IS a behavior formula, so this is
+                          // the one place the work can happen.
+                          //
+                          // ClearCollect RATHER THAN Set, because ClearCollect is
+                          // synchronous and Set is not. A payload assembled with Set can
+                          // still be empty by the time the Flow call reads it.
+                          //
+                          // THE ATTACHMENTS CONTROL DOES NOT GIVE YOU FILE BYTES. Its
+                          // Value is an appres://blobmanager/... link, an internal
+                          // temporary identifier Power Automate cannot resolve: the Flow
+                          // either errors or writes a zero byte file, and nothing says
+                          // why. Handing that link to an IMAGE control and reading
+                          // JSON(img.Image, IncludeBinaryData) is the only route to the
+                          // content. imgDocStagedBlob in the staged row template is that
+                          // control, one per file.
+                          //
+                          // Mid FROM THE FIRST COMMA STRIPS TWO THINGS AT ONCE: the
+                          // data:...;base64, prefix in front, and the closing quote JSON
+                          // put on the end. Len - Find - 1 drops that last character.
+                          // Miss it and every file lands corrupt.
+                          //
+                          // SKIP ALL OF THIS IF YOUR FLOW TRIGGER TAKES A FILE INPUT.
+                          // Send StagedFiles instead and Power Apps resolves the blob
+                          // natively. This path exists for a Text parameter.
+                          //
+                          // DOES NOT CLEAR THE STAGED LIST. The caller has to know the upload
+                          // actually succeeded before the only copy of those files is thrown
+                          // away. Call Reset() on the instance in the OnSave handler, after
+                          // the Flow comes back clean; the component's OnReset clears both
+                          // the collection and the Attachments control.
+                        Size: =Coalesce(cmpFileUpload.Style.MetaSize, 12)
+                        Text: |-
+                          ="Upload "
+                          & cmpFileUpload.StagedCount
+                          & If(cmpFileUpload.StagedCount = 1, " file", " files")
+                        Tooltip: ="Hand the staged files to your OnSave handler"
+                        Width: =148

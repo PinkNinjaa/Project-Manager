@@ -1,0 +1,366 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpStepper:
+    DefinitionType: CanvasComponent
+    Description: Progress stepper with bar and circle modes. Labels, connectors, sizes, themes, and jump-to-step navigation built in.
+    AccessAppScope: true
+    CustomProperties:
+      AccentColor:
+        PropertyKind: Input
+        DisplayName: AccentColor
+        Description: Active and complete highlight color
+        DataType: Color
+        Default: =RGBA(37, 99, 235, 1)
+      CheckIcon:
+        PropertyKind: Input
+        DisplayName: CheckIcon
+        Description: Optional SVG data URI to replace the default checkmark. Use currentColor as stroke/fill token.
+        DataType: Text
+        Default: =Blank()
+      ClickableSteps:
+        PropertyKind: Input
+        DisplayName: ClickableSteps
+        Description: Completed allows tapping done steps only. None disables all tapping. All allows jumping to any step.
+        DataType: Text
+        Default: ="Completed"
+      CurrentStep:
+        PropertyKind: Input
+        DisplayName: CurrentStep
+        Description: Active step index (1-based)
+        DataType: Number
+        Default: =1
+      Density:
+        PropertyKind: Input
+        DisplayName: Density
+        Description: Full shows circles with labels and connectors. Compact hides labels. Minimal hides labels and connectors. Only applies when Type is Step.
+        DataType: Text
+        Default: ="Full"
+      OnStepSelect:
+        PropertyKind: Event
+        DisplayName: OnStepSelect
+        Description: Fires when a step circle is tapped. Read SelectedStep inside handler.
+        ReturnType: None
+        Default: =false
+      SelectedStep:
+        PropertyKind: Output
+        DisplayName: SelectedStep
+        Description: Step index last tapped by the user
+        DataType: Number
+      Size:
+        PropertyKind: Input
+        DisplayName: Size
+        Description: Small, Medium, or Large. Scales circle size, bar height, and component height.
+        DataType: Text
+        Default: ="Medium"
+      StepLabels:
+        PropertyKind: Input
+        DisplayName: StepLabels
+        Description: Table of {Label} rows, one per step. Count drives TotalSteps automatically.
+        DataType: Table
+        Default: |-
+          =Table(
+              {Label: "Job Info"},
+              {Label: "Labor"},
+              {Label: "Materials"},
+              {Label: "Notes"},
+              {Label: "Photos"},
+              {Label: "Review"}
+          )
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: Light or Dark. Controls connector, future circle, and label colors.
+        DataType: Text
+        Default: ="Light"
+      Type:
+        PropertyKind: Input
+        DisplayName: Type
+        Description: Bar for thin progress bars, Step for numbered circles with labels
+        DataType: Text
+        Default: ="Step"
+    Properties:
+      Height: |-
+        =If(
+            cmpStepper.Type = "Bar",
+            Switch(cmpStepper.Size, "Small", 4, "Medium", 6, "Large", 8, 6),
+            If(
+                cmpStepper.Density = "Full",
+                Switch(cmpStepper.Size, "Small", 60, "Medium", 72, "Large", 86, 72),
+                Switch(cmpStepper.Size, "Small", 26, "Medium", 32, "Large", 40, 32)
+            )
+        )
+      SelectedStep: =If(IsBlank(_stepSel), 0, _stepSel)
+      Width: =400
+    Children:
+      - galSimple:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            AccessibleLabel: ="Simple"
+            BorderColor: =RGBA(0, 0, 0, 0)
+            Height: =Parent.Height
+            Items: =Sequence(CountRows(cmpStepper.StepLabels))
+            ShowScrollbar: =false
+            TabIndex: =0
+            TemplatePadding: =0
+            TemplateSize: =Parent.Width / Max(CountRows(cmpStepper.StepLabels), 1)
+            Visible: =cmpStepper.Type = "Bar"
+            Width: =Parent.Width
+          Children:
+            - cntSimpleBar:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(
+                        ThisItem.Value <= cmpStepper.CurrentStep,
+                        cmpStepper.AccentColor,
+                        If(cmpStepper.Theme = "Dark", RGBA(55, 65, 81, 1), RGBA(229, 231, 235, 1))
+                    )
+                  Height: =Parent.TemplateHeight
+                  RadiusBottomLeft: =100
+                  RadiusBottomRight: =100
+                  RadiusTopLeft: =100
+                  RadiusTopRight: =100
+                  Width: =Parent.TemplateWidth - 6
+                  X: =3
+                Children:
+                  - btnStepSelect_1:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderStyle: =BorderStyle.None
+                        BorderThickness: =0
+                        Color: =RGBA(0, 0, 0, 0)
+                        DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                        DisabledFill: =RGBA(0, 0, 0, 0)
+                        DisplayMode: |-
+                          =Switch(
+                              cmpStepper.ClickableSteps,
+                              "None", DisplayMode.Disabled,
+                              "All", If(
+                                  ThisItem.Value = cmpStepper.CurrentStep,
+                                  DisplayMode.Disabled,
+                                  DisplayMode.Edit
+                              ),
+                              If(
+                                  ThisItem.Value < cmpStepper.CurrentStep,
+                                  DisplayMode.Edit,
+                                  DisplayMode.Disabled
+                              )
+                          )
+                        Fill: =RGBA(0, 0, 0, 0)
+                        FocusedBorderThickness: =2
+                        Height: =Parent.Height
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(0, 0, 0, 0)
+                        HoverFill: =RGBA(0, 0, 0, 0.05)
+                        OnSelect: |-
+                          =Set(_stepSel, ThisItem.Value);
+                          cmpStepper.OnStepSelect()
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(0, 0, 0, 0)
+                        PressedFill: =RGBA(0, 0, 0, 0.08)
+                        RadiusBottomLeft: =100
+                        RadiusBottomRight: =100
+                        RadiusTopLeft: =100
+                        RadiusTopRight: =100
+                        Text: =""
+                        Tooltip: ="Select"
+                        Width: =Parent.Width
+      - galFull:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            AccessibleLabel: ="Full"
+            BorderColor: =RGBA(0, 0, 0, 0)
+            Height: =Parent.Height
+            Items: =Sequence(CountRows(cmpStepper.StepLabels))
+            ShowScrollbar: =false
+            TabIndex: =0
+            TemplatePadding: =0
+            TemplateSize: =Parent.Width / Max(CountRows(cmpStepper.StepLabels), 1)
+            Visible: =cmpStepper.Type = "Step"
+            Width: =Parent.Width
+          Children:
+            - rctLineLeft:
+                Control: Rectangle@2.3.0
+                Properties:
+                  AccessibleLabel: ="Line Left divider"
+                  Fill: |-
+                    =If(
+                        ThisItem.Value <= cmpStepper.CurrentStep,
+                        cmpStepper.AccentColor,
+                        If(cmpStepper.Theme = "Dark", RGBA(55, 65, 81, 1), RGBA(229, 231, 235, 1))
+                    )
+                  Height: =2
+                  TabIndex: =0
+                  Visible: =ThisItem.Value > 1 && cmpStepper.Density <> "Minimal"
+                  Width: =Parent.TemplateWidth / 2 - Switch(cmpStepper.Size, "Small", 12, "Medium", 15, "Large", 18, 15)
+                  Y: =Switch(cmpStepper.Size, "Small", If(cmpStepper.Density="Full",19,11), "Medium", If(cmpStepper.Density="Full",24,15), "Large", If(cmpStepper.Density="Full",30,19), If(cmpStepper.Density="Full",24,15))
+            - rctLineRight:
+                Control: Rectangle@2.3.0
+                Properties:
+                  AccessibleLabel: ="Line Right divider"
+                  Fill: |-
+                    =If(
+                        ThisItem.Value < cmpStepper.CurrentStep,
+                        cmpStepper.AccentColor,
+                        If(cmpStepper.Theme = "Dark", RGBA(55, 65, 81, 1), RGBA(229, 231, 235, 1))
+                    )
+                  Height: =2
+                  TabIndex: =0
+                  Visible: =ThisItem.Value < CountRows(cmpStepper.StepLabels) && cmpStepper.Density <> "Minimal"
+                  Width: =Parent.TemplateWidth / 2 - Switch(cmpStepper.Size, "Small", 12, "Medium", 15, "Large", 18, 15)
+                  X: =Parent.TemplateWidth / 2 + Switch(cmpStepper.Size, "Small", 12, "Medium", 15, "Large", 18, 15)
+                  Y: =Switch(cmpStepper.Size, "Small", If(cmpStepper.Density="Full",19,11), "Medium", If(cmpStepper.Density="Full",24,15), "Large", If(cmpStepper.Density="Full",30,19), If(cmpStepper.Density="Full",24,15))
+            - cntCircle:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  BorderColor: |-
+                    =If(
+                        ThisItem.Value <= cmpStepper.CurrentStep,
+                        cmpStepper.AccentColor,
+                        If(cmpStepper.Theme = "Dark", RGBA(75, 85, 99, 1), RGBA(209, 213, 219, 1))
+                    )
+                  BorderThickness: =2
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(
+                        ThisItem.Value < cmpStepper.CurrentStep,
+                        cmpStepper.AccentColor,
+                        RGBA(0, 0, 0, 0)
+                    )
+                  Height: =Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28)
+                  RadiusBottomLeft: =100
+                  RadiusBottomRight: =100
+                  RadiusTopLeft: =100
+                  RadiusTopRight: =100
+                  Width: =Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28)
+                  X: =(Parent.TemplateWidth - Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28)) / 2
+                  Y: =Switch(cmpStepper.Size, "Small", If(cmpStepper.Density="Full",9,2), "Medium", If(cmpStepper.Density="Full",11,2), "Large", If(cmpStepper.Density="Full",14,3), If(cmpStepper.Density="Full",11,2))
+                Children:
+                  - lblCircle:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        Color: |-
+                          =If(
+                              ThisItem.Value < cmpStepper.CurrentStep,
+                              RGBA(255, 255, 255, 1),
+                              If(
+                                  ThisItem.Value = cmpStepper.CurrentStep,
+                                  cmpStepper.AccentColor,
+                                  If(cmpStepper.Theme = "Dark", RGBA(107, 114, 128, 1), RGBA(156, 163, 175, 1))
+                              )
+                          )
+                        FocusedBorderThickness: =2
+                        FontWeight: =FontWeight.Bold
+                        Height: =Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28)
+                        Size: =Switch(cmpStepper.Size, "Small", 9, "Medium", 11, "Large", 13, 11)
+                        TabIndex: =0
+                        Text: |-
+                          =If(
+                              ThisItem.Value < cmpStepper.CurrentStep && IsBlank(cmpStepper.CheckIcon),
+                              "✓",
+                              If(ThisItem.Value < cmpStepper.CurrentStep, "", Text(ThisItem.Value))
+                          )
+                        Width: =Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28)
+                  - imgCheck:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Check icon"
+                        Height: =Switch(cmpStepper.Size, "Small", 12, "Medium", 16, "Large", 20, 16)
+                        Image: =Substitute(cmpStepper.CheckIcon, "currentColor", "%23ffffff")
+                        TabIndex: =0
+                        Visible: =ThisItem.Value < cmpStepper.CurrentStep && !IsBlank(cmpStepper.CheckIcon)
+                        Width: =Switch(cmpStepper.Size, "Small", 12, "Medium", 16, "Large", 20, 16)
+                        X: =(Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28) - Switch(cmpStepper.Size, "Small", 12, "Medium", 16, "Large", 20, 16)) / 2
+                        Y: =(Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28) - Switch(cmpStepper.Size, "Small", 12, "Medium", 16, "Large", 20, 16)) / 2
+            - lblStep:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  Color: |-
+                    =If(
+                        ThisItem.Value = cmpStepper.CurrentStep,
+                        cmpStepper.AccentColor,
+                        If(
+                            ThisItem.Value < cmpStepper.CurrentStep,
+                            If(cmpStepper.Theme = "Dark", RGBA(156, 163, 175, 1), RGBA(107, 114, 128, 1)),
+                            If(cmpStepper.Theme = "Dark", RGBA(107, 114, 128, 1), RGBA(156, 163, 175, 1))
+                        )
+                    )
+                  FocusedBorderThickness: =2
+                  FontWeight: |-
+                    =If(
+                        ThisItem.Value = cmpStepper.CurrentStep,
+                        FontWeight.Semibold,
+                        FontWeight.Normal
+                    )
+                  Height: =Switch(cmpStepper.Size, "Small", 16, "Medium", 18, "Large", 20, 18)
+                  Size: =Switch(cmpStepper.Size, "Small", 8, "Medium", 9, "Large", 10, 9)
+                  TabIndex: =0
+                  Text: |-
+                    =If(
+                        CountRows(cmpStepper.StepLabels) >= ThisItem.Value,
+                        Index(cmpStepper.StepLabels, ThisItem.Value).Label,
+                        ""
+                    )
+                  Visible: =cmpStepper.Density = "Full"
+                  Width: =Parent.TemplateWidth
+                  Y: =Switch(cmpStepper.Size, "Small", 35, "Medium", 43, "Large", 52, 43)
+            - btnStepSelect:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  BorderStyle: =BorderStyle.None
+                  BorderThickness: =0
+                  Color: =RGBA(0, 0, 0, 0)
+                  DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                  DisabledFill: =RGBA(0, 0, 0, 0)
+                  DisplayMode: |-
+                    =Switch(
+                        cmpStepper.ClickableSteps,
+                        "None", DisplayMode.Disabled,
+                        "All", If(
+                            ThisItem.Value = cmpStepper.CurrentStep,
+                            DisplayMode.Disabled,
+                            DisplayMode.Edit
+                        ),
+                        If(
+                            ThisItem.Value < cmpStepper.CurrentStep,
+                            DisplayMode.Edit,
+                            DisplayMode.Disabled
+                        )
+                    )
+                  Fill: =RGBA(0, 0, 0, 0)
+                  FocusedBorderThickness: =2
+                  Height: =Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28)
+                  HoverBorderColor: =RGBA(0, 0, 0, 0)
+                  HoverColor: =RGBA(0, 0, 0, 0)
+                  HoverFill: =RGBA(0, 0, 0, 0.05)
+                  OnSelect: |-
+                    =Set(_stepSel, ThisItem.Value);
+                    cmpStepper.OnStepSelect()
+                  PressedBorderColor: =RGBA(0, 0, 0, 0)
+                  PressedColor: =RGBA(0, 0, 0, 0)
+                  PressedFill: =RGBA(0, 0, 0, 0.08)
+                  RadiusBottomLeft: =100
+                  RadiusBottomRight: =100
+                  RadiusTopLeft: =100
+                  RadiusTopRight: =100
+                  Text: =""
+                  Tooltip: ="Select"
+                  Width: =Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28)
+                  X: =(Parent.TemplateWidth - Switch(cmpStepper.Size, "Small", 22, "Medium", 28, "Large", 34, 28)) / 2
+                  Y: =Switch(cmpStepper.Size, "Small", If(cmpStepper.Density="Full",9,2), "Medium", If(cmpStepper.Density="Full",11,2), "Large", If(cmpStepper.Density="Full",14,3), If(cmpStepper.Density="Full",11,2))

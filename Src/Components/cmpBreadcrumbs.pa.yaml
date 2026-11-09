@@ -1,0 +1,663 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpBreadcrumbs:
+    DefinitionType: CanvasComponent
+    CustomProperties:
+      CharWidths:
+        PropertyKind: Input
+        DisplayName: CharWidths
+        DataType: Table
+        Default: |-
+          =Table(
+              {CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:" ",Size:0.369},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"!",Size:0.408},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"""",Size:0.585},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"#",Size:0.788},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"$",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"%",Size:1.123},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"&",Size:0.954},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"'",Size:0.346},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"(",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:")",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"*",Size:0.581},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"+",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:",",Size:0.323},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"-",Size:0.538},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:".",Size:0.323},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"/",Size:0.554},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"0",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"1",Size:0.538},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"2",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"3",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"4",Size:0.769},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"5",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"6",Size:0.746},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"7",Size:0.715},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"8",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"9",Size:0.746},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:":",Size:0.323},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:";",Size:0.323},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"<",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"=",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:">",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"?",Size:0.592},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"@",Size:1.273},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"A",Size:0.892},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"B",Size:0.808},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"C",Size:0.792},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"D",Size:0.958},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"E",Size:0.692},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"F",Size:0.673},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"G",Size:0.931},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"H",Size:0.981},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"I",Size:0.392},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"J",Size:0.492},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"K",Size:0.815},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"L",Size:0.654},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"M",Size:1.235},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"N",Size:1.023},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"O",Size:1.008},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"P",Size:0.781},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"Q",Size:1.008},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"R",Size:0.831},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"S",Size:0.727},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"T",Size:0.762},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"U",Size:0.938},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"V",Size:0.858},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"W",Size:1.288},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"X",Size:0.823},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"Y",Size:0.773},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"Z",Size:0.785},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"[",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"]",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"^",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"_",Size:0.55},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"\`",Size:0.388},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"a",Size:0.696},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"b",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"c",Size:0.627},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"d",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"e",Size:0.712},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"f",Size:0.462},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"g",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"h",Size:0.777},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"i",Size:0.35},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"j",Size:0.369},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"k",Size:0.7},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"l",Size:0.35},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"m",Size:1.181},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"n",Size:0.781},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"o",Size:0.796},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"p",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"q",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"r",Size:0.496},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"s",Size:0.573},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"t",Size:0.485},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"u",Size:0.781},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"v",Size:0.677},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"w",Size:1.012},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"x",Size:0.669},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"y",Size:0.681},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"z",Size:0.619},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"{",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"|",Size:0.369},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"}",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"~",Size:0.927}
+          )
+      Config:
+        PropertyKind: Input
+        DisplayName: Config
+        DataType: Record
+        Default: ={Theme:"light",SeparatorIcon:"chevron",Gap:4,Size:12,MaxItems:4,ItemsBeforeCollapse:1,ItemsAfterCollapse:2,ActiveLastItem:false,BackButton:false}
+      CurrentColor:
+        PropertyKind: Input
+        DisplayName: CurrentColor
+        DataType: Text
+        Default: ="#111827"
+      Icons:
+        PropertyKind: Input
+        DisplayName: Icons
+        DataType: Record
+        Default: ={Home:"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z' clip-rule='evenodd'/></svg>",Chevron:"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd'/></svg>",Slash:"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'><path stroke='currentColor' stroke-width='1.5' stroke-linecap='round' d='M7 16L13 4'/></svg>",Dot:"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><circle cx='10' cy='10' r='2'/></svg>",Back:"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z' clip-rule='evenodd'/></svg>",ChevronDown:"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd'/></svg>"}
+      Items:
+        PropertyKind: Input
+        DisplayName: Items
+        DataType: Table
+        Default: |-
+          =Table(
+              {id: "1", label: "Home", icon: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z' clip-rule='evenodd'/></svg>"},
+              {id: "2", label: "Assets", icon: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path d='M1 1.75A.75.75 0 0 1 1.75 1h1.628a1.75 1.75 0 0 1 1.734 1.51L5.18 3H17.25a.75.75 0 0 1 .735.9l-1.6 8A.75.75 0 0 1 15.65 12.5H5.831l.102.512a.25.25 0 0 0 .248.213H15.25a.75.75 0 0 1 0 1.5H6.181a1.75 1.75 0 0 1-1.714-1.406L3.07 4.878a.25.25 0 0 0-.247-.213H1.75A.75.75 0 0 1 1 3.915V1.75ZM6 17.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0ZM15.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z'/></svg>", appendIcon: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd'/></svg>"},
+              {id: "3", label: "IT Equipment", icon: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 0 1.1 1.677A.75.75 0 0 1 13.26 18H6.74a.75.75 0 0 1-.484-1.323A3.501 3.501 0 0 0 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Zm1.5 0a.75.75 0 0 1 .75-.75h11.5a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-.75.75H4.25a.75.75 0 0 1-.75-.75v-7.5Z' clip-rule='evenodd'/></svg>", appendIcon: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path fill-rule='evenodd' d='M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd'/></svg>"},
+              {id: "4", label: "MacBook Pro #A-1042", icon: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'><path d='M16 4H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1Zm-1 8H5V6h10v6ZM2 15.5a.5.5 0 0 1 .5-.5h15a.5.5 0 0 1 0 1h-15a.5.5 0 0 1-.5-.5Z'/></svg>"},
+              {id: "5", label: "Checkout History"}
+          )
+      LinkColor:
+        PropertyKind: Input
+        DisplayName: LinkColor
+        DataType: Text
+        Default: ="#64748B"
+      OnBack:
+        PropertyKind: Event
+        DisplayName: OnBack
+        ReturnType: None
+        Default: =
+      OnSelect:
+        PropertyKind: Event
+        DisplayName: OnSelect
+        ReturnType: None
+        Default: =
+      SelectedItem:
+        PropertyKind: Output
+        DisplayName: SelectedItem
+        DataType: Record
+    Properties:
+      Fill: |
+        =If(cmpBreadcrumbs.Config.Theme = "dark", RGBA(15, 23, 42, 1), Color.Transparent)
+      Height: =40
+      SelectedItem: =_bcSelected
+      Width: =800
+    Children:
+      - cntBreadcrumbsWrapper:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutGap: =3
+            LayoutOverflowX: =LayoutOverflow.Scroll
+            PaddingLeft: =8
+            PaddingRight: =8
+            Width: =Parent.Width
+          Children:
+            - cntItem1:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =cmpBreadcrumbs.Config.Size + 12
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  Visible: =CountRows(cmpBreadcrumbs.Items)>=1
+                  Width: =cntContent1_1.Width
+                Children:
+                  - cntContent1_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =3
+                        PaddingLeft: =4
+                        PaddingRight: =4
+                        Width: =If(imgIcon1.Visible,imgIcon1.Width+3,0)+lblText1.Width+If(imgAppend1.Visible,3+imgAppend1.Width,0)+Self.PaddingLeft+Self.PaddingRight
+                      Children:
+                        - imgIcon1:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Icon 1 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =With({_ico:If(cmpBreadcrumbs.Config.BackButton,cmpBreadcrumbs.Icons.Back,Index(cmpBreadcrumbs.Items,1).icon)},If(IsBlank(_ico),"",If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(cmpBreadcrumbs.Config.BackButton || 1<CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>")))))
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =cmpBreadcrumbs.Config.BackButton || !IsBlank(Index(cmpBreadcrumbs.Items,1).icon)
+                              Width: =cmpBreadcrumbs.Config.Size + 4
+                        - lblText1:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              Color: =ColorValue(If(cmpBreadcrumbs.Config.BackButton || 1<CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9")))
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =cmpBreadcrumbs.Config.Size
+                              TabIndex: =0
+                              Text: =If(cmpBreadcrumbs.Config.BackButton,"Back",Index(cmpBreadcrumbs.Items,1).label)
+                              Visible: =cmpBreadcrumbs.Config.BackButton || !IsBlank(Index(cmpBreadcrumbs.Items,1).label)
+                              Width: =Sum(AddColumns(Split(Self.Text,""),_w,Coalesce(LookUp(cmpBreadcrumbs.CharWidths,CharFont=Self.Font&&CharWeight=Self.FontWeight&&Char=Value).Size,0.7)),_w)*Self.Size*1.1+8
+                              Wrap: =false
+                        - imgAppend1:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Append 1 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =With({_i:Index(cmpBreadcrumbs.Items,1)},With({_ico:_i.appendIcon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(1=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>")))))
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =!cmpBreadcrumbs.Config.BackButton && !IsBlank(Index(cmpBreadcrumbs.Items,1).appendIcon)
+                              Width: =cmpBreadcrumbs.Config.Size
+                  - btnClick1:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderThickness: =0
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.05),RGBA(255,255,255,0.08))
+                        OnSelect: =If(cmpBreadcrumbs.Config.BackButton,cmpBreadcrumbs.OnBack(),Set(_bcSelected,Index(cmpBreadcrumbs.Items,1));cmpBreadcrumbs.OnSelect())
+                        PressedFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.1),RGBA(255,255,255,0.15))
+                        RadiusBottomLeft: =4
+                        RadiusBottomRight: =4
+                        RadiusTopLeft: =4
+                        RadiusTopRight: =4
+                        Text: =""
+                        Tooltip: ="Go to this level"
+                        Width: =Parent.Width
+            - imgSep1:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: ="Sep 1 icon"
+                  AlignInContainer: =AlignInContainer.Center
+                  FocusedBorderThickness: =0.5
+                  Height: =cmpBreadcrumbs.Config.Size
+                  Image: ="data:image/svg+xml;utf8,"&EncodeUrl(Substitute(Switch(cmpBreadcrumbs.Config.SeparatorIcon,"chevron",cmpBreadcrumbs.Icons.Chevron,"slash",cmpBreadcrumbs.Icons.Slash,"dot",cmpBreadcrumbs.Icons.Dot,cmpBreadcrumbs.Icons.Chevron),"currentColor",If(cmpBreadcrumbs.Config.Theme="light","#9CA3AF","#6B7280")))
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  TabIndex: =0
+                  Visible: =1<CountRows(cmpBreadcrumbs.Items)
+                  Width: =Self.Height
+            - cntEllipsis:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =cmpBreadcrumbs.Config.Size + 12
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  Visible: =cmpBreadcrumbs.Config.MaxItems>0 && CountRows(cmpBreadcrumbs.Items)>cmpBreadcrumbs.Config.MaxItems && !_bcExpanded
+                  Width: =cntEllipsisContent.Width
+                Children:
+                  - cntEllipsisContent:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        PaddingLeft: =8
+                        PaddingRight: =8
+                        Width: =lblEllipsis.Width+Self.PaddingLeft+Self.PaddingRight
+                      Children:
+                        - lblEllipsis:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              Color: =ColorValue(If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8"))
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =cmpBreadcrumbs.Config.Size
+                              TabIndex: =0
+                              Text: ="..."
+                              Width: =Sum(AddColumns(Split(Self.Text,""),_w,Coalesce(LookUp(cmpBreadcrumbs.CharWidths,CharFont=Self.Font&&CharWeight=Self.FontWeight&&Char=Value).Size,0.7)),_w)*Self.Size*1.1+8
+                              Wrap: =false
+                  - btnEllipsis:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderThickness: =0
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.05),RGBA(255,255,255,0.08))
+                        OnSelect: =Set(_bcExpanded,!_bcExpanded)
+                        PressedFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.1),RGBA(255,255,255,0.15))
+                        RadiusBottomLeft: =4
+                        RadiusBottomRight: =4
+                        RadiusTopLeft: =4
+                        RadiusTopRight: =4
+                        Text: =""
+                        Tooltip: ="Show all"
+                        Width: =Parent.Width
+            - imgSepEllipsis:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: ="Sep Ellipsis icon"
+                  AlignInContainer: =AlignInContainer.Center
+                  FocusedBorderThickness: =0.5
+                  Height: =cmpBreadcrumbs.Config.Size
+                  Image: ="data:image/svg+xml;utf8,"&EncodeUrl(Substitute(Switch(cmpBreadcrumbs.Config.SeparatorIcon,"chevron",cmpBreadcrumbs.Icons.Chevron,"slash",cmpBreadcrumbs.Icons.Slash,"dot",cmpBreadcrumbs.Icons.Dot,cmpBreadcrumbs.Icons.Chevron),"currentColor",If(cmpBreadcrumbs.Config.Theme="light","#9CA3AF","#6B7280")))
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  TabIndex: =0
+                  Visible: =cmpBreadcrumbs.Config.MaxItems>0 && CountRows(cmpBreadcrumbs.Items)>cmpBreadcrumbs.Config.MaxItems && !_bcExpanded
+                  Width: =Self.Height
+            - cntItem2:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =cmpBreadcrumbs.Config.Size + 12
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  Visible: =CountRows(cmpBreadcrumbs.Items)>=2 && (cmpBreadcrumbs.Config.MaxItems=0 || _bcExpanded || 2<=cmpBreadcrumbs.Config.ItemsBeforeCollapse || 2>CountRows(cmpBreadcrumbs.Items)-cmpBreadcrumbs.Config.ItemsAfterCollapse)
+                  Width: =cntContent2_1.Width
+                Children:
+                  - cntContent2_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =3
+                        PaddingLeft: =4
+                        PaddingRight: =4
+                        Width: =If(imgIcon2.Visible,imgIcon2.Width+3,0)+lblText2.Width+If(imgAppend2.Visible,3+imgAppend2.Width,0)+Self.PaddingLeft+Self.PaddingRight
+                      Children:
+                        - imgIcon2:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Icon 2 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =If(CountRows(cmpBreadcrumbs.Items)>=2,With({_i:Index(cmpBreadcrumbs.Items,2)},With({_ico:_i.icon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(2=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>"))))),"")
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =CountRows(cmpBreadcrumbs.Items)>=2 && !IsBlank(Index(cmpBreadcrumbs.Items,2).icon)
+                              Width: =cmpBreadcrumbs.Config.Size + 4
+                        - lblText2:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              Color: =If(CountRows(cmpBreadcrumbs.Items)>=2,ColorValue(If(2=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8"))),Color.Transparent)
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =cmpBreadcrumbs.Config.Size
+                              TabIndex: =0
+                              Text: =If(CountRows(cmpBreadcrumbs.Items)>=2,Index(cmpBreadcrumbs.Items,2).label,"")
+                              Width: =Sum(AddColumns(Split(Self.Text,""),_w,Coalesce(LookUp(cmpBreadcrumbs.CharWidths,CharFont=Self.Font&&CharWeight=Self.FontWeight&&Char=Value).Size,0.7)),_w)*Self.Size*1.1+8
+                              Wrap: =false
+                        - imgAppend2:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Append 2 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =If(CountRows(cmpBreadcrumbs.Items)>=2,With({_i:Index(cmpBreadcrumbs.Items,2)},With({_ico:_i.appendIcon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(2=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>"))))),"")
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =CountRows(cmpBreadcrumbs.Items)>=2 && !IsBlank(Index(cmpBreadcrumbs.Items,2).appendIcon)
+                              Width: =cmpBreadcrumbs.Config.Size
+                  - btnClick2:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderThickness: =0
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.05),RGBA(255,255,255,0.08))
+                        OnSelect: =If(CountRows(cmpBreadcrumbs.Items)>=2,Set(_bcSelected,Index(cmpBreadcrumbs.Items,2));cmpBreadcrumbs.OnSelect())
+                        PressedFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.1),RGBA(255,255,255,0.15))
+                        RadiusBottomLeft: =4
+                        RadiusBottomRight: =4
+                        RadiusTopLeft: =4
+                        RadiusTopRight: =4
+                        Text: =""
+                        Tooltip: ="Go to this level"
+                        Width: =Parent.Width
+            - imgSep2:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: ="Sep 2 icon"
+                  AlignInContainer: =AlignInContainer.Center
+                  FocusedBorderThickness: =0.5
+                  Height: =cmpBreadcrumbs.Config.Size
+                  Image: ="data:image/svg+xml;utf8,"&EncodeUrl(Substitute(Switch(cmpBreadcrumbs.Config.SeparatorIcon,"chevron",cmpBreadcrumbs.Icons.Chevron,"slash",cmpBreadcrumbs.Icons.Slash,"dot",cmpBreadcrumbs.Icons.Dot,cmpBreadcrumbs.Icons.Chevron),"currentColor",If(cmpBreadcrumbs.Config.Theme="light","#9CA3AF","#6B7280")))
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  TabIndex: =0
+                  Visible: =2<CountRows(cmpBreadcrumbs.Items) && (cmpBreadcrumbs.Config.MaxItems=0 || _bcExpanded || 2<=cmpBreadcrumbs.Config.ItemsBeforeCollapse || 2>CountRows(cmpBreadcrumbs.Items)-cmpBreadcrumbs.Config.ItemsAfterCollapse)
+                  Width: =Self.Height
+            - cntItem3:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =cmpBreadcrumbs.Config.Size + 12
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  Visible: =CountRows(cmpBreadcrumbs.Items)>=3 && (cmpBreadcrumbs.Config.MaxItems=0 || _bcExpanded || 3<=cmpBreadcrumbs.Config.ItemsBeforeCollapse || 3>CountRows(cmpBreadcrumbs.Items)-cmpBreadcrumbs.Config.ItemsAfterCollapse)
+                  Width: =cntContent3_1.Width
+                Children:
+                  - cntContent3_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =3
+                        PaddingLeft: =4
+                        PaddingRight: =4
+                        Width: =If(imgIcon3.Visible,imgIcon3.Width+3,0)+lblText3.Width+If(imgAppend3.Visible,3+imgAppend3.Width,0)+Self.PaddingLeft+Self.PaddingRight
+                      Children:
+                        - imgIcon3:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Icon 3 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =If(CountRows(cmpBreadcrumbs.Items)>=3,With({_i:Index(cmpBreadcrumbs.Items,3)},With({_ico:_i.icon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(3=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>"))))),"")
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =CountRows(cmpBreadcrumbs.Items)>=3 && !IsBlank(Index(cmpBreadcrumbs.Items,3).icon)
+                              Width: =cmpBreadcrumbs.Config.Size + 4
+                        - lblText3:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              Color: =If(CountRows(cmpBreadcrumbs.Items)>=3,ColorValue(If(3=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8"))),Color.Transparent)
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =cmpBreadcrumbs.Config.Size
+                              TabIndex: =0
+                              Text: =If(CountRows(cmpBreadcrumbs.Items)>=3,Index(cmpBreadcrumbs.Items,3).label,"")
+                              Width: =Sum(AddColumns(Split(Self.Text,""),_w,Coalesce(LookUp(cmpBreadcrumbs.CharWidths,CharFont=Self.Font&&CharWeight=Self.FontWeight&&Char=Value).Size,0.7)),_w)*Self.Size*1.1+8
+                              Wrap: =false
+                        - imgAppend3:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Append 3 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =If(CountRows(cmpBreadcrumbs.Items)>=3,With({_i:Index(cmpBreadcrumbs.Items,3)},With({_ico:_i.appendIcon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(3=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>"))))),"")
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =CountRows(cmpBreadcrumbs.Items)>=3 && !IsBlank(Index(cmpBreadcrumbs.Items,3).appendIcon)
+                              Width: =cmpBreadcrumbs.Config.Size
+                  - btnClick3:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderThickness: =0
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.05),RGBA(255,255,255,0.08))
+                        OnSelect: =If(CountRows(cmpBreadcrumbs.Items)>=3,Set(_bcSelected,Index(cmpBreadcrumbs.Items,3));cmpBreadcrumbs.OnSelect())
+                        PressedFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.1),RGBA(255,255,255,0.15))
+                        RadiusBottomLeft: =4
+                        RadiusBottomRight: =4
+                        RadiusTopLeft: =4
+                        RadiusTopRight: =4
+                        Text: =""
+                        Tooltip: ="Go to this level"
+                        Width: =Parent.Width
+            - imgSep3:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: ="Sep 3 icon"
+                  AlignInContainer: =AlignInContainer.Center
+                  FocusedBorderThickness: =0.5
+                  Height: =cmpBreadcrumbs.Config.Size
+                  Image: ="data:image/svg+xml;utf8,"&EncodeUrl(Substitute(Switch(cmpBreadcrumbs.Config.SeparatorIcon,"chevron",cmpBreadcrumbs.Icons.Chevron,"slash",cmpBreadcrumbs.Icons.Slash,"dot",cmpBreadcrumbs.Icons.Dot,cmpBreadcrumbs.Icons.Chevron),"currentColor",If(cmpBreadcrumbs.Config.Theme="light","#9CA3AF","#6B7280")))
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  TabIndex: =0
+                  Visible: =3<CountRows(cmpBreadcrumbs.Items) && (cmpBreadcrumbs.Config.MaxItems=0 || _bcExpanded || 3<=cmpBreadcrumbs.Config.ItemsBeforeCollapse || 3>CountRows(cmpBreadcrumbs.Items)-cmpBreadcrumbs.Config.ItemsAfterCollapse)
+                  Width: =Self.Height
+            - cntItem4:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =cmpBreadcrumbs.Config.Size + 12
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  Visible: =CountRows(cmpBreadcrumbs.Items)>=4 && (cmpBreadcrumbs.Config.MaxItems=0 || _bcExpanded || 4<=cmpBreadcrumbs.Config.ItemsBeforeCollapse || 4>CountRows(cmpBreadcrumbs.Items)-cmpBreadcrumbs.Config.ItemsAfterCollapse)
+                  Width: =cntContent4_1.Width
+                Children:
+                  - cntContent4_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =3
+                        PaddingLeft: =4
+                        PaddingRight: =4
+                        Width: =If(imgIcon4.Visible,imgIcon4.Width+3,0)+lblText4.Width+If(imgAppend4.Visible,3+imgAppend4.Width,0)+Self.PaddingLeft+Self.PaddingRight
+                      Children:
+                        - imgIcon4:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Icon 4 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =If(CountRows(cmpBreadcrumbs.Items)>=4,With({_i:Index(cmpBreadcrumbs.Items,4)},With({_ico:_i.icon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(4=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>"))))),"")
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =CountRows(cmpBreadcrumbs.Items)>=4 && !IsBlank(Index(cmpBreadcrumbs.Items,4).icon)
+                              Width: =cmpBreadcrumbs.Config.Size + 4
+                        - lblText4:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              Color: =If(CountRows(cmpBreadcrumbs.Items)>=4,ColorValue(If(4=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8"))),Color.Transparent)
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =cmpBreadcrumbs.Config.Size
+                              TabIndex: =0
+                              Text: =If(CountRows(cmpBreadcrumbs.Items)>=4,Index(cmpBreadcrumbs.Items,4).label,"")
+                              Width: =Sum(AddColumns(Split(Self.Text,""),_w,Coalesce(LookUp(cmpBreadcrumbs.CharWidths,CharFont=Self.Font&&CharWeight=Self.FontWeight&&Char=Value).Size,0.7)),_w)*Self.Size*1.1+8
+                              Wrap: =false
+                        - imgAppend4:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Append 4 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =If(CountRows(cmpBreadcrumbs.Items)>=4,With({_i:Index(cmpBreadcrumbs.Items,4)},With({_ico:_i.appendIcon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(4=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>"))))),"")
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =CountRows(cmpBreadcrumbs.Items)>=4 && !IsBlank(Index(cmpBreadcrumbs.Items,4).appendIcon)
+                              Width: =cmpBreadcrumbs.Config.Size
+                  - btnClick4:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderThickness: =0
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.05),RGBA(255,255,255,0.08))
+                        OnSelect: =If(CountRows(cmpBreadcrumbs.Items)>=4,Set(_bcSelected,Index(cmpBreadcrumbs.Items,4));cmpBreadcrumbs.OnSelect())
+                        PressedFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.1),RGBA(255,255,255,0.15))
+                        RadiusBottomLeft: =4
+                        RadiusBottomRight: =4
+                        RadiusTopLeft: =4
+                        RadiusTopRight: =4
+                        Text: =""
+                        Tooltip: ="Go to this level"
+                        Width: =Parent.Width
+            - imgSep4:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: ="Sep 4 icon"
+                  AlignInContainer: =AlignInContainer.Center
+                  FocusedBorderThickness: =0.5
+                  Height: =cmpBreadcrumbs.Config.Size
+                  Image: ="data:image/svg+xml;utf8,"&EncodeUrl(Substitute(Switch(cmpBreadcrumbs.Config.SeparatorIcon,"chevron",cmpBreadcrumbs.Icons.Chevron,"slash",cmpBreadcrumbs.Icons.Slash,"dot",cmpBreadcrumbs.Icons.Dot,cmpBreadcrumbs.Icons.Chevron),"currentColor",If(cmpBreadcrumbs.Config.Theme="light","#9CA3AF","#6B7280")))
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  TabIndex: =0
+                  Visible: =4<CountRows(cmpBreadcrumbs.Items) && (cmpBreadcrumbs.Config.MaxItems=0 || _bcExpanded || 4<=cmpBreadcrumbs.Config.ItemsBeforeCollapse || 4>CountRows(cmpBreadcrumbs.Items)-cmpBreadcrumbs.Config.ItemsAfterCollapse)
+                  Width: =Self.Height
+            - cntItem5:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =cmpBreadcrumbs.Config.Size + 12
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  Visible: =CountRows(cmpBreadcrumbs.Items)>=5 && (cmpBreadcrumbs.Config.MaxItems=0 || _bcExpanded || 5<=cmpBreadcrumbs.Config.ItemsBeforeCollapse || 5>CountRows(cmpBreadcrumbs.Items)-cmpBreadcrumbs.Config.ItemsAfterCollapse)
+                  Width: =cntContent5_1.Width
+                Children:
+                  - cntContent5_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =3
+                        PaddingLeft: =4
+                        PaddingRight: =4
+                        Width: =If(imgIcon5.Visible,imgIcon5.Width+3,0)+lblText5.Width+If(imgAppend5.Visible,3+imgAppend5.Width,0)+Self.PaddingLeft+Self.PaddingRight
+                      Children:
+                        - imgIcon5:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Icon 5 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =If(CountRows(cmpBreadcrumbs.Items)>=5,With({_i:Index(cmpBreadcrumbs.Items,5)},With({_ico:_i.icon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(5=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>"))))),"")
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =CountRows(cmpBreadcrumbs.Items)>=5 && !IsBlank(Index(cmpBreadcrumbs.Items,5).icon)
+                              Width: =cmpBreadcrumbs.Config.Size + 4
+                        - lblText5:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              Color: =If(CountRows(cmpBreadcrumbs.Items)>=5,ColorValue(If(5=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8"))),Color.Transparent)
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =cmpBreadcrumbs.Config.Size
+                              TabIndex: =0
+                              Text: =If(CountRows(cmpBreadcrumbs.Items)>=5,Index(cmpBreadcrumbs.Items,5).label,"")
+                              Width: =Sum(AddColumns(Split(Self.Text,""),_w,Coalesce(LookUp(cmpBreadcrumbs.CharWidths,CharFont=Self.Font&&CharWeight=Self.FontWeight&&Char=Value).Size,0.7)),_w)*Self.Size*1.1+8
+                              Wrap: =false
+                        - imgAppend5:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Append 5 icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =Self.Width
+                              Image: =If(CountRows(cmpBreadcrumbs.Items)>=5,With({_i:Index(cmpBreadcrumbs.Items,5)},With({_ico:_i.appendIcon},If(StartsWith(_ico,"data:"),_ico,If(StartsWith(_ico,"<svg"),"data:image/svg+xml;utf8,"&EncodeUrl(Substitute(_ico,"currentColor",If(5=CountRows(cmpBreadcrumbs.Items),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.CurrentColor,"#F1F5F9"),If(cmpBreadcrumbs.Config.Theme="light",cmpBreadcrumbs.LinkColor,"#94A3B8")))),"data:image/svg+xml;utf8,"&EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80'>"&_ico&"</text></svg>"))))),"")
+                              LayoutMaxHeight: =
+                              LayoutMaxWidth: =
+                              TabIndex: =0
+                              Visible: =CountRows(cmpBreadcrumbs.Items)>=5 && !IsBlank(Index(cmpBreadcrumbs.Items,5).appendIcon)
+                              Width: =cmpBreadcrumbs.Config.Size
+                  - btnClick5:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderThickness: =0
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.05),RGBA(255,255,255,0.08))
+                        OnSelect: =If(CountRows(cmpBreadcrumbs.Items)>=5,Set(_bcSelected,Index(cmpBreadcrumbs.Items,5));cmpBreadcrumbs.OnSelect())
+                        PressedFill: =If(cmpBreadcrumbs.Config.Theme="light",RGBA(0,0,0,0.1),RGBA(255,255,255,0.15))
+                        RadiusBottomLeft: =4
+                        RadiusBottomRight: =4
+                        RadiusTopLeft: =4
+                        RadiusTopRight: =4
+                        Text: =""
+                        Tooltip: ="Go to this level"
+                        Width: =Parent.Width
+            - imgSep5:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: ="Sep 5 icon"
+                  AlignInContainer: =AlignInContainer.Center
+                  FocusedBorderThickness: =0.5
+                  Height: =cmpBreadcrumbs.Config.Size
+                  Image: ="data:image/svg+xml;utf8,"&EncodeUrl(Substitute(Switch(cmpBreadcrumbs.Config.SeparatorIcon,"chevron",cmpBreadcrumbs.Icons.Chevron,"slash",cmpBreadcrumbs.Icons.Slash,"dot",cmpBreadcrumbs.Icons.Dot,cmpBreadcrumbs.Icons.Chevron),"currentColor",If(cmpBreadcrumbs.Config.Theme="light","#9CA3AF","#6B7280")))
+                  LayoutMaxHeight: =
+                  LayoutMaxWidth: =
+                  TabIndex: =0
+                  Visible: =5<CountRows(cmpBreadcrumbs.Items) && (cmpBreadcrumbs.Config.MaxItems=0 || _bcExpanded || 5<=cmpBreadcrumbs.Config.ItemsBeforeCollapse || 5>CountRows(cmpBreadcrumbs.Items)-cmpBreadcrumbs.Config.ItemsAfterCollapse)
+                  Width: =Self.Height

@@ -1,0 +1,76 @@
+{
+  "Resources": [
+    {
+      "Name": "SampleImage",
+      "Schema": "i",
+      "IsSampleData": true,
+      "IsWritable": false,
+      "Type": "ResourceInfo",
+      "FileName": "/ctrllib/image/images/SampleImage.svg",
+      "Path": "/ctrllib/image/images/SampleImage.svg",
+      "Content": "Image",
+      "ResourceKind": "Uri",
+      "RootPath": "ms-appx:///ctrllib/image/images/SampleImage.svg"
+    },
+    {
+      "Name": "SampleCardImage",
+      "Schema": "i",
+      "IsSampleData": true,
+      "IsWritable": false,
+      "Type": "ResourceInfo",
+      "FileName": "/ctrllib/modernCard/images/SampleCardImage.svg",
+      "Path": "/ctrllib/modernCard/images/SampleCardImage.svg",
+      "Content": "Image",
+      "ResourceKind": "Uri",
+      "RootPath": "ms-appx:///ctrllib/modernCard/images/SampleCardImage.svg"
+    },
+    {
+      "Name": "SampleCardHeaderImage",
+      "Schema": "i",
+      "IsSampleData": true,
+      "IsWritable": false,
+      "Type": "ResourceInfo",
+      "FileName": "/ctrllib/modernCard/images/SampleCardHeaderImage.svg",
+      "Path": "/ctrllib/modernCard/images/SampleCardHeaderImage.svg",
+      "Content": "Image",
+      "ResourceKind": "Uri",
+      "RootPath": "ms-appx:///ctrllib/modernCard/images/SampleCardHeaderImage.svg"
+    },
+    {
+      "Name": "SampleCardHeaderImageWorkshop",
+      "Schema": "i",
+      "IsSampleData": true,
+      "IsWritable": false,
+      "Type": "ResourceInfo",
+      "FileName": "/ctrllib/modernCard/images/SampleCardHeaderImageWorkshop.svg",
+      "Path": "/ctrllib/modernCard/images/SampleCardHeaderImageWorkshop.svg",
+      "Content": "Image",
+      "ResourceKind": "Uri",
+      "RootPath": "ms-appx:///ctrllib/modernCard/images/SampleCardHeaderImageWorkshop.svg"
+    },
+    {
+      "Name": "SampleCardHeaderImageGallery",
+      "Schema": "i",
+      "IsSampleData": true,
+      "IsWritable": false,
+      "Type": "ResourceInfo",
+      "FileName": "/ctrllib/modernCard/images/SampleCardHeaderImageGallery.svg",
+      "Path": "/ctrllib/modernCard/images/SampleCardHeaderImageGallery.svg",
+      "Content": "Image",
+      "ResourceKind": "Uri",
+      "RootPath": "ms-appx:///ctrllib/modernCard/images/SampleCardHeaderImageGallery.svg"
+    },
+    {
+      "Name": "SampleCardHeaderImageDemo",
+      "Schema": "i",
+      "IsSampleData": true,
+      "IsWritable": false,
+      "Type": "ResourceInfo",
+      "FileName": "/ctrllib/modernCard/images/SampleCardHeaderImageDemo.svg",
+      "Path": "/ctrllib/modernCard/images/SampleCardHeaderImageDemo.svg",
+      "Content": "Image",
+      "ResourceKind": "Uri",
+      "RootPath": "ms-appx:///ctrllib/modernCard/images/SampleCardHeaderImageDemo.svg"
+    }
+  ]
+}

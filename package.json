@@ -1,0 +1,12 @@
+{
+  "name": "projectdesk-mockup",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone, browser-persisted project management mockup inspired by the DocRouter Power Apps export.",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/repository.test.mjs tests/storage.test.mjs tests/persistence.test.mjs tests/pipeline.test.mjs tests/docrouter.test.mjs",
+    "check": "node scripts/check.mjs"
+  }
+}

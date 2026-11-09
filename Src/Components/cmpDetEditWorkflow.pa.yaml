@@ -1,0 +1,2926 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpDetEditWorkflow:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      DraftPhases:
+        PropertyKind: Output
+        DisplayName: DraftPhases
+        Description: The edited phase draft, including IsRemoved rows. Read this in OnSave and hand the whole thing to your flow or patch it locally. IsRemoved rows must survive to the payload or the receiver cannot tell a deletion from a row that was never there.
+        DataType: Table
+      DraftWorkers:
+        PropertyKind: Output
+        DisplayName: DraftWorkers
+        Description: The edited assignment draft, including IsRemoved rows. ClientId and PhaseClientId are LOCAL JOIN COLUMNS and must be stripped by the receiver, never persisted.
+        DataType: Table
+      IsDirty:
+        PropertyKind: Output
+        DisplayName: IsDirty
+        Description: True once anything in the draft has changed. Use it to guard navigation away from an unsaved edit.
+        DataType: Boolean
+      LoadDraft:
+        PropertyKind: Action
+        DisplayName: LoadDraft
+        Description: Builds the draft from the RequestPhases and RequestAssignments LISTS for RequestKey, both delegated on the indexed RequestKey. Call this when you open the dialog. A component has no OnVisible, so nothing inside can notice it became visible.
+        ReturnType: None
+      LoadTemplate:
+        PropertyKind: Action
+        DisplayName: LoadTemplate
+        Description: Appends the phases and assignments of SeedTemplateKey to the draft, keeping any Completed phase. Call it straight after LoadDraft when a request starts from a category template. Does nothing when SeedTemplateKey is blank or names no template, so an existing request can call it unconditionally.
+        ReturnType: None
+      OnCancel:
+        PropertyKind: Event
+        DisplayName: OnCancel
+        Description: Fires when the user abandons the edit. The draft is already cleared by the time this runs, so just clear your open flag.
+        ReturnType: None
+        Default: =false
+      OnSave:
+        PropertyKind: Event
+        DisplayName: OnSave
+        Description: Fires when the user confirms. Read DraftPhases and DraftWorkers and do the write from here. The component never writes to a data source and never calls a flow, which is what lets the same component serve a collection-only build and a flow-backed one.
+        ReturnType: None
+        Default: =false
+      Rebuild:
+        PropertyKind: Action
+        DisplayName: Rebuild
+        Description: Reprojects the flat row list. Only needed if the host mutates the draft collections directly; every control inside the component already calls it.
+        ReturnType: None
+      RequestKey:
+        PropertyKind: Input
+        DisplayName: RequestKey
+        Description: Which request to load. The component reads the RequestPhases and RequestAssignments LISTS itself, scoped to this key.
+        DataType: Text
+        Default: =""
+      RequireResolved:
+        PropertyKind: Input
+        DisplayName: RequireResolved
+        Description: Whether Save waits for every assignment to have a person or a group. True for an existing request, where an unresolved row would reach a flow that cannot action it. False for a brand new request, where the draft is still local, nothing is written until Create, and the template's role names are the point of the template.
+        DataType: Boolean
+        Default: =true
+      SeedTemplateKey:
+        PropertyKind: Input
+        DisplayName: SeedTemplateKey
+        Description: Which template LoadTemplate appends. Blank is the normal value for an existing request. A new request sets this from its category's DefaultTemplateKey.
+        DataType: Text
+        Default: =""
+      UnresolvedCount:
+        PropertyKind: Output
+        DisplayName: UnresolvedCount
+        Description: Assignments with neither an email nor a group. A template row carries a role name and nothing else, and a flow cannot action one. Save is already gated on this internally; the output is for your own messaging.
+        DataType: Number
+    Properties:
+      DraftPhases: =colWfDraftPhases
+      DraftWorkers: =colWfDraftWorkers
+      Fill: =nfColor.Transparent
+      Height: =App.Height
+      IsDirty: =_cmpWfDirty
+      LoadDraft: |-
+        =Clear(colWfDraftPhases);
+        Clear(colWfDraftWorkers);
+        Set(
+            _cmpWfReqTitle,
+            If(
+                IsBlank(cmpDetEditWorkflow.RequestKey),
+                "",
+                LookUp(colRequests, RequestKey = cmpDetEditWorkflow.RequestKey).Title
+            )
+        );
+        Collect(
+            colWfDraftPhases,
+            ForAll(
+            Sort(Filter(colPhases, RequestKey = cmpDetEditWorkflow.RequestKey), PhaseOrder) As p,
+                {
+                    ClientId: 1000 + p.PhaseOrder,
+                    PhaseKey: p.PhaseKey,
+                    Title: p.Title,
+                    PhaseOrder: p.PhaseOrder,
+                    PhaseGoal: p.PhaseGoal,
+                    PhaseStatusKey: p.PhaseStatusKey,
+                    IsLocked: p.PhaseStatusKey = "Completed",
+                    IsNew: false,
+                    IsRemoved: false
+                }
+            )
+        );
+        Collect(
+            colWfDraftWorkers,
+            ForAll(
+            Filter(colAssignments, RequestKey = cmpDetEditWorkflow.RequestKey) As a,
+                {
+                    ClientId: 100000 + a.ID,
+                    // DERIVED FROM THE ASSIGNMENT KEY, WHICH IS UNIQUE. This was
+                    // 100000 + 1000 * PhaseOrder + AssignmentOrder, and that COLLIDES
+                    // for parallel workers: two people in the same phase at the same
+                    // AssignmentOrder is how this app expresses "these run together",
+                    // and they came out with an identical ClientId.
+                    //
+                    // ClientId is what the edit dialog looks a row up by, so a
+                    // collision meant editing one parallel worker PATCHED THE OTHER.
+                    // When the other already held that value the draft did not change
+                    // at all, the save reported success, and the edit vanished with
+                    // nothing anywhere saying so.
+                    //
+                    // AssignmentKey is REQ-YYYY-NNNNNN-A<id> where id is the SharePoint
+                    // item id, so the tail after the last "-A" is unique per assignment
+                    // and small. The 100000 offset keeps it clear of the phase range
+                    // (1000+) and below _cmpWfNextId (300000+), so the three ranges
+                    // still cannot overlap.
+                    PhaseClientId: LookUp(colWfDraftPhases, PhaseKey = a.PhaseKey).ClientId,
+                    AssignmentKey: a.AssignmentKey,
+                    AssignmentOrder: a.AssignmentOrder,
+                    AssigneeName: a.AssigneeName,
+                    AssigneeEmail: a.AssigneeEmail,
+                    DepartmentCode: a.DepartmentCode,
+                    Goal: a.Goal,
+                    Required: a.Required,
+                    DurationDays: a.DurationDays,
+                    IsGroup: a.IsGroup,
+                    GroupId: a.GroupId,
+                    StatusKey: a.StatusKey,
+                    IsNew: false,
+                    IsRemoved: false
+                }
+            )
+        );
+        Set(_cmpWfNextId, 300000);
+        Set(_cmpWfDirty, false);
+        Set(_cmpWfExpanded, Coalesce(First(Filter(colWfDraftPhases, !IsLocked)).ClientId, 0));
+        Select(btnWfRebuild)
+        // A COMPONENT HAS NO OnVisible, so the host calls this when it opens the
+        // dialog. Everything after this point works on the draft and never
+        // touches the RequestPhases or RequestAssignments lists again.
+        //
+        // The request title is CAPTURED ONCE into _cmpWfReqTitle. It used to be a
+        // live LookUp on the Requests list inside the subtitle label, which meant
+        // a delegated call on every render of the header.
+        //
+        // IsLocked is DERIVED from PhaseStatusKey rather than stored. A
+        // Completed phase is read only because Flow has already recorded work
+        // against it, and deriving it means the rule cannot be edited into an
+        // inconsistent state by anything in this dialog.
+        //
+        // ClientId is a LOCAL join key and is never persisted. The ranges are now
+        // DISJOINT BY COLLECTION AND BY ORIGIN, which the old scheme was not:
+        //   phases   loaded 1000+order      template 2000+order
+        //   workers  loaded 100000+...      template 200000+...
+        //   anything created in this session 300000+ from _cmpWfNextId
+        // The old worker base of 1000 + 1000*order overlapped the template phase
+        // range at 2000, which was harmless only by accident.
+      LoadTemplate: |-
+        =Set(_cmpWfSeedKey, cmpDetEditWorkflow.SeedTemplateKey);
+        Select(btnWfLoadTemplate)
+        // THE SECOND ENTRY POINT INTO btnWfLoadTemplate. The header combo box is
+        // the first. Both set _cmpWfSeedKey and select the same button, so there is
+        // exactly one copy of the loader body.
+        //
+        // CALL ORDER MATTERS: LoadDraft first, then this. LoadDraft clears the draft
+        // and resets _cmpWfNextId, _cmpWfDirty and the expanded phase, so calling it
+        // after this would wipe the template that had just been appended.
+      OnReset: |-
+        =Clear(colWfDraftPhases);
+        Clear(colWfDraftWorkers);
+        Clear(colWfRows);
+        Clear(colWfRowsTmp);
+        Clear(colWfKeepPhases);
+        Clear(colWfKeepWorkers);
+        Set(_cmpWfExpanded, 0);
+        Set(_cmpWfDirty, false);
+        Set(_cmpWfReqTitle, "");
+        Set(_cmpWfSeedKey, "");
+        Set(_cmpWfNextId, 300000);
+        Set(_cmpAwOpen, false);
+        Set(_cmpPhOpen, false)
+      Rebuild: =Select(btnWfRebuild)
+      UnresolvedCount: |-
+        =CountRows(
+            Filter(
+                colWfDraftWorkers,
+                !IsRemoved,
+                IsBlank(AssigneeEmail),
+                IsBlank(GroupId)
+            )
+        )
+      Width: =App.Width
+    Children:
+      - btnWfLoadTemplate:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Fill: =nfColor.Transparent
+            FocusedBorderThickness: =0.5
+            Height: =1
+            OnSelect: |-
+              =If(
+                  !IsBlank(
+                      LookUp(colTemplates, TemplateKey = _cmpWfSeedKey).DefinitionJson
+                  ),
+                  ClearCollect(colWfKeepPhases, Filter(colWfDraftPhases, IsLocked, !IsRemoved));
+                  ClearCollect(
+                      colWfKeepWorkers,
+                      Filter(
+                          colWfDraftWorkers,
+                          !IsRemoved,
+                          PhaseClientId in colWfKeepPhases.ClientId
+                      )
+                  );
+                  Clear(colWfDraftPhases);
+                  Clear(colWfDraftWorkers);
+                  Collect(colWfDraftPhases, colWfKeepPhases);
+                  Collect(colWfDraftWorkers, colWfKeepWorkers);
+                  Set(_cmpWfBase, CountRows(colWfKeepPhases));
+                  ForAll(
+                      ParseJSON(
+                      LookUp(colTemplates, TemplateKey = _cmpWfSeedKey).DefinitionJson
+                  ).phases As ph,
+                      Collect(
+                          colWfDraftPhases,
+                          {
+                              ClientId: 2000 + Value(ph.order),
+                              PhaseKey: "",
+                              Title: Text(ph.name),
+                              PhaseOrder: _cmpWfBase + Value(ph.order),
+                              PhaseGoal: Text(ph.goal),
+                              PhaseStatusKey: "NotStarted",
+                              IsLocked: false,
+                              IsNew: true,
+                              IsRemoved: false
+                          }
+                      );
+                      Collect(
+                          colWfDraftWorkers,
+                          ForAll(
+                          Sequence(CountRows(Table(ph.assignments))) As ai,
+                              {
+                                  ClientId: 200000 + Value(ph.order) * 1000 + ai.Value,
+                                  PhaseClientId: 2000 + Value(ph.order),
+                                  AssignmentKey: "",
+                                  AssignmentOrder: Value(Index(ph.assignments, ai.Value).order),
+                                  AssigneeName: Text(Index(ph.assignments, ai.Value).role),
+                                  AssigneeEmail: "",
+                                  DepartmentCode: Text(Index(ph.assignments, ai.Value).deptCode),
+                                  Goal: Text(Index(ph.assignments, ai.Value).goal),
+                                  Required: Boolean(Index(ph.assignments, ai.Value).required),
+                                  DurationDays: Value(Index(ph.assignments, ai.Value).durationDays),
+                                  IsGroup: Boolean(Index(ph.assignments, ai.Value).isGroup),
+                                  GroupId: "",
+                                  StatusKey: "NotStarted",
+                                  IsNew: true,
+                                  IsRemoved: false
+                              }
+                          )
+                      )
+                  );
+                  Set(_cmpWfDirty, true);
+                  Set(_cmpWfNextId, 300000);
+                  Set(_cmpWfExpanded, Coalesce(First(Filter(colWfDraftPhases, !IsLocked)).ClientId, 0));
+                  Select(btnWfRebuild)
+              )
+              // ONE COPY OF THE LOADER, REACHED TWO WAYS. The template combo box in
+              // the dialog header selects a template and calls this; a host seeding a
+              // brand new request from a category calls the LoadTemplate action, which
+              // sets the same variable and selects the same button. The body lives here
+              // so the two entry points cannot drift apart.
+              //
+              // KEYED ON _cmpWfSeedKey, NOT ON THE COMBO BOX SELECTION, because the
+              // action route has no selection to read. The combo box writes the
+              // variable before selecting this.
+              //
+              // BLANK OR UNKNOWN KEY IS A NO OP, so an existing request can call
+              // LoadTemplate unconditionally right after LoadDraft without knowing
+              // whether it has a template.
+              //
+              // Completed phases SURVIVE a template load. Replacing a finished
+              // phase would discard work Flow has already recorded. The template
+              // appends after whatever is locked.
+              //
+              // Every ParseJSON read is explicitly cast. A missing field returns
+              // Blank() with no error, so an uncast read fails silently. JSON
+              // field names are case sensitive.
+              //
+              // CLIENTID IS KEYED ON POSITION, NOT ON a.order. PARALLEL WORKERS SHARE
+              // AN ORDER: two assignments in one phase at the same order is how this app
+              // expresses "these run together", and the shipped data does exactly that,
+              // Finance Reviewer and Technical Reviewer both at order 1.
+              //
+              // 200000 + phase * 1000 + Value(a.order) therefore produced an IDENTICAL
+              // ClientId for both rows. ClientId is what the edit dialog looks a row up
+              // by, so editing one parallel worker PATCHED THE OTHER, and where the
+              // other already held that value nothing changed at all and the edit
+              // vanished with no error. UnresolvedCount could then never reach zero, so
+              // Save stayed disabled permanently.
+              //
+              // THIS IS THE SAME DEFECT LoadDraft ALREADY FIXED for loaded rows, left
+              // behind on the template path. It only became reachable once the loader
+              // gained a second entry point and started running for every new request.
+              //
+              // Sequence over the assignment COUNT gives a per-phase position that is
+              // unique by construction; Index reads the untyped element positionally.
+              //
+              // Assignees arrive UNRESOLVED: role holds a role or group name and
+              // the payload has no email. The footer counts them and Save stays
+              // disabled until each is picked.
+              //
+              // THIS IS DESTRUCTIVE for unlocked work and there is no confirm
+              // step. See the notes shipped with this file if you want one.
+            Text: =""
+            Visible: =false
+            Width: =1
+      - btnWfRebuild:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderThickness: =0
+            Fill: =nfColor.Transparent
+            FocusedBorderThickness: =0.5
+            Height: =1
+            OnSelect: |-
+              =ClearCollect(
+                  colWfRowsTmp,
+                  ForAll(
+                      Filter(colWfDraftPhases, !IsRemoved) As p,
+                      {
+                          RowType: "phase",
+                          SortPhase: p.PhaseOrder,
+                          SortRow: 0,
+                          PhaseClientId: p.ClientId,
+                          RowClientId: p.ClientId,
+                          Title: p.Title,
+                          Subtitle: p.PhaseGoal,
+                          StatusKey: p.PhaseStatusKey,
+                          StatusTitle: LookUp(nfStatusTable, StatusKey = p.PhaseStatusKey).Title,
+                          IsLocked: p.IsLocked,
+                          IsExpanded: p.ClientId = _cmpWfExpanded,
+                          WorkerCount: CountRows(Filter(colWfDraftWorkers, PhaseClientId = p.ClientId, !IsRemoved)),
+                          PhaseDays: Coalesce(
+                              Sum(
+                                  ForAll(
+                                      Distinct(
+                                          Filter(colWfDraftWorkers, PhaseClientId = p.ClientId, !IsRemoved),
+                                          AssignmentOrder
+                                      ) As d,
+                                      Max(
+                                          Filter(
+                                              colWfDraftWorkers,
+                                              PhaseClientId = p.ClientId,
+                                              !IsRemoved,
+                                              AssignmentOrder = d.Value
+                                          ),
+                                          DurationDays
+                                      )
+                                  ),
+                                  Value
+                              ),
+                              0
+                          ),
+                          AssignmentOrder: 0,
+                          DepartmentCode: "",
+                          Required: false,
+                          DurationDays: 0,
+                          IsGroup: false,
+                          AssigneeEmail: "",
+                          GroupId: ""
+                      }
+                  )
+              );
+              If(
+                  _cmpWfExpanded > 0,
+                  Collect(
+                      colWfRowsTmp,
+                      ForAll(
+                          Sort(Filter(colWfDraftWorkers, PhaseClientId = _cmpWfExpanded, !IsRemoved), AssignmentOrder) As w,
+                          {
+                              RowType: "worker",
+                              SortPhase: LookUp(colWfDraftPhases, ClientId = _cmpWfExpanded).PhaseOrder,
+                              SortRow: w.AssignmentOrder,
+                              PhaseClientId: w.PhaseClientId,
+                              RowClientId: w.ClientId,
+                              Title: w.AssigneeName,
+                              Subtitle: w.Goal,
+                              StatusKey: w.StatusKey,
+                              StatusTitle: LookUp(nfStatusTable, StatusKey = w.StatusKey).Title,
+                              IsLocked: LookUp(colWfDraftPhases, ClientId = _cmpWfExpanded).IsLocked,
+                              IsExpanded: false,
+                              WorkerCount: 0,
+                              PhaseDays: 0,
+                              AssignmentOrder: w.AssignmentOrder,
+                              DepartmentCode: w.DepartmentCode,
+                              Required: w.Required,
+                              DurationDays: w.DurationDays,
+                              IsGroup: w.IsGroup,
+                              AssigneeEmail: w.AssigneeEmail,
+                              GroupId: w.GroupId
+                          }
+                      )
+                  );
+                  If(
+                      !LookUp(colWfDraftPhases, ClientId = _cmpWfExpanded).IsLocked,
+                      Collect(
+                          colWfRowsTmp,
+                          {
+                              RowType: "add",
+                              SortPhase: LookUp(colWfDraftPhases, ClientId = _cmpWfExpanded).PhaseOrder,
+                              SortRow: 9999,
+                              PhaseClientId: _cmpWfExpanded,
+                              RowClientId: 0,
+                              Title: "",
+                              Subtitle: "",
+                              StatusKey: "",
+                              StatusTitle: "",
+                              IsLocked: false,
+                              IsExpanded: false,
+                              WorkerCount: 0,
+                              PhaseDays: 0,
+                              AssignmentOrder: 0,
+                              DepartmentCode: "",
+                              Required: false,
+                              DurationDays: 0,
+                              IsGroup: false,
+                              AssigneeEmail: "",
+                              GroupId: ""
+                          }
+                      )
+                  )
+              );
+              ClearCollect(
+                  colWfRows,
+                  SortByColumns(colWfRowsTmp, "SortPhase", SortOrder.Ascending, "SortRow", SortOrder.Ascending)
+              )
+              // HIDDEN REBUILD, called at the end of every draft mutation. It is a
+              // control rather than a behaviour UDF because it reads _cmpWfExpanded,
+              // and it is wrapped by the Rebuild action so the host can call it too.
+              //
+              // The two step collect through colWfRowsTmp is required: a ClearCollect
+              // whose source reads the collection it is clearing has undefined
+              // behaviour.
+              //
+              // PhaseDays and StatusTitle are now PROJECTED HERE ONCE. The duration
+              // aggregate used to be copy pasted into three places (the chip, the
+              // phase row and the footer) and re-evaluated on every render of each.
+              // StatusTitle removes a per render LookUp against nfStatusTable from every
+              // pill and tooltip.
+              //
+              // DURATION IS THE SUM OF THE LONGEST WORKER AT EACH ORDER, not the sum
+              // of every worker. Workers sharing an order run in parallel, so three
+              // three-day workers at order 1 cost three days, not nine.
+              //
+              // All three record shapes carry the SAME COLUMN SET. A Collect whose
+              // records disagree on columns silently widens the collection schema.
+              //
+              // A locked phase DOES contribute worker rows, so a Completed phase can
+              // still be opened and read. What it does not contribute is the dashed
+              // add row, and IsLocked rides along on every worker row so the edit,
+              // delete and stepper controls disable themselves from the data rather
+              // than from a dozen separate Visible formulas.
+            Text: =""
+            Visible: =false
+            Width: =1
+      - conWfScrim:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Overlay
+            Height: =Parent.Height
+            Width: =Parent.Width
+          Children:
+            - btnWfDismiss:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =nfColor.Transparent
+                  BorderThickness: =0
+                  Color: =nfColor.Transparent
+                  Fill: =nfColor.Transparent
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height
+                  HoverBorderColor: =nfColor.Transparent
+                  HoverColor: =nfColor.Transparent
+                  HoverFill: =nfColor.Transparent
+                  OnSelect: =Select(btnWfCancel)
+                  PressedBorderColor: =nfColor.Transparent
+                  PressedColor: =nfColor.Transparent
+                  PressedFill: =nfColor.Transparent
+                  Text: =""
+                  Tooltip: ="Dismiss"
+                  Width: =Parent.Width
+      - conWfPanel:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =nfColor.Border
+            BorderThickness: =nfSize.Border
+            DropShadow: =DropShadow.ExtraBold
+            Fill: =nfColor.Surface
+            Height: |-
+              =If(
+                  nfIsDesktop,
+                  Min(Parent.Height - 2 * nfSpace.Xxl, 720),
+                  Parent.Height
+              )
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =If(nfIsDesktop, nfRadius.Xl, 0)
+            RadiusBottomRight: =If(nfIsDesktop, nfRadius.Xl, 0)
+            RadiusTopLeft: =If(nfIsDesktop, nfRadius.Xl, 0)
+            RadiusTopRight: =If(nfIsDesktop, nfRadius.Xl, 0)
+            Width: |-
+              =If(
+                  nfIsDesktop,
+                  Min(Parent.Width - 2 * nfSpace.Lg, 880),
+                  Parent.Width
+              )
+            X: =If(nfIsDesktop, (Parent.Width - Self.Width) / 2, 0)
+            Y: =If(nfIsDesktop, (Parent.Height - Self.Height) / 2, 0)
+          Children:
+            - conWfHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.Primary
+                  FillPortions: =0
+                  Height: =nfSize.RowLg + nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Md
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Lg
+                  PaddingRight: =nfSpace.Lg
+                  PaddingTop: =nfSpace.Md
+                  RadiusTopLeft: =If(nfIsDesktop, nfRadius.Xl, 0)
+                  RadiusTopRight: =If(nfIsDesktop, nfRadius.Xl, 0)
+                Children:
+                  - conWfTitleCol:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        Fill: =nfColor.Transparent
+                        Height: =lblWfTitle.Height + lblWfSub.Height
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblWfTitle:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextOnPrimary
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.SectionHead
+                              Text: ="Edit Workflow"
+                              Wrap: =false
+                        - lblWfSub:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextOnPrimary
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Small
+                              Text: =_cmpWfReqTitle
+                              Wrap: =false
+                  - cmbWfTemplates:
+                      Control: ModernCombobox@1.1.1
+                      Properties:
+                        AccessibleLabel: ="Load a workflow template"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =Appearance.Outline
+                        DefaultSelectedItems: =[]
+                        Height: =nfSize.Row
+                        InputTextPlaceholder: ="Templates"
+                        IsSearchable: =false
+                        ItemDisplayText: =ThisItem.Label
+                        Items: |-
+                          =ForAll(
+                              colTemplates As t,
+                              {
+                                  TemplateKey: t.TemplateKey,
+                                  DefinitionJson: t.DefinitionJson,
+                                  Label:
+                                      t.Title
+                                      & "  ("
+                                      & CountRows(Table(ParseJSON(t.DefinitionJson).phases))
+                                      & " phases)"
+                              }
+                          )
+                          // The phase count is DERIVED from the payload, never typed in,
+                          // so the label and the data cannot disagree.
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: |-
+                          =If(
+                              !IsBlank(Self.Selected.TemplateKey),
+                              Set(_cmpWfSeedKey, Self.Selected.TemplateKey);
+                              Select(btnWfLoadTemplate)
+                          )
+                          // A DISPATCHER, NOT THE LOADER. The body moved to
+                          // btnWfLoadTemplate so the LoadTemplate action can reach it
+                          // too. The explanation lives there with the code.
+                        SelectMultiple: =false
+                        Size: =nfType.Small
+                        Width: =220
+                  - conWfClose:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Width: =nfSize.RowSm
+                      Children:
+                        - imgWfClose:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Remove icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =nfSize.IconSm
+                              Image: |-
+                                ="data:image/svg+xml;utf8,"
+                                & EncodeUrl(
+                                    Substitute(
+                                        "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg>",
+                                        "SWAPCOLOR",
+                                        "#FFFFFF"
+                                    )
+                                )
+                              TabIndex: =0
+                              Width: =nfSize.IconSm
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfClose:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =nfColor.Transparent
+                              BorderThickness: =0
+                              Color: =nfColor.Transparent
+                              Fill: =nfColor.Transparent
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height - 2 * nfSize.FocusRing
+                              HoverBorderColor: =nfColor.Transparent
+                              HoverColor: =nfColor.Transparent
+                              HoverFill: =nfColor.Transparent
+                              OnSelect: =Select(btnWfCancel)
+                              PressedBorderColor: =nfColor.Transparent
+                              PressedColor: =nfColor.Transparent
+                              PressedFill: =nfColor.Transparent
+                              Text: =""
+                              Tooltip: ="Close without saving the workflow"
+                              Width: =Parent.Width - 2 * nfSize.FocusRing
+                              X: =nfSize.FocusRing
+                              Y: =nfSize.FocusRing
+            - conWfStrip:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.Canvas
+                  FillPortions: =0
+                  Height: =nfSize.RowLg + nfSpace.Xl + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Lg
+                  PaddingRight: =nfSpace.Lg
+                  PaddingTop: =nfSpace.Md
+                Children:
+                  - galWfStrip:
+                      Control: Gallery@2.15.0
+                      Variant: Horizontal
+                      Properties:
+                        AccessibleLabel: ="Phase overview"
+                        AlignInContainer: =AlignInContainer.Center
+                        BorderColor: =nfColor.Transparent
+                        Default: =LookUp(colWfRows, RowType = "phase" && PhaseClientId = _cmpWfExpanded)
+                        Fill: =nfColor.Transparent
+                        Height: =nfSize.RowLg + nfSpace.Xl
+                        Items: =Filter(colWfRows, RowType = "phase")
+                        LayoutMinHeight: =0
+                        TabIndex: =0
+                        TemplatePadding: =nfSpace.Sm
+                        TemplateSize: |-
+                          =Max(
+                              150,
+                              (Parent.Width - 2 * nfSpace.Lg - 112 - nfSpace.Sm)
+                              / Max(1, CountRows(Filter(colWfRows, RowType = "phase")))
+                              - 2 * nfSpace.Sm
+                          )
+                          // CHIPS FIT INSTEAD OF SCROLLING while they can. Below about five
+                          // phases the strip has no horizontal scroll at all, so nothing gets
+                          // clipped mid chip. 112 is btnWfAddPhase.Width, which sits outside
+                          // the gallery and has to come off the available width first.
+                          //
+                          // Parent.Width, NOT Self.Width. This gallery is FillPortions sized,
+                          // and .Width on a FillPortions control returns 0.
+                          //
+                          // Past the floor of 150 the strip scrolls again, which is what
+                          // Default is for: selecting the expanded phase pulls its chip into
+                          // view, so the chip you are working on is never the clipped one.
+                      Children:
+                        - conWfChip:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: |-
+                                =If(
+                                    ThisItem.IsExpanded,
+                                    nfColor.Primary,
+                                    nfColor.Border
+                                )
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Surface
+                              Height: =nfSize.RowLg
+                              RadiusBottomLeft: =nfRadius.Md
+                              RadiusBottomRight: =nfRadius.Md
+                              RadiusTopLeft: =nfRadius.Md
+                              RadiusTopRight: =nfRadius.Md
+                              Width: =Parent.TemplateWidth
+                            Children:
+                              - conWfChipBadge:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Fill: |-
+                                      =If(
+                                          ThisItem.IsLocked,
+                                          nfColor.SuccessSolid,
+                                          ThisItem.IsExpanded,
+                                          nfColor.Primary,
+                                          nfColor.BorderStrong
+                                      )
+                                    Height: =nfSize.Icon
+                                    RadiusBottomLeft: =nfSize.Icon / 2
+                                    RadiusBottomRight: =nfSize.Icon / 2
+                                    RadiusTopLeft: =nfSize.Icon / 2
+                                    RadiusTopRight: =nfSize.Icon / 2
+                                    Width: =nfSize.Icon
+                                    X: =nfSpace.Sm
+                                    Y: =(Parent.Height - Self.Height) / 2
+                                  Children:
+                                    - lblWfChipNum:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextOnPrimary
+                                          FontWeight: =FontWeight.Bold
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =nfType.Micro
+                                          Text: =ThisItem.SortPhase
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                                          Y: =(Parent.Height - Self.Height) / 2
+                              - lblWfChipName:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: =Self.Text
+                                    AutoHeight: =true
+                                    Color: =nfColor.TextStrong
+                                    FontWeight: =FontWeight.Semibold
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =nfType.Small
+                                    Text: =ThisItem.Title
+                                    Width: =Max(40, Parent.Width - nfSize.Icon - 3 * nfSpace.Sm)
+                                    Wrap: =false
+                                    X: =nfSize.Icon + 2 * nfSpace.Sm
+                                    Y: =(Parent.Height - Self.Height - lblWfChipMeta.Height) / 2
+                              - lblWfChipMeta:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: =Self.Text
+                                    AutoHeight: =true
+                                    Color: =nfColor.TextMuted
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =nfType.Micro
+                                    Text: |-
+                                      =ThisItem.WorkerCount
+                                      & " w   "
+                                      & Coalesce(ThisItem.PhaseDays, 0)
+                                      & " d"
+                                    Width: =lblWfChipName.Width
+                                    Wrap: =false
+                                    X: =lblWfChipName.X
+                                    Y: =lblWfChipName.Y + lblWfChipName.Height
+                              - btnWfChipTap:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =nfColor.Transparent
+                                    BorderThickness: =0
+                                    Color: =nfColor.Transparent
+                                    Fill: =nfColor.Transparent
+                                    FocusedBorderThickness: =0.5
+                                    Height: =Parent.Height - 2 * nfSize.FocusRing
+                                    HoverBorderColor: =nfColor.Transparent
+                                    HoverColor: =nfColor.Transparent
+                                    HoverFill: =nfColor.Transparent
+                                    OnSelect: |-
+                                      =Set(_cmpWfExpanded, ThisItem.PhaseClientId);
+                                      Select(btnWfRebuild)
+                                    PressedBorderColor: =nfColor.Transparent
+                                    PressedColor: =nfColor.Transparent
+                                    PressedFill: =nfColor.Transparent
+                                    Text: =""
+                                    Tooltip: |-
+                                      =ThisItem.Title
+                                      & "  ("
+                                      & Coalesce(
+                                          ThisItem.StatusTitle,
+                                          LookUp(nfStatusTable, StatusKey = ThisItem.StatusKey).Title,
+                                          "Not Started"
+                                      )
+                                      & ")"
+                                    Width: =Parent.Width - 2 * nfSize.FocusRing
+                                    X: =nfSize.FocusRing
+                                    Y: =nfSize.FocusRing
+                  - btnWfAddPhase:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Add phase"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Secondary
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Collect(
+                              colWfDraftPhases,
+                              {
+                                  ClientId: _cmpWfNextId,
+                                  PhaseKey: "",
+                                  Title: "New Phase",
+                                  PhaseOrder: CountRows(Filter(colWfDraftPhases, !IsRemoved)) + 1,
+                                  PhaseGoal: "",
+                                  PhaseStatusKey: "NotStarted",
+                                  IsLocked: false,
+                                  IsNew: true,
+                                  IsRemoved: false
+                              }
+                          );
+                          Set(_cmpWfExpanded, _cmpWfNextId);
+                          Set(_cmpWfNextId, _cmpWfNextId + 1);
+                          Set(_cmpWfDirty, true);
+                          Select(btnWfRebuild)
+                        Size: =nfType.Small
+                        Text: ="Add Phase"
+                        Tooltip: ="Append an empty phase to the end of the workflow"
+                        Width: =112
+            - shpWfRuleStrip:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Border
+                  FillPortions: =0
+                  Height: =nfSize.Border
+            - lblWfHint:
+                Control: ModernText@1.0.0
+                Properties:
+                  AccessibleLabel: =Self.Text
+                  AlignInContainer: =AlignInContainer.Stretch
+                  AutoHeight: =true
+                  Color: =nfColor.TextMuted
+                  Fill: =nfColor.SurfaceAlt
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Sm
+                  PaddingLeft: =nfSpace.Lg
+                  PaddingRight: =nfSpace.Lg
+                  PaddingTop: =nfSpace.Sm
+                  Size: =nfType.Micro
+                  Text: ="Same order runs in parallel. A higher order waits for the one before it to complete."
+                  Visible: |-
+                    =_cmpWfExpanded > 0
+                    && CountRows(Filter(colWfDraftWorkers, PhaseClientId = _cmpWfExpanded, !IsRemoved)) > 1
+            - galWfRows:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Phases and workers"
+                  BorderColor: =nfColor.Transparent
+                  DelayItemLoading: =false
+                  Fill: =nfColor.Transparent
+                  Items: =colWfRows
+                  LayoutMinHeight: =0
+                  LoadingSpinner: =LoadingSpinner.None
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: =80
+                  Visible: =CountRows(colWfRows) > 0
+                Children:
+                  - conWfRowPhase:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =If(ThisItem.IsExpanded, nfColor.Primary, nfColor.Border)
+                        BorderThickness: =nfSize.Border
+                        DropShadow: =DropShadow.None
+                        Fill: =If(ThisItem.IsLocked, nfColor.SurfaceAlt, nfColor.Surface)
+                        Height: =Parent.TemplateHeight - nfSpace.Sm
+                        RadiusBottomLeft: =nfRadius.Md
+                        RadiusBottomRight: =nfRadius.Md
+                        RadiusTopLeft: =nfRadius.Md
+                        RadiusTopRight: =nfRadius.Md
+                        Visible: =ThisItem.RowType = "phase"
+                        Width: =Parent.TemplateWidth - 2 * nfSpace.Lg
+                        X: =nfSpace.Lg
+                        Y: =nfSpace.Xs
+                      Children:
+                        - conWfPhBadge:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Fill: |-
+                                =If(
+                                    ThisItem.IsLocked,
+                                    nfColor.SuccessSolid,
+                                    ThisItem.IsExpanded,
+                                    nfColor.Primary,
+                                    nfColor.BorderStrong
+                                )
+                              Height: =nfSize.IconLg
+                              RadiusBottomLeft: =nfRadius.Md
+                              RadiusBottomRight: =nfRadius.Md
+                              RadiusTopLeft: =nfRadius.Md
+                              RadiusTopRight: =nfRadius.Md
+                              Width: =nfSize.IconLg
+                              X: =48
+                              Y: =(Parent.Height - Self.Height) / 2
+                            Children:
+                              - lblWfPhNum:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: =Self.Text
+                                    Align: =Align.Center
+                                    AutoHeight: =true
+                                    Color: =nfColor.TextOnPrimary
+                                    FontWeight: =FontWeight.Bold
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =nfType.Micro
+                                    Text: =ThisItem.SortPhase
+                                    Width: =Parent.Width
+                                    Wrap: =false
+                                    Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfPhExpand:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: |-
+                                =If(
+                                    ThisItem.IsExpanded,
+                                    "Collapse phase " & ThisItem.Title,
+                                    "Expand phase " & ThisItem.Title
+                                )
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =nfColor.TextMuted
+                              Height: =nfSize.RowSm
+                              Icon: =If(ThisItem.IsExpanded, "ChevronDown", "ChevronRight")
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(
+                                    _cmpWfExpanded,
+                                    If(ThisItem.IsExpanded, 0, ThisItem.PhaseClientId)
+                                );
+                                Select(btnWfRebuild)
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: =If(ThisItem.IsExpanded, "Collapse this phase", "Expand this phase")
+                              Width: =32
+                              X: =nfSpace.Sm
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblWfPhTitle:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =nfColor.TextStrong
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =nfType.Body
+                              Text: =ThisItem.Title
+                              Width: |-
+                                =Max(
+                                    72,
+                                    Parent.Width
+                                        - 84
+                                        - If(
+                                              Parent.Width >= 660, 444,
+                                              Parent.Width >= 580, 336,
+                                              212
+                                          )
+                                )
+                                // The three reserved widths track the right hand cluster as
+                                // pieces of it drop out: status plus meta plus four buttons,
+                                // then meta plus four buttons, then four buttons alone.
+                              Wrap: =false
+                              X: =84
+                              Y: =(Parent.Height - Self.Height - lblWfPhGoal.Height) / 2
+                        - lblWfPhGoal:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =If(
+                                    IsBlank(ThisItem.Subtitle),
+                                    "No goal set",
+                                    ThisItem.Subtitle
+                                )
+                              Width: =lblWfPhTitle.Width
+                              Wrap: =false
+                              X: =lblWfPhTitle.X
+                              Y: =lblWfPhTitle.Y + lblWfPhTitle.Height
+                        - lblWfPhStatus:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              AutoHeight: =true
+                              Color: |-
+                                =Switch(
+                                    ThisItem.StatusKey,
+                                    "Completed", nfColor.SuccessText,
+                                    "InProgress", nfColor.WarnText,
+                                    "OnHold", nfColor.DangerText,
+                                    nfColor.NeutralText
+                                )
+                              Fill: |-
+                                =Switch(
+                                    ThisItem.StatusKey,
+                                    "Completed", nfColor.SuccessFill,
+                                    "InProgress", nfColor.WarnFill,
+                                    "OnHold", nfColor.DangerFill,
+                                    nfColor.NeutralFill
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =nfSpace.Xs
+                              PaddingLeft: =nfSpace.Sm
+                              PaddingRight: =nfSpace.Sm
+                              PaddingTop: =nfSpace.Xs
+                              RadiusBottomLeft: =nfRadius.Pill
+                              RadiusBottomRight: =nfRadius.Pill
+                              RadiusTopLeft: =nfRadius.Pill
+                              RadiusTopRight: =nfRadius.Pill
+                              Size: =nfType.Micro
+                              Text: |-
+                                =Coalesce(
+                                    ThisItem.StatusTitle,
+                                    LookUp(nfStatusTable, StatusKey = ThisItem.StatusKey).Title,
+                                    "Not Started"
+                                )
+                                // THREE WAY FALLBACK, and the order matters. The rebuild
+                                // projection is read first because it costs nothing. If it is
+                                // blank, either nfStatusTable had not loaded when the rebuild ran
+                                // or the collection schema is stale, so the live lookup runs.
+                                // A frozen blank pill can never heal on its own, which is
+                                // exactly what snapshotting this alone caused.
+                              Visible: =Parent.Width >= 660
+                              Width: =100
+                              Wrap: =false
+                              X: =Parent.Width - 436
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblWfPhMeta:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =ThisItem.WorkerCount
+                                & If(ThisItem.WorkerCount = 1, " worker   ", " workers   ")
+                                & Coalesce(ThisItem.PhaseDays, 0)
+                                & " d"
+                              Visible: =Parent.Width >= 580
+                              Width: =116
+                              Wrap: =false
+                              X: =Parent.Width - 328
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfPhAddWorker:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Add a worker to phase " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =nfColor.Primary
+                              FontWeight: =FontWeight.Semibold
+                              Height: =nfSize.RowSm
+                              Icon: ="Add"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpWfExpanded, ThisItem.PhaseClientId);
+                                Set(_cmpAwEditId, 0);
+                                Set(_cmpAwPhaseClientId, ThisItem.PhaseClientId);
+                                Set(_cmpAwIsGroup, false);
+                                Set(_cmpAwName, "");
+                                Set(_cmpAwId, "");
+                                Set(_cmpAwGoal, "");
+                                Set(_cmpAwDept, "OPS");
+                                Set(
+                                    _cmpAwOrder,
+                                    Last(
+                                        Sort(
+                                            Filter(colWfDraftWorkers, PhaseClientId = ThisItem.PhaseClientId, !IsRemoved),
+                                            AssignmentOrder
+                                        )
+                                    ).AssignmentOrder + 1
+                                );
+                                Set(_cmpAwDays, 3);
+                                Set(_cmpAwRequired, true);
+                                Set(_cmpAwOpen, true);
+                                Reset(cmbAwPerson);
+                                Select(btnWfRebuild)
+                                // ADD A WORKER TO ANY PHASE THAT IS NOT COMPLETED, without
+                                // having to expand it first. The dashed add row only ever
+                                // belongs to the expanded phase, which made this the one
+                                // action you could not reach from a collapsed row.
+                                //
+                                // The phase is EXPANDED FIRST so that when the dialog confirms
+                                // and rebuilds, the worker you just created is on screen rather
+                                // than hidden inside a collapsed phase.
+                                //
+                                // NEXT ORDER IS THE LAST WORKER'S ORDER PLUS ONE.
+                                //
+                                // PARALLEL WORKERS SHARE AN ORDER, so a COUNT is not a position:
+                                // three people at order 1 is ONE step containing three people, and
+                                // the next step is 2. Counting gave 4 and invented two empty steps.
+                                //
+                                // Last of an ASCENDING sort, which is the highest order present.
+                                // Two earlier attempts used aggregates instead, Max(table, column)
+                                // and a WorkerMaxOrder column projected by the rebuild, and the
+                                // projected one came back blank and defaulted every worker to 1.
+                                // This reads the draft directly and has no aggregate and no
+                                // projected column to go stale.
+                                //
+                                // Blank + 1 is 1, so an empty phase puts its first worker on 1
+                                // with no guard needed.
+                                //
+                                // DUPLICATED IN THE OTHER ADD HANDLER AND MUST STAY IDENTICAL. It
+                                // cannot be shared: a named formula cannot see inside a component,
+                                // a UDF signature is scalars only so the phase cannot be passed,
+                                // and an internal _ output would have to read _cmpAwPhaseClientId,
+                                // which this same handler is still writing. Two copies kept
+                                // textually identical beats a clever shape that breaks.
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Add a worker to this phase"
+                              Visible: =!ThisItem.IsLocked
+                              Width: =32
+                              X: =Parent.Width - 204
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfPhEdit:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Edit phase " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =nfColor.Primary
+                              FontWeight: =FontWeight.Semibold
+                              Height: =nfSize.RowSm
+                              Icon: ="Edit"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpPhClientId, ThisItem.PhaseClientId);
+                                Set(_cmpPhTitle, ThisItem.Title);
+                                Set(_cmpPhGoal, ThisItem.Subtitle);
+                                Set(_cmpPhOpen, true)
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Rename this phase and set its goal"
+                              Visible: =!ThisItem.IsLocked
+                              Width: =32
+                              X: =Parent.Width - 164
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfPhUp:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Move phase " & ThisItem.Title & " up"
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =nfColor.TextMuted
+                              DisplayMode: |-
+                                =If(
+                                    ThisItem.IsLocked
+                                        || ThisItem.SortPhase <= 1
+                                        || LookUp(
+                                               colWfDraftPhases,
+                                               !IsRemoved && PhaseOrder = ThisItem.SortPhase - 1
+                                           ).IsLocked,
+                                    DisplayMode.Disabled,
+                                    DisplayMode.Edit
+                                )
+                              Height: =nfSize.RowSm
+                              Icon: ="ChevronUp"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Patch(
+                                    colWfDraftPhases,
+                                    LookUp(
+                                        colWfDraftPhases,
+                                        !IsRemoved && PhaseOrder = ThisItem.SortPhase - 1
+                                    ),
+                                    { PhaseOrder: ThisItem.SortPhase }
+                                );
+                                Patch(
+                                    colWfDraftPhases,
+                                    LookUp(colWfDraftPhases, ClientId = ThisItem.PhaseClientId),
+                                    { PhaseOrder: ThisItem.SortPhase - 1 }
+                                );
+                                Set(_cmpWfDirty, true);
+                                Select(btnWfRebuild)
+                                // TWO PATCHES, AND THE ORDER MATTERS. The neighbour moves onto
+                                // my order FIRST, so for one statement two rows share it. The
+                                // second Patch then finds ME by ClientId, which is unique and
+                                // unaffected, rather than by the now ambiguous PhaseOrder.
+                                //
+                                // ThisItem reads colWfRows, which is not rebuilt until the
+                                // Select below, so ThisItem.SortPhase is a stable snapshot
+                                // throughout.
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Move phase up"
+                              Width: =32
+                              X: =Parent.Width - 124
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfPhDown:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Move phase " & ThisItem.Title & " down"
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =nfColor.TextMuted
+                              DisplayMode: |-
+                                =If(
+                                    ThisItem.IsLocked
+                                        || ThisItem.SortPhase >= CountRows(Filter(colWfDraftPhases, !IsRemoved))
+                                        || LookUp(
+                                               colWfDraftPhases,
+                                               !IsRemoved && PhaseOrder = ThisItem.SortPhase + 1
+                                           ).IsLocked,
+                                    DisplayMode.Disabled,
+                                    DisplayMode.Edit
+                                )
+                                // MIRRORS THE UP GUARD. The old version checked only the end of
+                                // the list, so a locked phase sitting below an unlocked one
+                                // could be dragged upward by moving its neighbour down.
+                              Height: =nfSize.RowSm
+                              Icon: ="ChevronDown"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Patch(
+                                    colWfDraftPhases,
+                                    LookUp(
+                                        colWfDraftPhases,
+                                        !IsRemoved && PhaseOrder = ThisItem.SortPhase + 1
+                                    ),
+                                    { PhaseOrder: ThisItem.SortPhase }
+                                );
+                                Patch(
+                                    colWfDraftPhases,
+                                    LookUp(colWfDraftPhases, ClientId = ThisItem.PhaseClientId),
+                                    { PhaseOrder: ThisItem.SortPhase + 1 }
+                                );
+                                Set(_cmpWfDirty, true);
+                                Select(btnWfRebuild)
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Move phase down"
+                              Width: =32
+                              X: =Parent.Width - 84
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfPhDelete:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Delete phase " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =nfColor.DangerText
+                              FontWeight: =FontWeight.Bold
+                              Height: =nfSize.RowSm
+                              Icon: ="Delete"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Patch(
+                                    colWfDraftPhases,
+                                    LookUp(colWfDraftPhases, ClientId = ThisItem.PhaseClientId),
+                                    { IsRemoved: true }
+                                );
+                                ForAll(
+                                    Filter(colWfDraftWorkers, PhaseClientId = ThisItem.PhaseClientId) As w,
+                                    Patch(colWfDraftWorkers, w, { IsRemoved: true })
+                                );
+                                ForAll(
+                                    Sort(Filter(colWfDraftPhases, !IsRemoved), PhaseOrder) As p,
+                                    Patch(
+                                        colWfDraftPhases,
+                                        p,
+                                        {
+                                            PhaseOrder: CountRows(
+                                                Filter(colWfDraftPhases, !IsRemoved, PhaseOrder <= p.PhaseOrder)
+                                            )
+                                        }
+                                    )
+                                );
+                                Set(_cmpWfDirty, true);
+                                Set(
+                                    _cmpWfExpanded,
+                                    Coalesce(First(Filter(colWfDraftPhases, !IsRemoved, !IsLocked)).ClientId, 0)
+                                );
+                                Select(btnWfRebuild)
+                                // Deleting a phase CASCADES to its workers and PhaseOrder is
+                                // renumbered contiguously so the receiver never sees gaps. Both
+                                // are soft: IsRemoved rows survive so Save can say what to
+                                // delete.
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Delete this phase and its workers"
+                              Visible: =!ThisItem.IsLocked
+                              Width: =36
+                              X: =Parent.Width - 44
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfPhTap:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =nfColor.Transparent
+                              BorderThickness: =0
+                              Color: =nfColor.Transparent
+                              Fill: =nfColor.Transparent
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height - 2 * nfSize.FocusRing
+                              HoverBorderColor: =nfColor.Transparent
+                              HoverColor: =nfColor.Transparent
+                              HoverFill: =nfColor.Transparent
+                              OnSelect: |-
+                                =Set(
+                                    _cmpWfExpanded,
+                                    If(ThisItem.IsExpanded, 0, ThisItem.PhaseClientId)
+                                );
+                                Select(btnWfRebuild)
+                              PressedBorderColor: =nfColor.Transparent
+                              PressedColor: =nfColor.Transparent
+                              PressedFill: =nfColor.Transparent
+                              Text: =""
+                              Tooltip: =If(ThisItem.IsExpanded, "Collapse this phase", "Expand this phase")
+                              Width: |-
+                                =Max(
+                                    48,
+                                    Parent.Width
+                                        - 48
+                                        - If(
+                                              Parent.Width >= 660, 444,
+                                              Parent.Width >= 580, 336,
+                                              212
+                                          )
+                                )
+                              X: =48
+                              Y: =nfSize.FocusRing
+                  - conWfRowWorker:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: |-
+                          =If(
+                              IsBlank(ThisItem.AssigneeEmail) && IsBlank(ThisItem.GroupId),
+                              nfColor.WarnBorder,
+                              nfColor.Border
+                          )
+                        BorderThickness: =nfSize.Border
+                        DropShadow: =DropShadow.None
+                        Fill: |-
+                          =If(
+                              IsBlank(ThisItem.AssigneeEmail) && IsBlank(ThisItem.GroupId),
+                              nfColor.WarnFill,
+                              nfColor.Canvas
+                          )
+                        Height: =Parent.TemplateHeight - nfSpace.Sm
+                        RadiusBottomLeft: =nfRadius.Md
+                        RadiusBottomRight: =nfRadius.Md
+                        RadiusTopLeft: =nfRadius.Md
+                        RadiusTopRight: =nfRadius.Md
+                        Visible: =ThisItem.RowType = "worker"
+                        Width: =Parent.TemplateWidth - 2 * nfSpace.Lg - nfSpace.Xxl
+                        X: =nfSpace.Lg + nfSpace.Xxl
+                        Y: =nfSpace.Xs
+                      Children:
+                        - conWfWkOrder:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =nfColor.BorderStrong
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Surface
+                              Height: =nfSize.IconLg
+                              RadiusBottomLeft: =nfRadius.Sm
+                              RadiusBottomRight: =nfRadius.Sm
+                              RadiusTopLeft: =nfRadius.Sm
+                              RadiusTopRight: =nfRadius.Sm
+                              Width: =nfSize.IconLg
+                              X: =nfSpace.Md
+                              Y: =(Parent.Height - Self.Height) / 2
+                            Children:
+                              - lblWfWkOrder:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: |-
+                                      ="Order "
+                                      & ThisItem.AssignmentOrder
+                                    Align: =Align.Center
+                                    AutoHeight: =true
+                                    Color: =nfColor.TextMuted
+                                    FontWeight: =FontWeight.Semibold
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =nfType.Micro
+                                    Text: =ThisItem.AssignmentOrder
+                                    Width: =Parent.Width
+                                    Wrap: =false
+                                    Y: =(Parent.Height - Self.Height) / 2
+                        - lblWfWkDept:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              AutoHeight: =true
+                              Color: =nfColor.TextOnPrimary
+                              Fill: =nfColor.Primary
+                              FontWeight: =FontWeight.Bold
+                              PaddingBottom: =nfSpace.Xs
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =nfSpace.Xs
+                              RadiusBottomLeft: =nfRadius.Sm
+                              RadiusBottomRight: =nfRadius.Sm
+                              RadiusTopLeft: =nfRadius.Sm
+                              RadiusTopRight: =nfRadius.Sm
+                              Size: =nfType.Micro
+                              Text: =Upper(ThisItem.DepartmentCode)
+                              Width: =48
+                              Wrap: =false
+                              X: =nfSize.IconLg + 2 * nfSpace.Md
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblWfWkName:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =nfColor.TextStrong
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =nfType.Small
+                              Text: |-
+                                =ThisItem.Title
+                                & If(ThisItem.IsGroup, "   (group)", "")
+                              Width: |-
+                                =Max(
+                                    72,
+                                    Parent.Width
+                                        - (nfSize.IconLg + 48 + 3 * nfSpace.Md)
+                                        - If(
+                                              Parent.Width >= 600, 412,
+                                              Parent.Width >= 500, 312,
+                                              216
+                                          )
+                                )
+                              Wrap: =false
+                              X: =nfSize.IconLg + 48 + 3 * nfSpace.Md
+                              Y: =(Parent.Height - Self.Height - lblWfWkGoal.Height) / 2
+                        - lblWfWkGoal:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =If(
+                                    IsBlank(ThisItem.AssigneeEmail) && IsBlank(ThisItem.GroupId),
+                                    "Unresolved, pick a person or group",
+                                    ThisItem.Subtitle
+                                )
+                              Width: =lblWfWkName.Width
+                              Wrap: =false
+                              X: =lblWfWkName.X
+                              Y: =lblWfWkName.Y + lblWfWkName.Height
+                        - lblWfWkStatus:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              AutoHeight: =true
+                              Color: |-
+                                =Switch(
+                                    ThisItem.StatusKey,
+                                    "Completed", nfColor.SuccessText,
+                                    "InProgress", nfColor.WarnText,
+                                    "OnHold", nfColor.DangerText,
+                                    nfColor.NeutralText
+                                )
+                              Fill: |-
+                                =Switch(
+                                    ThisItem.StatusKey,
+                                    "Completed", nfColor.SuccessFill,
+                                    "InProgress", nfColor.WarnFill,
+                                    "OnHold", nfColor.DangerFill,
+                                    nfColor.NeutralFill
+                                )
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =nfSpace.Xs
+                              PaddingLeft: =nfSpace.Sm
+                              PaddingRight: =nfSpace.Sm
+                              PaddingTop: =nfSpace.Xs
+                              RadiusBottomLeft: =nfRadius.Pill
+                              RadiusBottomRight: =nfRadius.Pill
+                              RadiusTopLeft: =nfRadius.Pill
+                              RadiusTopRight: =nfRadius.Pill
+                              Size: =nfType.Micro
+                              Text: |-
+                                =Coalesce(
+                                    ThisItem.StatusTitle,
+                                    LookUp(nfStatusTable, StatusKey = ThisItem.StatusKey).Title,
+                                    "Not Started"
+                                )
+                                // THREE WAY FALLBACK, and the order matters. The rebuild
+                                // projection is read first because it costs nothing. If it is
+                                // blank, either nfStatusTable had not loaded when the rebuild ran
+                                // or the collection schema is stale, so the live lookup runs.
+                                // A frozen blank pill can never heal on its own, which is
+                                // exactly what snapshotting this alone caused.
+                              Visible: =Parent.Width >= 600
+                              Width: =92
+                              Wrap: =false
+                              X: =Parent.Width - 404
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfWkRequired:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: |-
+                                =If(ThisItem.Required, "Required. ", "Not required. ")
+                                & If(
+                                    ThisItem.IsLocked,
+                                    "This phase is complete, so it cannot be changed.",
+                                    "Select to change."
+                                )
+                                // STATE FIRST, ACTION ONLY IF THERE IS ONE. The worker name is
+                                // gone from here because the row already announces it, and
+                                // repeating it makes every control in the row read back the
+                                // same name before saying anything useful.
+                              Appearance: |-
+                                =If(
+                                    ThisItem.Required,
+                                    ButtonAppearance.Secondary,
+                                    ButtonAppearance.Subtle
+                                )
+                                // THE STATE IS CARRIED THREE WAYS: the glyph, the weight and
+                                // the presence of a border. Subtle draws no border at all, so
+                                // ticked reads as a raised control and unticked reads as flat
+                                // even on a screen where the icon font has not resolved. The
+                                // previous version put the whole burden on the glyph, and if
+                                // the icon name is wrong the two states become identical.
+                              Color: =If(ThisItem.Required, nfColor.Primary, nfColor.TextMuted)
+                              DisplayMode: =If(ThisItem.IsLocked, DisplayMode.Disabled, DisplayMode.Edit)
+                              FontWeight: =If(ThisItem.Required, FontWeight.Semibold, FontWeight.Normal)
+                              Height: =nfSize.RowSm
+                              Icon: =If(ThisItem.Required, "CheckmarkCircle", "Circle")
+                              OnSelect: |-
+                                =Patch(
+                                    colWfDraftWorkers,
+                                    LookUp(colWfDraftWorkers, ClientId = ThisItem.RowClientId),
+                                    { Required: !ThisItem.Required }
+                                );
+                                Set(_cmpWfDirty, true);
+                                Select(btnWfRebuild)
+                              Size: =nfType.Micro
+                              Text: ="Required"
+                              Tooltip: |-
+                                =If(
+                                    ThisItem.Required,
+                                    "Required. The phase waits for this worker.",
+                                    "Not required. The phase does not wait for this worker."
+                                )
+                                & If(
+                                    ThisItem.IsLocked,
+                                    "  This phase is complete, so it cannot be changed.",
+                                    If(
+                                        ThisItem.Required,
+                                        "  Select to make them optional.",
+                                        "  Select to make them required."
+                                    )
+                                )
+                                // INFORMATION FIRST. The old text opened with an instruction to
+                                // select a control that is Disabled on every worker in a
+                                // Completed phase, which is most of what anyone reading an
+                                // existing workflow sees. What Required MEANS is the part that
+                                // is always true and always useful; the instruction is
+                                // conditional and comes second.
+                                //
+                                // The state has to be spoken because neither the border nor the
+                                // glyph is announced, and the label is deliberately static.
+                              Visible: =Parent.Width >= 500
+                              Width: =88
+                              X: =Parent.Width - 304
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfWkDaysDown:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="One day fewer for " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Secondary
+                              DisplayMode: |-
+                                =If(
+                                    ThisItem.IsLocked || ThisItem.DurationDays <= 1,
+                                    DisplayMode.Disabled,
+                                    DisplayMode.Edit
+                                )
+                              FontWeight: =FontWeight.Bold
+                              Height: =nfSize.RowSm
+                              Icon: ="Subtract"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Patch(
+                                    colWfDraftWorkers,
+                                    LookUp(colWfDraftWorkers, ClientId = ThisItem.RowClientId),
+                                    { DurationDays: Max(ThisItem.DurationDays - 1, 1) }
+                                );
+                                Set(_cmpWfDirty, true);
+                                Select(btnWfRebuild)
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="One day fewer"
+                              Width: =32
+                              X: =Parent.Width - 208
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - lblWfWkDays:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: |-
+                                ="Duration "
+                                & ThisItem.DurationDays
+                                & " days"
+                              Align: =Align.Center
+                              AutoHeight: =true
+                              Color: =nfColor.TextBody
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =ThisItem.DurationDays
+                                & "d"
+                              Width: =36
+                              Wrap: =false
+                              X: =Parent.Width - 172
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfWkDaysUp:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="One day more for " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Secondary
+                              DisplayMode: =If(ThisItem.IsLocked, DisplayMode.Disabled, DisplayMode.Edit)
+                              FontWeight: =FontWeight.Bold
+                              Height: =nfSize.RowSm
+                              Icon: ="Add"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Patch(
+                                    colWfDraftWorkers,
+                                    LookUp(colWfDraftWorkers, ClientId = ThisItem.RowClientId),
+                                    { DurationDays: Min(ThisItem.DurationDays + 1, 60) }
+                                );
+                                Set(_cmpWfDirty, true);
+                                Select(btnWfRebuild)
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="One day more"
+                              Width: =32
+                              X: =Parent.Width - 132
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfWkEdit:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Edit worker " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =nfColor.Primary
+                              FontWeight: =FontWeight.Semibold
+                              Height: =nfSize.RowSm
+                              Icon: ="Edit"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Set(_cmpAwEditId, ThisItem.RowClientId);
+                                Set(_cmpAwPhaseClientId, ThisItem.PhaseClientId);
+                                Set(_cmpAwIsGroup, ThisItem.IsGroup);
+                                Set(_cmpAwName, ThisItem.Title);
+                                Set(_cmpAwId, If(ThisItem.IsGroup, ThisItem.GroupId, ThisItem.AssigneeEmail));
+                                Set(_cmpAwGoal, ThisItem.Subtitle);
+                                Set(_cmpAwDept, ThisItem.DepartmentCode);
+                                Set(_cmpAwOrder, ThisItem.AssignmentOrder);
+                                Set(_cmpAwDays, ThisItem.DurationDays);
+                                Set(_cmpAwRequired, ThisItem.Required);
+                                Set(_cmpAwOpen, true);
+                                Reset(cmbAwPerson)
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Change who does this and what they do"
+                              Visible: =!ThisItem.IsLocked
+                              Width: =36
+                              X: =Parent.Width - 88
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfWkDelete:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Remove worker " & ThisItem.Title
+                              Appearance: =ButtonAppearance.Subtle
+                              Color: =nfColor.DangerText
+                              FontWeight: =FontWeight.Bold
+                              Height: =nfSize.RowSm
+                              Icon: ="Delete"
+                              Layout: =ButtonLayout.IconOnly
+                              OnSelect: |-
+                                =Patch(
+                                    colWfDraftWorkers,
+                                    LookUp(colWfDraftWorkers, ClientId = ThisItem.RowClientId),
+                                    { IsRemoved: true }
+                                );
+                                Set(_cmpWfDirty, true);
+                                Select(btnWfRebuild)
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Remove this worker"
+                              Visible: =!ThisItem.IsLocked
+                              Width: =36
+                              X: =Parent.Width - 44
+                              Y: =(Parent.Height - Self.Height) / 2
+                  - conWfRowAdd:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =nfColor.BorderStrong
+                        BorderStyle: =BorderStyle.Dashed
+                        BorderThickness: =nfSize.Border
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        Height: =Parent.TemplateHeight - nfSpace.Xxl
+                        RadiusBottomLeft: =nfRadius.Md
+                        RadiusBottomRight: =nfRadius.Md
+                        RadiusTopLeft: =nfRadius.Md
+                        RadiusTopRight: =nfRadius.Md
+                        Visible: =ThisItem.RowType = "add"
+                        Width: =Parent.TemplateWidth - 2 * nfSpace.Lg - nfSpace.Xxl
+                        X: =nfSpace.Lg + nfSpace.Xxl
+                        Y: =nfSpace.Md
+                      Children:
+                        - lblWfAddWorker:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              AutoHeight: =true
+                              Color: =nfColor.Primary
+                              FontWeight: =FontWeight.Semibold
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Size: =nfType.Small
+                              Text: ="Add Worker"
+                              Width: =Parent.Width
+                              Wrap: =false
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnWfAddWorker:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =nfColor.Transparent
+                              BorderThickness: =0
+                              Color: =nfColor.Transparent
+                              Fill: =nfColor.Transparent
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height - 2 * nfSize.FocusRing
+                              HoverBorderColor: =nfColor.Transparent
+                              HoverColor: =nfColor.Transparent
+                              HoverFill: =nfColor.Transparent
+                              OnSelect: |-
+                                =Set(_cmpAwEditId, 0);
+                                Set(_cmpAwPhaseClientId, ThisItem.PhaseClientId);
+                                Set(_cmpAwIsGroup, false);
+                                Set(_cmpAwName, "");
+                                Set(_cmpAwId, "");
+                                Set(_cmpAwGoal, "");
+                                Set(_cmpAwDept, "OPS");
+                                Set(
+                                    _cmpAwOrder,
+                                    Last(
+                                        Sort(
+                                            Filter(colWfDraftWorkers, PhaseClientId = ThisItem.PhaseClientId, !IsRemoved),
+                                            AssignmentOrder
+                                        )
+                                    ).AssignmentOrder + 1
+                                );
+                                // IDENTICAL TO THE PHASE ROW ADD BUTTON, DELIBERATELY. See the
+                                // note there for the reasoning and for why it cannot be shared.
+                                // If you change one, change both, and diff them afterwards.
+                                Set(_cmpAwDays, 3);
+                                Set(_cmpAwRequired, true);
+                                Set(_cmpAwOpen, true);
+                                Reset(cmbAwPerson)
+                              PressedBorderColor: =nfColor.Transparent
+                              PressedColor: =nfColor.Transparent
+                              PressedFill: =nfColor.Transparent
+                              Text: =""
+                              Tooltip: ="Add a worker to this phase"
+                              Width: =Parent.Width - 2 * nfSize.FocusRing
+                              X: =nfSize.FocusRing
+                              Y: =nfSize.FocusRing
+            - lblWfEmpty:
+                Control: ModernText@1.0.0
+                Properties:
+                  AccessibleLabel: =Self.Text
+                  Align: =Align.Center
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Color: =nfColor.TextMuted
+                  FillPortions: =1
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingLeft: =nfSpace.Xxl
+                  PaddingRight: =nfSpace.Xxl
+                  Size: =nfType.Small
+                  Text: ="No phases yet. Load a template from the header, or use Add Phase to build one from scratch."
+                  Visible: =CountRows(colWfRows) = 0
+            - shpWfRuleFooter:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Border
+                  FillPortions: =0
+                  Height: =nfSize.Border
+            - conWfFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.SurfaceAlt
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Lg
+                  PaddingRight: =nfSpace.Lg
+                  PaddingTop: =nfSpace.Md
+                  RadiusBottomLeft: =If(nfIsDesktop, nfRadius.Xl, 0)
+                  RadiusBottomRight: =If(nfIsDesktop, nfRadius.Xl, 0)
+                Children:
+                  - lblWfTotals:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Center
+                        AutoHeight: =true
+                        Color: =If(!nfIsFullVersion && cmpDetEditWorkflow.RequestKey <> "", nfColor.WarnText, nfColor.TextMuted)
+                        FillPortions: =1
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =nfType.Small
+                        Text: |-
+                          =If(
+                              !nfIsFullVersion && cmpDetEditWorkflow.RequestKey <> "",
+                              CountRows(Filter(colWfDraftPhases, !IsRemoved)) & " phases, "
+                                  & CountRows(Filter(colWfDraftWorkers, !IsRemoved)) & " workers. Saving is " & Lower(nfFullVersionNote) & ", see " & nfUpgradeUrl,
+                              CountRows(Filter(colWfDraftPhases, !IsRemoved))
+                              & " phases   "
+                              & CountRows(Filter(colWfDraftWorkers, !IsRemoved))
+                              & If(
+                                  CountRows(Filter(colWfDraftWorkers, !IsRemoved)) = 1,
+                                  " worker   ~",
+                                  " workers   ~"
+                              )
+                              & Coalesce(Sum(Filter(colWfRows, RowType = "phase"), PhaseDays), 0)
+                              & " days estimated"
+                          )
+                        Wrap: =false
+                  - lblWfUnresolved:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        Align: =Align.Center
+                        AlignInContainer: =AlignInContainer.Center
+                        AutoHeight: =true
+                        Color: =nfColor.WarnText
+                        Fill: =nfColor.WarnFill
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =nfSpace.Xs
+                        PaddingLeft: =nfSpace.Md
+                        PaddingRight: =nfSpace.Md
+                        PaddingTop: =nfSpace.Xs
+                        RadiusBottomLeft: =nfRadius.Pill
+                        RadiusBottomRight: =nfRadius.Pill
+                        RadiusTopLeft: =nfRadius.Pill
+                        RadiusTopRight: =nfRadius.Pill
+                        Size: =nfType.Micro
+                        Text: |-
+                          =cmpDetEditWorkflow.UnresolvedCount
+                          & " unresolved"
+                        Visible: =cmpDetEditWorkflow.UnresolvedCount > 0
+                        Width: =116
+                        Wrap: =false
+                  - btnWfCancel:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Cancel"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Secondary
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Clear(colWfDraftPhases);
+                          Clear(colWfDraftWorkers);
+                          Clear(colWfRows);
+                          Clear(colWfRowsTmp);
+                          Clear(colWfKeepPhases);
+                          Clear(colWfKeepWorkers);
+                          Set(_cmpWfExpanded, 0);
+                          Set(_cmpWfDirty, false);
+                          Set(_cmpWfReqTitle, "");
+                          Set(_cmpAwOpen, false);
+                          Set(_cmpPhOpen, false);
+                          cmpDetEditWorkflow.OnCancel()
+                          // Nothing was written outside the draft, so cancel is a clear and
+                          // an event. The host only has to drop its open flag.
+                          //
+                          // THE SCRIM AND THE HEADER X BOTH Select() THIS BUTTON. The scrim
+                          // used to raise OnCancel directly, which left the whole draft and
+                          // the dirty flag standing after the dialog closed.
+                        Size: =nfType.Small
+                        Text: ="Cancel"
+                        Width: =104
+                  - btnWfSave:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Save Changes"
+                        AlignInContainer: =AlignInContainer.Center
+                        DisplayMode: |-
+                          =If(
+                              (!nfIsFullVersion && cmpDetEditWorkflow.RequestKey <> "")
+                              || !_cmpWfDirty
+                              || (cmpDetEditWorkflow.RequireResolved && cmpDetEditWorkflow.UnresolvedCount > 0),
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                          // RESOLUTION IS THE HOST'S POLICY, NOT THIS COMPONENT'S.
+                          // A template assignment ARRIVES unresolved by design, so a
+                          // host seeding a new request from a template starts at
+                          // UnresolvedCount equal to the assignment count and Save
+                          // could never light up however much was edited. That is
+                          // what RequireResolved is for.
+                          //
+                          // _cmpWfDirty is still required in both modes. Save on an
+                          // untouched draft is a no op worth refusing.
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =cmpDetEditWorkflow.OnSave()
+                          // RAISES THE EVENT AND NOTHING ELSE. The host reads DraftPhases and
+                          // DraftWorkers and does the write, which is the one swap point
+                          // between a collection only build and a flow backed one.
+                          //
+                          // Canvas has minted NO key. ClientId and PhaseClientId are local
+                          // join columns and the receiver must strip them.
+                          //
+                          // The draft is NOT cleared here. A failed save must leave the work
+                          // on screen, so the host calls Reset on this instance once the
+                          // write succeeds.
+                        Size: =nfType.Small
+                        Text: ="Save Changes"
+                        Tooltip: |-
+                          =If(
+                              !nfIsFullVersion && cmpDetEditWorkflow.RequestKey <> "",
+                              "Saving would apply " & CountRows(Filter(colWfDraftPhases, !IsRemoved))
+                                  & " phases and " & CountRows(Filter(colWfDraftWorkers, !IsRemoved))
+                                  & " workers to this request and log the change to the audit trail. " & nfGateSuffix,
+                              cmpDetEditWorkflow.RequireResolved && cmpDetEditWorkflow.UnresolvedCount > 0,
+                              "Every worker needs a person or a group before you can save",
+                              !_cmpWfDirty,
+                              "Nothing has changed yet",
+                              cmpDetEditWorkflow.UnresolvedCount > 0,
+                              "Save the workflow. Some rows still carry a role rather than a person",
+                              "Save the edited workflow"
+                          )
+                        Width: =136
+      - conAwScrim:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Overlay
+            Height: =Parent.Height
+            Visible: =_cmpAwOpen
+            Width: =Parent.Width
+          Children:
+            - btnAwDismiss:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =nfColor.Transparent
+                  BorderThickness: =0
+                  Color: =nfColor.Transparent
+                  Fill: =nfColor.Transparent
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height
+                  HoverBorderColor: =nfColor.Transparent
+                  HoverColor: =nfColor.Transparent
+                  HoverFill: =nfColor.Transparent
+                  OnSelect: =Set(_cmpAwOpen, false)
+                  PressedBorderColor: =nfColor.Transparent
+                  PressedColor: =nfColor.Transparent
+                  PressedFill: =nfColor.Transparent
+                  Text: =""
+                  Tooltip: ="Dismiss"
+                  Width: =Parent.Width
+      - conAwPanel:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =nfColor.Border
+            BorderThickness: =nfSize.Border
+            DropShadow: =DropShadow.ExtraBold
+            Fill: =nfColor.Surface
+            Height: =conAwHeader.Height + conAwBody.Height + conAwFooter.Height + 2 * nfSize.Border
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =nfRadius.Xl
+            RadiusBottomRight: =nfRadius.Xl
+            RadiusTopLeft: =nfRadius.Xl
+            RadiusTopRight: =nfRadius.Xl
+            Visible: =_cmpAwOpen
+            Width: =Min(Parent.Width - 2 * nfSpace.Lg, 460)
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =Max(nfSpace.Xl, (Parent.Height - Self.Height) / 2)
+          Children:
+            - conAwHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.Transparent
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Md
+                Children:
+                  - lblAwTitle:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Center
+                        AutoHeight: =true
+                        Color: =nfColor.TextStrong
+                        FillPortions: =1
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =nfType.Body
+                        Text: |-
+                          =If(_cmpAwEditId = 0, "Add Worker", "Edit Worker")
+                          & "   "
+                          & LookUp(colWfDraftPhases, ClientId = _cmpAwPhaseClientId).Title
+                        Wrap: =false
+                  - btnAwClose:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Close the worker dialog"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Subtle
+                        Color: =nfColor.TextMuted
+                        FontWeight: =FontWeight.Bold
+                        Height: =nfSize.RowSm
+                        Icon: ="Dismiss"
+                        Layout: =ButtonLayout.IconOnly
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(_cmpAwOpen, false)
+                        Size: =nfType.Small
+                        Text: =""
+                        Tooltip: ="Close without changing this worker"
+                        Width: =32
+            - shpAwRuleHeader:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Border
+                  FillPortions: =0
+                  Height: =nfSize.Border
+            - conAwBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.Transparent
+                  FillPortions: =0
+                  Height: |-
+                    =Min(
+                        6 * nfSize.Row + lblAwCurrent.Height
+                        + 5 * Self.LayoutGap + Self.PaddingTop + Self.PaddingBottom,
+                        // SIX CHILDREN, SO FIVE GAPS. The six rows are mode, current,
+                        // picker, goal at DOUBLE height, department and options. Hand
+                        // counted, and the one thing here that rots when a field is added.
+                        // It fails safe: an undercount only grows the scrollbar that
+                        // LayoutOverflowY already provides, it never clips.
+                        App.Height - conAwHeader.Height - conAwFooter.Height - 4 * nfSpace.Xl
+                    )
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =nfSpace.Md
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =nfSpace.Lg
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Lg
+                Children:
+                  - conAwMode:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: =nfSize.Row
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =nfSpace.Sm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - btnAwModePerson:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Assign a person"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: |-
+                                =If(
+                                    !_cmpAwIsGroup,
+                                    ButtonAppearance.Primary,
+                                    ButtonAppearance.Secondary
+                                )
+                              FillPortions: =1
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =Set(_cmpAwIsGroup, false);
+                                Set(_cmpAwName, "");
+                                Set(_cmpAwId, "");
+                                Reset(cmbAwPerson)
+                              Size: =nfType.Small
+                              Text: ="Person"
+                        - btnAwModeGroup:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Assign a group, not available yet"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: |-
+                                =If(
+                                    _cmpAwIsGroup,
+                                    ButtonAppearance.Primary,
+                                    ButtonAppearance.Secondary
+                                )
+                              DisplayMode: =DisplayMode.Disabled
+                              FillPortions: =1
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =Set(_cmpAwIsGroup, true);
+                                Set(_cmpAwName, "");
+                                Set(_cmpAwId, "");
+                                Reset(cmbAwPerson)
+                              Size: =nfType.Small
+                              Text: ="Group"
+                              Tooltip: ="Group assignment is not wired up yet"
+                  - lblAwCurrent:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =nfColor.TextMuted
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =nfType.Micro
+                        Text: |-
+                          =If(
+                              IsBlank(_cmpAwId),
+                              "No one assigned yet.",
+                              "Assigned to " & _cmpAwName & "   " & _cmpAwId
+                          )
+                          // STATED IN WORDS, because the combo box below shows a blank input
+                          // until someone picks. On an edit that would read as though the
+                          // worker had no assignee, and the confirm button would look
+                          // wrongly enabled.
+                        VerticalAlign: =VerticalAlign.Top
+                  - cmbAwPerson:
+                      Control: ModernCombobox@1.1.1
+                      Properties:
+                        AccessibleLabel: ="Search for a person"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        DelayOutput: |-
+                          =true
+                          // SearchText UPDATES ON A PAUSE, NOT PER KEYSTROKE. Without this,
+                          // Items fires one Office365Users call per character typed, against
+                          // a throttle that is per user per connection.
+                        Height: =nfSize.Row
+                        InputTextPlaceholder: |-
+                          =If(
+                              _cmpAwEditId = 0 || IsBlank(_cmpAwName),
+                              "Search by name or email",
+                              "Currently " & _cmpAwName & "  -  search only to change"
+                          )
+                          // THE PICKER OPENS BLANK ON AN EDIT AND THAT IS DELIBERATE: both entry
+                          // points Reset this control so SearchText is empty and the directory
+                          // slice appears. The cost was that an edit looked like it had LOST the
+                          // assignee, so people reselected the same person to be safe.
+                          //
+                          // Nothing was lost. _cmpAwName and _cmpAwId are both seeded from the row
+                          // by btnWfWkEdit, and Save writes them back untouched, so an edit that
+                          // only changes the goal keeps the original assignee. This says so.
+                          //
+                          // NOT DefaultSelectedItems. Items is Office365Users.SearchUser, so a
+                          // default would have to be a record of that exact shape; a partial one
+                          // fails with "the table passed in has none of the expected columns",
+                          // which is the same failure StagedFilesData hit on cmpFileUpload. The
+                          // pac route does not validate formulas, so that would have shipped
+                          // silently.
+                        ItemDisplayText: |-
+                          =ThisItem.DisplayName & "   -   " & ThisItem.Mail
+                          // ItemDisplayText IS WHY THIS IS NOW THE MODERN CONTROL. The
+                          // classic picker chooses its display columns from DisplayFields,
+                          // and the Single, Double or Person TEMPLATE that lays them out
+                          // lives at Layout, a sibling of Control, not under Properties.
+                          // Nothing written under Properties can reach it, so a pasted
+                          // classic picker always lands on Single and has to be repaired by
+                          // hand. ItemDisplayText is a formula, so it is a Property, so it
+                          // survives the paste.
+                        Items: |-
+                          =nfDirectory
+                          // Self.SearchText EXPOSES THE TYPED TEXT as a property, so Items
+                          // is a genuine directory search rather than a client side filter
+                          // over a preloaded list. IsSearchable on its own only filters what
+                          // the control was already given, which cannot reach a whole tenant.
+                          //
+                          // NO MINIMUM LENGTH. A blank searchTerm returns a default slice of
+                          // the tenant, so the list is populated the moment the dialog opens
+                          // rather than showing an empty box that gives no clue what it wants.
+                          // DelayOutput above is what keeps this off a per keystroke call, so
+                          // the two properties have to move together: turning DelayOutput off
+                          // while this has no gate is one connector call per character.
+                          //
+                          // btnWfWkEdit and btnWfAddWorker both Reset this control before
+                          // opening the dialog, so SearchText is blank on every open and the
+                          // default slice is what appears first.
+                          //
+                          // Office365Users is a STANDARD connector, so this is safe in a
+                          // collection only build too and drags nobody onto premium
+                          // licensing.
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: |-
+                          =If(
+                              !IsBlank(Self.Selected.Mail),
+                              Set(_cmpAwName, Self.Selected.DisplayName);
+                              Set(_cmpAwId, Lower(Self.Selected.Mail))
+                          )
+                        SelectMultiple: |-
+                          =false
+                          // WRITTEN EXPLICITLY. The modern default is true, and a picker
+                          // that silently accepts two people when the draft row holds one
+                          // assignee is not a failure anyone notices until the flow runs.
+                        Size: =nfType.Small
+                  - txtAwGoal:
+                      Control: ModernTextInput@1.1.1
+                      Properties:
+                        AccessibleLabel: ="What this worker should do"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        Default: =_cmpAwGoal
+                        Height: =2 * nfSize.Row
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        MaxLength: =255
+                        OnChange: =Set(_cmpAwGoal, Self.Text)
+                        Placeholder: ="What should this worker do"
+                        Size: =nfType.Small
+                        Type: |-
+                          =TextInputType.Multiline
+                          // Type, NOT Mode. Mode with TextMode.MultiLine is the CLASSIC
+                          // text input property and is rejected here.
+                          //
+                          // MaxLength stays at 255 to match the SharePoint Goal column. The
+                          // taller box invites more text than the column can hold, and the
+                          // truncation would happen silently in the flow.
+                  - cmbAwDept:
+                      Control: ModernCombobox@1.1.1
+                      Properties:
+                        AccessibleLabel: ="Department"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        DefaultSelectedItems: =Filter(nfDepartments, ConfigKey = _cmpAwDept)
+                        Height: =nfSize.Row
+                        InputTextPlaceholder: ="Office"
+                        IsSearchable: =false
+                        ItemDisplayText: =ThisItem.Title
+                        Items: =nfDepartments
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnChange: =Set(_cmpAwDept, Self.Selected.ConfigKey)
+                        SelectMultiple: =false
+                        Size: =nfType.Small
+                  - conAwOpts:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: =nfSize.Row
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =nfSpace.Sm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - btnAwOrderDown:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Run earlier"
+                              AlignInContainer: =AlignInContainer.Center
+                              Appearance: =ButtonAppearance.Secondary
+                              DisplayMode: =If(_cmpAwOrder <= 1, DisplayMode.Disabled, DisplayMode.Edit)
+                              FontWeight: =FontWeight.Bold
+                              Height: =nfSize.RowSm
+                              Icon: ="Subtract"
+                              Layout: =ButtonLayout.IconOnly
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =Set(_cmpAwOrder, Max(_cmpAwOrder - 1, 1))
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Run earlier"
+                              Width: =32
+                        - lblAwOrder:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              AlignInContainer: =AlignInContainer.Center
+                              AutoHeight: =true
+                              Color: =nfColor.TextBody
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                ="Order "
+                                & _cmpAwOrder
+                              Width: =72
+                              Wrap: =false
+                        - btnAwOrderUp:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="Run later"
+                              AlignInContainer: =AlignInContainer.Center
+                              Appearance: =ButtonAppearance.Secondary
+                              FontWeight: =FontWeight.Bold
+                              Height: =nfSize.RowSm
+                              Icon: ="Add"
+                              Layout: =ButtonLayout.IconOnly
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =Set(_cmpAwOrder, Min(_cmpAwOrder + 1, 20))
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="Run later"
+                              Width: =32
+                        - btnAwDaysDown:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="One day fewer"
+                              AlignInContainer: =AlignInContainer.Center
+                              Appearance: =ButtonAppearance.Secondary
+                              DisplayMode: =If(_cmpAwDays <= 1, DisplayMode.Disabled, DisplayMode.Edit)
+                              FontWeight: =FontWeight.Bold
+                              Height: =nfSize.RowSm
+                              Icon: ="Subtract"
+                              Layout: =ButtonLayout.IconOnly
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =Set(_cmpAwDays, Max(_cmpAwDays - 1, 1))
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="One day fewer"
+                              Width: =32
+                        - lblAwDays:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              AlignInContainer: =AlignInContainer.Center
+                              AutoHeight: =true
+                              Color: =nfColor.TextBody
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =_cmpAwDays
+                                & " days"
+                              Width: =72
+                              Wrap: =false
+                        - btnAwDaysUp:
+                            Control: ModernButton@1.0.0
+                            Properties:
+                              AccessibleLabel: ="One day more"
+                              AlignInContainer: =AlignInContainer.Center
+                              Appearance: =ButtonAppearance.Secondary
+                              FontWeight: =FontWeight.Bold
+                              Height: =nfSize.RowSm
+                              Icon: ="Add"
+                              Layout: =ButtonLayout.IconOnly
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =Set(_cmpAwDays, Min(_cmpAwDays + 1, 60))
+                              Size: =nfType.Small
+                              Text: =""
+                              Tooltip: ="One day more"
+                              Width: =32
+                        - chkAwRequired:
+                            Control: ModernCheckbox@1.0.1
+                            Properties:
+                              AccessibleLabel: ="Aw Required"
+                              AlignInContainer: =AlignInContainer.Center
+                              Default: |-
+                                =_cmpAwRequired
+                                // Default, NOT Checked. Checked is the property name on the
+                                // UPDATED Checkbox; ModernCheckbox@1.0.0 predates that rename
+                                // and Studio rejects Checked with PA2108. If a newer version
+                                // is available in this environment, bump it and rename this to
+                                // Checked, which also brings Tooltip and a View mode that
+                                // reads as read only rather than disabled.
+                                //
+                                // A REAL CHECKBOX IS SAFE HERE and was not safe in the gallery
+                                // row on this version. The value is a DEFAULT rather than a
+                                // binding, and this dialog never rebuilds a collection
+                                // underneath itself, so the control is only re-evaluated when
+                                // the host opens the dialog, and every open sets
+                                // _cmpAwRequired before the panel becomes visible.
+                              FillPortions: =1
+                              Label: ="Required?"
+                              LayoutMinHeight: =16
+                              LayoutMinWidth: =16
+                              OnCheck: =Set(_cmpAwRequired, true)
+                              OnUncheck: |-
+                                =Set(_cmpAwRequired, false)
+                                // OnCheck AND OnUncheck, NOT OnChange. The checkbox family
+                                // raises the two separately and has no OnChange, so wiring
+                                // only one leaves the flag stuck true once it has been set.
+            - shpAwRuleFooter:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Border
+                  FillPortions: =0
+                  Height: =nfSize.Border
+            - conAwFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.SurfaceAlt
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutJustifyContent: =LayoutJustifyContent.End
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Md
+                  RadiusBottomLeft: =nfRadius.Xl
+                  RadiusBottomRight: =nfRadius.Xl
+                Children:
+                  - btnAwCancel:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Cancel"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Secondary
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(_cmpAwOpen, false)
+                        Size: =nfType.Small
+                        Text: ="Cancel"
+                        Width: =104
+                  - btnAwConfirm:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: =If(_cmpAwEditId = 0, "Add Worker", "Save Worker")
+                        AlignInContainer: =AlignInContainer.Center
+                        DisplayMode: |-
+                          =If(
+                              IsBlank(_cmpAwId) || IsBlank(Trim(txtAwGoal.Text)),
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =If(
+                              _cmpAwEditId = 0,
+                              Collect(
+                                  colWfDraftWorkers,
+                                  {
+                                      ClientId: _cmpWfNextId,
+                                      PhaseClientId: _cmpAwPhaseClientId,
+                                      AssignmentKey: "",
+                                      AssignmentOrder: _cmpAwOrder,
+                                      AssigneeName: _cmpAwName,
+                                      AssigneeEmail: If(_cmpAwIsGroup, "", _cmpAwId),
+                                      DepartmentCode: _cmpAwDept,
+                                      Goal: Trim(txtAwGoal.Text),
+                                      Required: _cmpAwRequired,
+                                      DurationDays: _cmpAwDays,
+                                      IsGroup: _cmpAwIsGroup,
+                                      GroupId: If(_cmpAwIsGroup, _cmpAwId, ""),
+                                      StatusKey: "NotStarted",
+                                      IsNew: true,
+                                      IsRemoved: false
+                                  }
+                              );
+                              Set(_cmpWfNextId, _cmpWfNextId + 1),
+                              Patch(
+                                  colWfDraftWorkers,
+                                  LookUp(colWfDraftWorkers, ClientId = _cmpAwEditId),
+                                  {
+                                      AssignmentOrder: _cmpAwOrder,
+                                      AssigneeName: _cmpAwName,
+                                      AssigneeEmail: If(_cmpAwIsGroup, "", _cmpAwId),
+                                      DepartmentCode: _cmpAwDept,
+                                      Goal: Trim(txtAwGoal.Text),
+                                      Required: _cmpAwRequired,
+                                      DurationDays: _cmpAwDays,
+                                      IsGroup: _cmpAwIsGroup,
+                                      GroupId: If(_cmpAwIsGroup, _cmpAwId, "")
+                                  }
+                              )
+                          );
+                          Set(_cmpAwOpen, false);
+                          Set(_cmpWfDirty, true);
+                          Select(btnWfRebuild)
+                          // _cmpAwId carries an email for a person and a group id for a
+                          // group, and the split into two columns happens here so the
+                          // picker above does not have to know the draft schema.
+                          //
+                          // DRAFT ONLY. No list write, no flow call. Canvas mints no
+                          // AssignmentKey: a new row carries a blank key and a local
+                          // ClientId.
+                        Size: =nfType.Small
+                        Text: =If(_cmpAwEditId = 0, "Add Worker", "Save Worker")
+                        Tooltip: |-
+                          =If(
+                              IsBlank(_cmpAwId),
+                              "Pick a person first",
+                              IsBlank(Trim(txtAwGoal.Text)),
+                              "Say what this worker should do",
+                              "Apply this worker to the draft"
+                          )
+                        Width: =128
+      - conPhScrim:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Overlay
+            Height: =Parent.Height
+            Visible: =_cmpPhOpen
+            Width: =Parent.Width
+          Children:
+            - btnPhDismiss:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =nfColor.Transparent
+                  BorderThickness: =0
+                  Color: =nfColor.Transparent
+                  Fill: =nfColor.Transparent
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height
+                  HoverBorderColor: =nfColor.Transparent
+                  HoverColor: =nfColor.Transparent
+                  HoverFill: =nfColor.Transparent
+                  OnSelect: =Set(_cmpPhOpen, false)
+                  PressedBorderColor: =nfColor.Transparent
+                  PressedColor: =nfColor.Transparent
+                  PressedFill: =nfColor.Transparent
+                  Text: =""
+                  Tooltip: ="Dismiss"
+                  Width: =Parent.Width
+      - conPhPanel:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =nfColor.Border
+            BorderThickness: =nfSize.Border
+            DropShadow: =DropShadow.ExtraBold
+            Fill: =nfColor.Surface
+            Height: =conPhHeader.Height + conPhBody.Height + conPhFooter.Height + 2 * nfSize.Border
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =nfRadius.Xl
+            RadiusBottomRight: =nfRadius.Xl
+            RadiusTopLeft: =nfRadius.Xl
+            RadiusTopRight: =nfRadius.Xl
+            Visible: =_cmpPhOpen
+            Width: =Min(Parent.Width - 2 * nfSpace.Lg, 460)
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =Max(nfSpace.Xl, (Parent.Height - Self.Height) / 2)
+          Children:
+            - conPhHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.Transparent
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Md
+                Children:
+                  - lblPhTitle:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Center
+                        AutoHeight: =true
+                        Color: =nfColor.TextStrong
+                        FillPortions: =1
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =nfType.Body
+                        Text: ="Edit Phase"
+                        Wrap: =false
+                  - btnPhClose:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Close the phase dialog"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Subtle
+                        Color: =nfColor.TextMuted
+                        FontWeight: =FontWeight.Bold
+                        Height: =nfSize.RowSm
+                        Icon: ="Dismiss"
+                        Layout: =ButtonLayout.IconOnly
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(_cmpPhOpen, false)
+                        Size: =nfType.Small
+                        Text: =""
+                        Tooltip: ="Close without renaming this phase"
+                        Width: =32
+            - shpPhRuleHeader:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Border
+                  FillPortions: =0
+                  Height: =nfSize.Border
+            - conPhBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.Transparent
+                  FillPortions: =0
+                  Height: |-
+                    =lblPhNameLabel.Height
+                    + nfSize.Row
+                    + lblPhGoalLabel.Height
+                    + nfSize.Row
+                    + 3 * Self.LayoutGap
+                    + Self.PaddingTop
+                    + Self.PaddingBottom
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =nfSpace.Sm
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Lg
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Lg
+                Children:
+                  - lblPhNameLabel:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =nfColor.TextMuted
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =nfType.Micro
+                        Text: ="PHASE NAME"
+                        Wrap: =false
+                  - txtPhName:
+                      Control: ModernTextInput@1.1.1
+                      Properties:
+                        AccessibleLabel: ="Phase name"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        Default: =_cmpPhTitle
+                        Height: =nfSize.Row
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        MaxLength: =120
+                        OnChange: =Set(_cmpPhTitle, Self.Text)
+                        Placeholder: ="Name this phase"
+                        Size: =nfType.Small
+                  - lblPhGoalLabel:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Stretch
+                        AutoHeight: =true
+                        Color: =nfColor.TextMuted
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =nfType.Micro
+                        Text: ="PHASE GOAL"
+                        Wrap: =false
+                  - txtPhGoal:
+                      Control: ModernTextInput@1.1.1
+                      Properties:
+                        AccessibleLabel: ="Phase goal"
+                        AlignInContainer: =AlignInContainer.Stretch
+                        Appearance: =Appearance.Outline
+                        Default: =_cmpPhGoal
+                        Height: =nfSize.Row
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        MaxLength: =255
+                        OnChange: =Set(_cmpPhGoal, Self.Text)
+                        Placeholder: ="What happens in this phase"
+                        Size: =nfType.Small
+            - shpPhRuleFooter:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Border
+                  FillPortions: =0
+                  Height: =nfSize.Border
+            - conPhFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =nfColor.SurfaceAlt
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutJustifyContent: =LayoutJustifyContent.End
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Md
+                  RadiusBottomLeft: =nfRadius.Xl
+                  RadiusBottomRight: =nfRadius.Xl
+                Children:
+                  - btnPhCancel:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Cancel"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Secondary
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Set(_cmpPhOpen, false)
+                        Size: =nfType.Small
+                        Text: ="Cancel"
+                        Width: =104
+                  - btnPhSave:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Save Phase"
+                        AlignInContainer: =AlignInContainer.Center
+                        DisplayMode: |-
+                          =If(
+                              IsBlank(Trim(_cmpPhTitle)),
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Patch(
+                              colWfDraftPhases,
+                              LookUp(colWfDraftPhases, ClientId = _cmpPhClientId),
+                              {
+                                  Title: Trim(_cmpPhTitle),
+                                  PhaseGoal: Trim(_cmpPhGoal)
+                              }
+                          );
+                          Set(_cmpPhOpen, false);
+                          Set(_cmpWfDirty, true);
+                          Select(btnWfRebuild)
+                          // DRAFT ONLY. A phase added in this session still carries a
+                          // blank PhaseKey, and the receiver mints it on insert.
+                        Size: =nfType.Small
+                        Text: ="Save Phase"
+                        Tooltip: ="Apply the phase name and goal to the draft"
+                        Width: =128

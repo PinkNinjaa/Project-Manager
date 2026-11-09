@@ -1,0 +1,924 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpActivityTimeline:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      ActiveFilter:
+        PropertyKind: Output
+        DisplayName: ActiveFilter
+        Description: The currently selected filter value.
+        DataType: Text
+      CardHeight:
+        PropertyKind: Input
+        DisplayName: CardHeight
+        Description: Minimum height of a standard entry card with no sub-detail. Cards grow past this to fit their content.
+        DataType: Number
+        Default: =104
+      FilterOptions:
+        PropertyKind: Input
+        DisplayName: FilterOptions
+        Description: Table of {Value:Text} rows for the filter dropdown. Values must match Category values in Items and IconMap.
+        DataType: Table
+        Default: |-
+          =Table(
+            {Value: "All Activities"},
+            {Value: "Comments"},
+            {Value: "Emails"},
+            {Value: "Documents"},
+            {Value: "Tasks"},
+            {Value: "System Events"}
+          )
+      HideHeader:
+        PropertyKind: Input
+        DisplayName: HideHeader
+        Description: When true hides the toolbar with filter entry count and action buttons.
+        DataType: Boolean
+        Default: =false
+      IconMap:
+        PropertyKind: Input
+        DisplayName: IconMap
+        Description: Maps Category values to icon types, dot colors and card icon colors. Category match is case-insensitive. Include a row with Category="default" as fallback. IconType values are comment, email, document, person, checkbadge, check, workflow, folder. IconColor is a hex string e.g. "#7C3AED" used for the top-right card icon.
+        DataType: Table
+        Default: |-
+          =Table(
+            {Category: "Comments",      IconType: "comment",    DotColor: RGBA(124, 58,  237, 1), IconColor: "#7C3AED"},
+            {Category: "Emails",        IconType: "email",      DotColor: RGBA(37,  99,  235, 1), IconColor: "#2563EB"},
+            {Category: "Documents",     IconType: "document",   DotColor: RGBA(217, 119, 6,   1), IconColor: "#D97706"},
+            {Category: "Tasks",         IconType: "person",     DotColor: RGBA(107, 114, 128, 1), IconColor: "#6B7280"},
+            {Category: "System Events", IconType: "workflow",   DotColor: RGBA(2,   132, 199, 1), IconColor: "#0284C7"},
+            {Category: "default",       IconType: "comment",    DotColor: RGBA(107, 114, 128, 1), IconColor: "#6B7280"}
+          )
+      IsLoading:
+        PropertyKind: Input
+        DisplayName: IsLoading
+        Description: When true shows skeleton placeholder cards instead of data.
+        DataType: Boolean
+        Default: =false
+      Items:
+        PropertyKind: Input
+        DisplayName: Items
+        Description: Audit trail entries. Schema - EventTitle, EventDescription, Author, DisplayDateTime, Category (must match FilterOptions values and IconMap), HasSubDetail, SubTo, SubCC, SubPriority (High or Normal), SubMessage. Cards size themselves to their content, so cap long SubMessage values at the source if you need a bounded row height. No IconType needed - derived automatically from Category via IconMap.
+        DataType: Table
+        Default: |-
+          =Table(
+              {
+                  EventTitle: "Comment Added",
+                  EventDescription: "Looks good.",
+                  Author: "Sarah Johnson",
+                  DisplayDateTime: "Today 2:30 PM",
+                  Category: "Comments",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              },
+              {
+                  EventTitle: "Email Notification Sent",
+                  EventDescription: "Request for Technical Review",
+                  Author: "Jordan Mitchell",
+                  DisplayDateTime: "Nov 12, 2024 3:45 PM",
+                  Category: "Emails",
+                  HasSubDetail: true,
+                  SubTo: "Sarah Johnson, Mike Chen, Taylor Bennett, Priya Raghunathan, Marcus Oyelaran-Whitfield",
+                  SubCC: "Lisa Park, Director Office, Records Management, Office of General Counsel, Program Integrity Unit",
+                  SubPriority: "High",
+                  SubMessage: "Please review the attached technical specifications for the VNS Upgrade project ahead of Thursday's board session. Three items need explicit sign-off: the revised data retention schedule in appendix B, the accessibility conformance report, and the updated cost model reflecting the vendor's Q4 rate card. If you cannot review the full package, prioritise appendix B, since the retention change has a statutory deadline and we cannot file the extension request without your concurrence. Reply directly to me with any blocking concerns by close of business Wednesday."
+              },
+              {
+                  EventTitle: "Quarterly Compliance Review Package Submitted for Executive Signature and Records Retention",
+                  EventDescription: "Awaiting countersignature.",
+                  Author: "Mike Chen",
+                  DisplayDateTime: "Nov 14, 2024 4:10 PM",
+                  Category: "Documents",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              },
+              {
+                  EventTitle: "Comment Added",
+                  EventDescription: "I went through the integration spec end to end. The retry logic on the APIM layer is sound, but section 4.2 assumes the downstream service returns a 429 with a Retry-After header, and in practice it returns a bare 503. We should either handle that case explicitly or push back on the upstream team to conform to the documented contract before we sign off on this phase.",
+                  Author: "Taylor Bennett",
+                  DisplayDateTime: "Nov 14, 2024 1:05 PM",
+                  Category: "Comments",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              },
+              {
+                  EventTitle: "Document Uploaded",
+                  EventDescription: "",
+                  Author: "System",
+                  DisplayDateTime: "Nov 14, 2024 11:20 AM",
+                  Category: "Documents",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              },
+              {
+                  EventTitle: "Email Notification Sent",
+                  EventDescription: "Task assignment",
+                  Author: "System",
+                  DisplayDateTime: "Nov 13, 2024 8:00 AM",
+                  Category: "Emails",
+                  HasSubDetail: true,
+                  SubTo: "Taylor Bennett",
+                  SubCC: "",
+                  SubPriority: "Normal",
+                  SubMessage: "You have a new task."
+              },
+              {
+                  EventTitle: "Approval Recorded",
+                  EventDescription: "Phase 2 approved by delegated authority",
+                  Author: "Priya Raghunathan",
+                  DisplayDateTime: "Nov 11, 2024 9:30 AM",
+                  Category: "Approvals",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              },
+              {
+                  EventTitle: "Comment Added",
+                  EventDescription: "Vendor quoted rates > 15% above baseline & flagged the ""urgent"" tier as unavailable <see attached>",
+                  Author: "Marcus Oyelaran-Whitfield",
+                  DisplayDateTime: "Nov 10, 2024 4:47 PM",
+                  Category: "Comments",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              },
+              {
+                  EventTitle: "Email Notification Sent",
+                  EventDescription: "Escalation notice",
+                  Author: "System",
+                  DisplayDateTime: "Nov 10, 2024 2:15 PM",
+                  Category: "Emails",
+                  HasSubDetail: true,
+                  SubTo: "operations@example.gov",
+                  SubCC: "",
+                  SubPriority: "High",
+                  SubMessage: "Threshold exceeded: cost > $50,000 & schedule slip <= 10 days. Review the ""critical path"" section."
+              },
+              {
+                  EventTitle: "Task Assigned",
+                  EventDescription: "Taylor Bennett assigned to Technical Review",
+                  Author: "System",
+                  DisplayDateTime: "Nov 9, 2024 9:00 AM",
+                  Category: "Tasks",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              },
+              {
+                  EventTitle: "Phase Completed",
+                  EventDescription: "Budget Review completed",
+                  Author: "Jordan Mitchell",
+                  DisplayDateTime: "Nov 8, 2024 2:30 PM",
+                  Category: "System Events",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              },
+              {
+                  EventTitle: "Case Created",
+                  EventDescription: "New case initiated",
+                  Author: "Jordan Mitchell",
+                  DisplayDateTime: "Nov 8, 2024 9:00 AM",
+                  Category: "System Events",
+                  HasSubDetail: false,
+                  SubTo: "",
+                  SubCC: "",
+                  SubPriority: "",
+                  SubMessage: ""
+              }
+          )
+      OnExport:
+        PropertyKind: Event
+        DisplayName: OnExport
+        Description: Fires when the export button is tapped.
+        ReturnType: None
+        Default: =false
+      OnItemSelect:
+        PropertyKind: Event
+        DisplayName: OnItemSelect
+        Description: Fires when an audit trail card is tapped.
+        ReturnType: None
+        Default: =false
+      OnPrint:
+        PropertyKind: Event
+        DisplayName: OnPrint
+        Description: Fires when the print button is tapped.
+        ReturnType: None
+        Default: =false
+      SelectedItem:
+        PropertyKind: Output
+        DisplayName: SelectedItem
+        Description: The last tapped audit trail record.
+        DataType: Record
+      ShowScrollbar:
+        PropertyKind: Input
+        DisplayName: ShowScrollbar
+        Description: When true shows the scrollbar on the timeline gallery.
+        DataType: Boolean
+        Default: =false
+      SubDetailCardHeight:
+        PropertyKind: Input
+        DisplayName: SubDetailCardHeight
+        Description: Minimum height of an entry card that includes the sub-detail panel. Also sets the initial height of the sub-detail block before it measures its content. Cards grow past this to fit their content.
+        DataType: Number
+        Default: =224
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: '"Light" or "Dark"'
+        DataType: Text
+        Default: ="Light"
+      ThemeConfig:
+        PropertyKind: Input
+        DisplayName: ThemeConfig
+        Description: Light and Dark theme token sets. Override to customise colors.
+        DataType: Record
+        Default: |-
+          ={
+            Light: {
+              background:       ColorValue("#F9FAFB"),
+              surface:          ColorValue("#FFFFFF"),
+              border:           ColorValue("#E5E7EB"),
+              rail:             ColorValue("#DCDCE0"),
+              dotBorder:        ColorValue("#F9FAFB"),
+              text:             ColorValue("#111827"),
+              textMuted:        ColorValue("#6B7280"),
+              textSubtle:       ColorValue("#9CA3AF"),
+              toolbarSep:       ColorValue("#E5E7EB"),
+              htmlBg:           "#f9fafb",
+              htmlBorder:       "#e5e7eb",
+              htmlText:         "#374151",
+              htmlTextMuted:    "#9ca3af",
+              htmlPriorityHigh: "#ef4444"
+            },
+            Dark: {
+              background:       ColorValue("#111827"),
+              surface:          ColorValue("#1F2937"),
+              border:           ColorValue("#374151"),
+              rail:             ColorValue("#4B5563"),
+              dotBorder:        ColorValue("#111827"),
+              text:             ColorValue("#F3F4F6"),
+              textMuted:        ColorValue("#9CA3AF"),
+              textSubtle:       ColorValue("#6B7280"),
+              toolbarSep:       ColorValue("#374151"),
+              htmlBg:           "#1f2937",
+              htmlBorder:       "#374151",
+              htmlText:         "#e5e7eb",
+              htmlTextMuted:    "#6b7280",
+              htmlPriorityHigh: "#ef4444"
+            }
+          }
+    Properties:
+      ActiveFilter: =If(IsBlank(_auditFilter), "All Activities", _auditFilter)
+      Height: =App.Height
+      OnReset: =Set(_auditFilter, Blank())
+      SelectedItem: =_auditSelectedItem
+      Width: =App.Width
+    Children:
+      - conRoot_3:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            Fill: |-
+              =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.background)
+            Height: =Parent.Height
+            LayoutDirection: =LayoutDirection.Vertical
+            Width: =Parent.Width
+          Children:
+            - conToolbar_3:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: |-
+                    =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.surface)
+                  FillPortions: =0
+                  Height: =50
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  PaddingBottom: =8
+                  PaddingLeft: =16
+                  PaddingRight: =8
+                  PaddingTop: =8
+                  Visible: =!cmpActivityTimeline.HideHeader
+                Children:
+                  - drpActivityFilter:
+                      Control: ModernCombobox@1.1.1
+                      Properties:
+                        AccessibleLabel: ="Activity Filter"
+                        Appearance: =Appearance.Outline
+                        DefaultSelectedItems: =Filter(cmpActivityTimeline.FilterOptions, Value = "All Activities")
+                        Height: =36
+                        IsSearchable: =false
+                        ItemDisplayText: =ThisItem.Value
+                        Items: =cmpActivityTimeline.FilterOptions
+                        OnChange: =Set(_auditFilter, Self.Selected.Value)
+                        SelectMultiple: =false
+                        Size: =13
+                        Width: =180
+                  - conSpacer:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                  - lblEntryCount:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        Color: |-
+                          =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.textMuted)
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        LayoutMinWidth: =80
+                        TabIndex: =0
+                        Text: =galTimeline.AllItemsCount & " entries"
+                        Width: =100
+                  - shpToolbarSep:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        AccessibleLabel: ="Toolbar Sep divider"
+                        Fill: |-
+                          =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.toolbarSep)
+                        FocusedBorderThickness: =0.5
+                        Height: =28
+                        LayoutMinWidth: =1
+                        TabIndex: =0
+                        Width: =1
+                  - conBtnPrint:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        FillPortions: =0
+                        Height: =36
+                        LayoutMinWidth: =36
+                        Width: =36
+                      Children:
+                        - imgPrintIcon:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Print Icon icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =18
+                              Image: ="data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpActivityTimeline.Theme = "Dark", "#9CA3AF", "#6B7280") & "' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 6 2 18 2 18 9'/><path d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/><rect x='6' y='14' width='12' height='8'/></svg>")
+                              TabIndex: =0
+                              Width: =18
+                              X: =9
+                              Y: =9
+                        - btnPrintOverlay:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =0.5
+                              Height: =36
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0.06)
+                              OnSelect: =cmpActivityTimeline.OnPrint()
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0.1)
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Text: =""
+                              Tooltip: ="Print"
+                              Width: =36
+                  - conBtnExport:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        FillPortions: =0
+                        Height: =36
+                        LayoutMinWidth: =36
+                        Width: =36
+                      Children:
+                        - imgExportIcon:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Export Icon icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =18
+                              Image: ="data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpActivityTimeline.Theme = "Dark", "#9CA3AF", "#6B7280") & "' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7 10 12 15 17 10'/><line x1='12' y1='15' x2='12' y2='3'/></svg>")
+                              TabIndex: =0
+                              Width: =18
+                              X: =9
+                              Y: =9
+                        - btnExportOverlay:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =0.5
+                              Height: =36
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0.06)
+                              OnSelect: =cmpActivityTimeline.OnExport()
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0.1)
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Text: =""
+                              Tooltip: ="Export"
+                              Width: =36
+                  - conBtnFullscreen:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        FillPortions: =0
+                        Height: =36
+                        LayoutMinWidth: =36
+                        Width: =36
+                      Children:
+                        - imgFullscreenIcon:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Fullscreen Icon icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =18
+                              Image: ="data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='" & If(cmpActivityTimeline.Theme = "Dark", "#9CA3AF", "#6B7280") & "' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><polyline points='15 3 21 3 21 9'/><polyline points='9 21 3 21 3 15'/><line x1='21' y1='3' x2='14' y2='10'/><line x1='3' y1='21' x2='10' y2='14'/></svg>")
+                              TabIndex: =0
+                              Width: =18
+                              X: =9
+                              Y: =9
+                        - btnFullscreenOverlay:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =0.5
+                              Height: =36
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0.06)
+                              OnSelect: =Set(_auditFullscreen, !_auditFullscreen)
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0.1)
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Text: =""
+                              Tooltip: ="Toggle fullscreen"
+                              Width: =36
+            - shpHeaderDivider:
+                Control: Rectangle@2.3.0
+                Properties:
+                  AccessibleLabel: ="Header Divider divider"
+                  AlignInContainer: =AlignInContainer.Stretch
+                  Fill: |-
+                    =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.border)
+                  FocusedBorderThickness: =0.5
+                  Height: =1
+                  TabIndex: =0
+                  Visible: =!cmpActivityTimeline.HideHeader
+            - conTimelineArea:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: |-
+                    =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.background)
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutMinHeight: =0
+                Children:
+                  - conSkeleton:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =0
+                        Visible: =cmpActivityTimeline.IsLoading
+                      Children:
+                        - galSkeleton_2:
+                            Control: Gallery@2.15.0
+                            Variant: Vertical
+                            Properties:
+                              AccessibleLabel: ="Skeleton list"
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height
+                              Items: =Sequence(6)
+                              ShowScrollbar: =false
+                              TabIndex: =0
+                              TemplatePadding: =0
+                              TemplateSize: =cmpActivityTimeline.CardHeight + 32
+                              Width: =Parent.Width
+                            Children:
+                              - conSkeletonLeft:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Height: =cmpActivityTimeline.CardHeight + 32
+                                    Width: =52
+                                    X: =16
+                                  Children:
+                                    - shpSkeletonLine:
+                                        Control: Rectangle@2.3.0
+                                        Properties:
+                                          AccessibleLabel: ="Skeleton Line divider"
+                                          Fill: |-
+                                            =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.rail)
+                                          FocusedBorderThickness: =0.5
+                                          Height: =Parent.Height
+                                          TabIndex: =0
+                                          Width: =2
+                                          X: =24
+                                    - conSkeletonDot:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: ManualLayout
+                                        Properties:
+                                          Fill: |-
+                                            =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.border)
+                                          Height: =36
+                                          RadiusBottomLeft: =18
+                                          RadiusBottomRight: =18
+                                          RadiusTopLeft: =18
+                                          RadiusTopRight: =18
+                                          Width: =36
+                                          X: =8
+                                          Y: =26
+                              - conSkeletonCard_2:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    BorderColor: |-
+                                      =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.border)
+                                    BorderThickness: =1
+                                    Fill: |-
+                                      =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.surface)
+                                    Height: =cmpActivityTimeline.CardHeight
+                                    RadiusBottomLeft: =8
+                                    RadiusBottomRight: =8
+                                    RadiusTopLeft: =8
+                                    RadiusTopRight: =8
+                                    Width: =Parent.Width - 92
+                                    X: =52
+                                    Y: =16
+                                  Children:
+                                    - conSkeletonTitle:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: ManualLayout
+                                        Properties:
+                                          Fill: |-
+                                            =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.border)
+                                          Height: =12
+                                          Width: =160
+                                          X: =14
+                                          Y: =16
+                                    - conSkeletonDesc:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: ManualLayout
+                                        Properties:
+                                          Fill: |-
+                                            =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.rail)
+                                          Height: =10
+                                          Width: =240
+                                          X: =14
+                                          Y: =40
+                                    - conSkeletonMeta:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: ManualLayout
+                                        Properties:
+                                          Fill: |-
+                                            =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.border)
+                                          Height: =10
+                                          Width: =140
+                                          X: =14
+                                          Y: =70
+                  - galTimeline:
+                      Control: Gallery@2.15.0
+                      Variant: VariableHeight
+                      Properties:
+                        AccessibleLabel: ="Timeline list"
+                        DelayItemLoading: =false
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        Items: |-
+                          =If(
+                            IsBlank(_auditFilter) || _auditFilter = "All Activities",
+                            cmpActivityTimeline.Items,
+                            Filter(cmpActivityTimeline.Items, Category = _auditFilter)
+                          )
+                        LayoutMinHeight: =0
+                        LoadingSpinner: =LoadingSpinner.None
+                        ShowScrollbar: =cmpActivityTimeline.ShowScrollbar
+                        TabIndex: =0
+                        TemplatePadding: =0
+                        TemplateSize: =cmpActivityTimeline.CardHeight + 32
+                        Visible: =!cmpActivityTimeline.IsLoading
+                        Width: =Parent.Width
+                      Children:
+                        - lblCardHeight:
+                            Control: Label@2.5.1
+                            Properties:
+                              FocusedBorderThickness: =0.5
+                              Height: =1
+                              OnSelect: =Select(Parent)
+                              TabIndex: =0
+                              Text: |-
+                                =Max(
+                                  If(ThisItem.HasSubDetail, cmpActivityTimeline.SubDetailCardHeight, cmpActivityTimeline.CardHeight),
+                                  If(
+                                    ThisItem.HasSubDetail,
+                                    htmSubDetail.Y + htmSubDetail.Height,
+                                    lblAuthorDate.Y + lblAuthorDate.Height
+                                  ) + 12
+                                )
+                              Visible: =false
+                              Width: =1
+                        - conCard:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: |-
+                                =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.border)
+                              BorderThickness: =1
+                              DropShadow: =DropShadow.Semilight
+                              Fill: |-
+                                =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.surface)
+                              Height: =lblCardHeight.Text
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Width: =Parent.Width - 92
+                              X: =52
+                              Y: =16
+                            Children:
+                              - lblEventTitle:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    Color: |-
+                                      =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.text)
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =26
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =14
+                                    TabIndex: =0
+                                    Text: =ThisItem.EventTitle
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =Parent.Width - 58
+                                    X: =14
+                                    Y: =12
+                              - lblEventDesc:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    Color: |-
+                                      =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.textMuted)
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =24
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    TabIndex: =0
+                                    Text: =ThisItem.EventDescription
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =Parent.Width - 58
+                                    X: =14
+                                    Y: =lblEventTitle.Y + lblEventTitle.Height + 4
+                              - lblAuthorDate:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Color: |-
+                                      =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.textSubtle)
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =22
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =12
+                                    TabIndex: =0
+                                    Text: =ThisItem.Author & " · " & ThisItem.DisplayDateTime
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =Parent.Width - 58
+                                    Wrap: =false
+                                    X: =14
+                                    Y: =lblEventDesc.Y + lblEventDesc.Height + 4
+                              - imgCardIcon:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="Card Icon icon"
+                                    FocusedBorderThickness: =0.5
+                                    Height: =20
+                                    Image: |-
+                                      =With(
+                                        {_m: Coalesce(
+                                          LookUp(cmpActivityTimeline.IconMap, Lower(Category) = Lower(ThisItem.Category)),
+                                          LookUp(cmpActivityTimeline.IconMap, Lower(Category) = "default")
+                                        )},
+                                        "data:image/svg+xml," & EncodeUrl(
+                                          Substitute(
+                                            Switch(
+                                              _m.IconType,
+                                              "comment",    "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/></svg>",
+                                              "email",      "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z'/><polyline points='22,6 12,13 2,6'/></svg>",
+                                              "document",   "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/></svg>",
+                                              "person",     "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>",
+                                              "checkbadge", "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/><polyline points='22 4 12 14.01 9 11.01'/></svg>",
+                                              "check",      "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>",
+                                              "workflow",   "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg>",
+                                              "folder",     "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z'/></svg>",
+                                              "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='8' x2='12' y2='12'/><line x1='12' y1='16' x2='12.01' y2='16'/></svg>"
+                                            ),
+                                            "COLOR",
+                                            _m.IconColor
+                                          )
+                                        )
+                                      )
+                                    TabIndex: =0
+                                    Width: =20
+                                    X: =Parent.Width - 34
+                                    Y: =12
+                              - htmSubDetail:
+                                  Control: HtmlViewer@2.1.0
+                                  Properties:
+                                    AutoHeight: =true
+                                    Height: =Max(cmpActivityTimeline.SubDetailCardHeight - cmpActivityTimeline.CardHeight - 6, 0)
+                                    HtmlText: |-
+                                      =With(
+                                          {T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)},
+                                          If(
+                                            ThisItem.HasSubDetail,
+                                            "<div style='background:" & T.htmlBg & ";border:1px solid " & T.htmlBorder & ";border-radius:6px;padding:10px 12px;font-family:Segoe UI,sans-serif;font-size:12px'>" &
+                                            "<table style='border-collapse:collapse;width:100%'>" &
+                                            "<tr><td style='color:" & T.htmlTextMuted & ";width:72px;padding:3px 0;vertical-align:top'>To:</td>" &
+                                            "<td style='color:" & T.htmlText & ";padding:3px 0'>" & ThisItem.SubTo & "</td></tr>" &
+                                            "<tr><td style='color:" & T.htmlTextMuted & ";padding:3px 0;vertical-align:top'>CC:</td>" &
+                                            "<td style='color:" & T.htmlText & ";padding:3px 0'>" & ThisItem.SubCC & "</td></tr>" &
+                                            "<tr><td style='color:" & T.htmlTextMuted & ";padding:3px 0;vertical-align:top'>Priority:</td>" &
+                                            "<td style='padding:3px 0;font-weight:600;color:" &
+                                            If(ThisItem.SubPriority = "High", T.htmlPriorityHigh, T.htmlText) &
+                                            "'>" & ThisItem.SubPriority & "</td></tr>" &
+                                            "<tr><td style='color:" & T.htmlTextMuted & ";padding:3px 0;vertical-align:top'>Message:</td>" &
+                                            "<td style='color:" & T.htmlText & ";padding:3px 0'>" & ThisItem.SubMessage & "</td></tr>" &
+                                            "</table></div>",
+                                            ""
+                                          )
+                                        )
+                                    Visible: =ThisItem.HasSubDetail
+                                    Width: =Parent.Width - 28
+                                    X: =14
+                                    Y: =lblAuthorDate.Y + lblAuthorDate.Height + 10
+                        - btnCardOverlay_3:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderStyle: =BorderStyle.None
+                              Color: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =0.5
+                              Height: =lblCardHeight.Text
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0.02)
+                              OnSelect: |-
+                                =Set(_auditSelectedItem, ThisItem);
+                                cmpActivityTimeline.OnItemSelect()
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0.05)
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Text: =""
+                              Tooltip: ="Open card"
+                              Width: =Parent.Width - 92
+                              X: =52
+                              Y: =16
+                        - conTimelineLeft:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              DropShadow: =DropShadow.None
+                              Height: =lblCardHeight.Text + 32
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Width: =52
+                              X: =16
+                            Children:
+                              - shpLine:
+                                  Control: Rectangle@2.3.0
+                                  Properties:
+                                    AccessibleLabel: ="Line divider"
+                                    Fill: |-
+                                      =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.rail)
+                                    FocusedBorderThickness: =0.5
+                                    Height: =Parent.Height
+                                    TabIndex: =0
+                                    Width: =2
+                                    X: =24
+                              - conDot:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    BorderColor: |-
+                                      =With({T: If(cmpActivityTimeline.Theme = "Dark", cmpActivityTimeline.ThemeConfig.Dark, cmpActivityTimeline.ThemeConfig.Light)}, T.dotBorder)
+                                    BorderThickness: =2
+                                    Fill: |-
+                                      =With(
+                                        {_m: Coalesce(
+                                          LookUp(cmpActivityTimeline.IconMap, Lower(Category) = Lower(ThisItem.Category)),
+                                          LookUp(cmpActivityTimeline.IconMap, Lower(Category) = "default")
+                                        )},
+                                        _m.DotColor
+                                      )
+                                    Height: =36
+                                    RadiusBottomLeft: =18
+                                    RadiusBottomRight: =18
+                                    RadiusTopLeft: =18
+                                    RadiusTopRight: =18
+                                    Width: =36
+                                    X: =8
+                                    Y: =26
+                                  Children:
+                                    - imgEvent:
+                                        Control: Image@2.2.3
+                                        Properties:
+                                          AccessibleLabel: ="Event icon"
+                                          FocusedBorderThickness: =0.5
+                                          Height: =24
+                                          Image: |-
+                                            =With(
+                                              {_m: Coalesce(
+                                                LookUp(cmpActivityTimeline.IconMap, Lower(Category) = Lower(ThisItem.Category)),
+                                                LookUp(cmpActivityTimeline.IconMap, Lower(Category) = "default")
+                                              )},
+                                              Switch(
+                                                _m.IconType,
+                                                "comment",    "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/></svg>"),
+                                                "email",      "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z'/><polyline points='22,6 12,13 2,6'/></svg>"),
+                                                "document",   "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/></svg>"),
+                                                "person",     "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>"),
+                                                "checkbadge", "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/><polyline points='22 4 12 14.01 9 11.01'/></svg>"),
+                                                "check",      "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>"),
+                                                "workflow",   "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg>"),
+                                                "folder",     "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z'/></svg>"),
+                                                "data:image/svg+xml," & EncodeUrl("<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='8' x2='12' y2='12'/><line x1='12' y1='16' x2='12.01' y2='16'/></svg>")
+                                              )
+                                            )
+                                          TabIndex: =0
+                                          Width: =24
+                                          X: =6
+                                          Y: =6

@@ -1,0 +1,507 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpProgressRail:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      Colors:
+        PropertyKind: Input
+        DisplayName: Colors
+        Description: Chrome only. State colors live in StateMap, not here. All five keys are required, a missing key resolves blank and paints nothing with no error. Ring is the halo drawn around every node, set it to whatever sits behind the rail or the nodes will look cut out. Track is the UNFILLED rail, drawn under every segment at full width, with the state fill painted over it to the TrackFill fraction.
+        DataType: Record
+        Default: |-
+          ={
+              Ring:    RGBA(255, 255, 255, 1),
+              Track:   RGBA(226, 232, 240, 1),
+              Header:  RGBA(30,  41,  59, 1),
+              Muted:   RGBA(100, 116, 139, 1),
+              Percent: RGBA(37,  99, 235, 1)
+          }
+      CurrentStep:
+        PropertyKind: Output
+        DisplayName: Current Step
+        Description: Order of the first step whose mapped row has IsCurrent true. 0 when none does, which is the right answer for a not started or a finished run.
+        DataType: Number
+      CurrentTitle:
+        PropertyKind: Output
+        DisplayName: Current Title
+        Description: Title of the first step whose mapped row has IsCurrent true. Blank when none does.
+        DataType: Text
+      DesiredHeight:
+        PropertyKind: Output
+        DisplayName: Desired Height
+        Description: Content height for the current Show flags and Style. Bind the instance Height to this. The component draws no padding and no card, so a caller wanting one wraps the instance rather than configuring it.
+        DataType: Number
+      HeaderText:
+        PropertyKind: Input
+        DisplayName: Header Text
+        Description: Left hand line above the rail. The caller owns this string, so the component carries no domain vocabulary. ShowHeader false hides it and the step counter with it.
+        DataType: Text
+        Default: ="Current step"
+      PercentDone:
+        PropertyKind: Output
+        DisplayName: Percent Done
+        Description: Steps whose mapped row has CountsAsDone true, as a whole number percent of all steps. 0 when there are no steps. Rounded down, so 100 means every step is genuinely done.
+        DataType: Number
+      PercentSuffix:
+        PropertyKind: Input
+        DisplayName: Percent Suffix
+        Description: Appended to PercentDone in the right hand label.
+        DataType: Text
+        Default: ="% Complete"
+      ResolvedSteps:
+        PropertyKind: Output
+        DisplayName: Resolved Steps
+        Description: Steps sorted by Order and joined to StateMap, carrying Label, NodeColor, TrackColor, Emphasize, CountsAsDone and IsCurrent. The join happens once here rather than four times in the template. Exposed because it is the thing to inspect when a rail paints wrong.
+        DataType: Table
+      ShowEndLabels:
+        PropertyKind: Input
+        DisplayName: Show End Labels
+        Description: First and last step Title beneath the rail. The last label hides itself when there is only one step.
+        DataType: Boolean
+        Default: =true
+      ShowHeader:
+        PropertyKind: Input
+        DisplayName: Show Header
+        Description: The HeaderText line and the step counter beside it.
+        DataType: Boolean
+        Default: =true
+      ShowNodes:
+        PropertyKind: Input
+        DisplayName: Show Nodes
+        Description: Dots at each step boundary. False leaves a plain segmented bar and takes the hover tooltips with it, since the tooltip lives on the node hit area.
+        DataType: Boolean
+        Default: =true
+      ShowPercent:
+        PropertyKind: Input
+        DisplayName: Show Percent
+        Description: The right hand percent label.
+        DataType: Boolean
+        Default: =true
+      StateMap:
+        PropertyKind: Input
+        DisplayName: State Map
+        Description: One row per state in the caller's own vocabulary. State is matched against Steps.State case insensitively. Label is the tooltip suffix when a step supplies no Detail. NodeColor and TrackColor are Color typed, so theme tokens pass straight in. TrackFill is how much of that segment the state fill covers, 0 to 1, and it is what keeps the bar honest against the percent, because a step in progress should be a fraction of a segment rather than a whole one. Emphasize grows the node. CountsAsDone drives PercentDone. IsCurrent drives CurrentStep and CurrentTitle. A row with State default is REQUIRED and is the fallback for any unmatched value, matching the convention in nfTableStatus. Set IsCurrent on exactly one state, or CurrentStep reports whichever matching step sorts first by Order.
+        DataType: Table
+        Default: |-
+          =Table(
+              {
+                  State: "done",
+                  Label: "Complete",
+                  NodeColor: RGBA(34, 197, 94, 1),
+                  TrackColor: RGBA(34, 197, 94, 1),
+                  TrackFill: 1,
+                  Emphasize: false,
+                  CountsAsDone: true,
+                  IsCurrent: false
+              },
+              {
+                  State: "current",
+                  Label: "In Progress",
+                  NodeColor: RGBA(37, 99, 235, 1),
+                  TrackColor: RGBA(37, 99, 235, 1),
+                  TrackFill: 0.5,
+                  Emphasize: true,
+                  CountsAsDone: false,
+                  IsCurrent: true
+              },
+              {
+                  State: "blocked",
+                  Label: "On Hold",
+                  NodeColor: RGBA(239, 68, 68, 1),
+                  TrackColor: RGBA(239, 68, 68, 1),
+                  TrackFill: 0.5,
+                  Emphasize: true,
+                  CountsAsDone: false,
+                  IsCurrent: false
+              },
+              {
+                  State: "upcoming",
+                  Label: "Not Started",
+                  NodeColor: RGBA(203, 213, 225, 1),
+                  TrackColor: RGBA(226, 232, 240, 1),
+                  TrackFill: 0,
+                  Emphasize: false,
+                  CountsAsDone: false,
+                  IsCurrent: false
+              },
+              {
+                  State: "default",
+                  Label: "Unknown",
+                  NodeColor: RGBA(203, 213, 225, 1),
+                  TrackColor: RGBA(226, 232, 240, 1),
+                  TrackFill: 0,
+                  Emphasize: false,
+                  CountsAsDone: false,
+                  IsCurrent: false
+              }
+          )
+      Steps:
+        PropertyKind: Input
+        DisplayName: Steps
+        Description: One row per step. Order sorts the rail and prefixes the tooltip. Title is the step name. State is a key looked up in StateMap. Detail is an optional per step tooltip suffix that overrides the mapped Label, for when one step needs wording the state alone does not carry.
+        DataType: Table
+        Default: |-
+          =Table(
+              { Order: 1, Title: "Submitted", State: "done",     Detail: "" },
+              { Order: 2, Title: "Review",    State: "current",  Detail: "" },
+              { Order: 3, Title: "Approval",  State: "upcoming", Detail: "" }
+          )
+      Style:
+        PropertyKind: Input
+        DisplayName: Style
+        Description: All eleven keys are required. RailHeight is the gallery viewport and therefore the hover target, so it must exceed NodeCurrentSize. NodeGap is the space between segments. StackGap separates the three rows. NodeRing is the halo thickness. StepWidth is the fixed width of the step counter, which is fixed so the header text beside it can take every remaining pixel instead of being clipped. The three Size keys are pixels, this is a React family component.
+        DataType: Record
+        Default: |-
+          ={
+              RailHeight:      20,
+              TrackThickness:  4,
+              NodeSize:        8,
+              NodeCurrentSize: 12,
+              NodeRing:        2,
+              NodeGap:         4,
+              StackGap:        8,
+              StepWidth:       96,
+              HeaderSize:      13,
+              StepSize:        11,
+              LabelSize:       11
+          }
+      TotalSteps:
+        PropertyKind: Output
+        DisplayName: Total Steps
+        Description: Row count of Steps.
+        DataType: Number
+    Properties:
+      CurrentStep: |-
+        =Coalesce(
+            First(
+                Filter(cmpProgressRail.ResolvedSteps, IsCurrent)
+            ).Order,
+            0
+        )
+      CurrentTitle: |-
+        =Coalesce(
+            First(
+                Filter(cmpProgressRail.ResolvedSteps, IsCurrent)
+            ).Title,
+            ""
+        )
+      DesiredHeight: |-
+        =If(
+            cmpProgressRail.ShowHeader || cmpProgressRail.ShowPercent,
+            RoundUp(cmpProgressRail.Style.HeaderSize * 1.4, 0) + cmpProgressRail.Style.StackGap,
+            0
+        )
+        + cmpProgressRail.Style.RailHeight
+        + If(
+            cmpProgressRail.ShowEndLabels,
+            RoundUp(cmpProgressRail.Style.LabelSize * 1.4, 0) + cmpProgressRail.Style.StackGap,
+            0
+        )
+      Height: =96
+      PercentDone: |-
+        =With(
+            {
+                t: Coalesce(CountRows(cmpProgressRail.ResolvedSteps), 0),
+                d: Coalesce(CountRows(Filter(cmpProgressRail.ResolvedSteps, CountsAsDone)), 0)
+            },
+            RoundDown(d / Max(t, 1) * 100, 0)
+        )
+      ResolvedSteps: |-
+        =ForAll(
+            Sort(cmpProgressRail.Steps, Order) As s,
+            With(
+                {
+                    hit: Filter(
+                        cmpProgressRail.StateMap,
+                        Lower(State) = Lower(Coalesce(s.State, ""))
+                    )
+                },
+                With(
+                    {
+                        m: If(
+                            CountRows(hit) > 0,
+                            First(hit),
+                            LookUp(cmpProgressRail.StateMap, Lower(State) = "default")
+                        )
+                    },
+                    {
+                        Order: s.Order,
+                        Title: s.Title,
+                        State: s.State,
+                        Label: If(IsBlank(s.Detail), m.Label, s.Detail),
+                        NodeColor: m.NodeColor,
+                        TrackColor: m.TrackColor,
+                        TrackFill: m.TrackFill,
+                        Emphasize: m.Emphasize,
+                        CountsAsDone: m.CountsAsDone,
+                        IsCurrent: m.IsCurrent
+                    }
+                )
+            )
+        )
+      TotalSteps: =CountRows(cmpProgressRail.Steps)
+      Width: =600
+    Children:
+      - conRailRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =cmpProgressRail.Style.StackGap
+            Width: =Parent.Width
+          Children:
+            - conRailHead:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =RoundUp(cmpProgressRail.Style.HeaderSize * 1.4, 0)
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =cmpProgressRail.Style.StackGap
+                  LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =cmpProgressRail.ShowHeader || cmpProgressRail.ShowPercent
+                Children:
+                  - conRailHeadLeft:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.Height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =cmpProgressRail.Style.StackGap
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblRailHeader:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Center
+                              AutoHeight: =true
+                              Color: =cmpProgressRail.Colors.Header
+                              FillPortions: =1
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =cmpProgressRail.Style.HeaderSize
+                              Text: =cmpProgressRail.HeaderText
+                              Visible: =cmpProgressRail.ShowHeader
+                              Wrap: =false
+                        - lblRailStep:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Center
+                              AutoHeight: =true
+                              Color: =cmpProgressRail.Colors.Muted
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =cmpProgressRail.Style.StepSize
+                              Text: |-
+                                ="Step "
+                                & cmpProgressRail.CurrentStep
+                                & " of "
+                                & cmpProgressRail.TotalSteps
+                              Visible: |-
+                                =cmpProgressRail.ShowHeader
+                                && cmpProgressRail.CurrentStep > 0
+                              Width: =cmpProgressRail.Style.StepWidth
+                              Wrap: =false
+                  - lblRailPercent:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        Align: =Align.Right
+                        AlignInContainer: =AlignInContainer.Center
+                        AutoHeight: =true
+                        Color: =cmpProgressRail.Colors.Percent
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =cmpProgressRail.Style.HeaderSize
+                        Text: |-
+                          =cmpProgressRail.PercentDone
+                          & cmpProgressRail.PercentSuffix
+                        Visible: =cmpProgressRail.ShowPercent
+                        Width: =132
+                        Wrap: =false
+            - galRail:
+                Control: Gallery@2.15.0
+                Variant: Horizontal
+                Properties:
+                  AccessibleLabel: ="Item list"
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  DelayItemLoading: =false
+                  FillPortions: =0
+                  Height: =cmpProgressRail.Style.RailHeight
+                  Items: =cmpProgressRail.ResolvedSteps
+                  LoadingSpinner: =LoadingSpinner.None
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =cmpProgressRail.Style.NodeGap
+                  TemplateSize: |-
+                    =With(
+                        { n: Max(CountRows(cmpProgressRail.ResolvedSteps), 1) },
+                        Max(
+                            (Coalesce(Self.Width, 0) - cmpProgressRail.Style.NodeGap * n) / n,
+                            0
+                        )
+                    )
+                Children:
+                  - conRailCell:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Height: =Parent.TemplateHeight
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - conRailTrack:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Fill: =cmpProgressRail.Colors.Track
+                              Height: =cmpProgressRail.Style.TrackThickness
+                              RadiusBottomLeft: =cmpProgressRail.Style.TrackThickness / 2
+                              RadiusBottomRight: =cmpProgressRail.Style.TrackThickness / 2
+                              RadiusTopLeft: =cmpProgressRail.Style.TrackThickness / 2
+                              RadiusTopRight: =cmpProgressRail.Style.TrackThickness / 2
+                              Width: =Parent.Width
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - conRailTrackFill:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Fill: =ThisItem.TrackColor
+                              Height: =cmpProgressRail.Style.TrackThickness
+                              RadiusBottomLeft: =cmpProgressRail.Style.TrackThickness / 2
+                              RadiusBottomRight: =cmpProgressRail.Style.TrackThickness / 2
+                              RadiusTopLeft: =cmpProgressRail.Style.TrackThickness / 2
+                              RadiusTopRight: =cmpProgressRail.Style.TrackThickness / 2
+                              Visible: =ThisItem.TrackFill > 0
+                              Width: |-
+                                =Parent.Width
+                                * Max(Min(Coalesce(ThisItem.TrackFill, 0), 1), 0)
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - conRailNode:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              BorderColor: =cmpProgressRail.Colors.Ring
+                              BorderThickness: =cmpProgressRail.Style.NodeRing
+                              DropShadow: =DropShadow.None
+                              Fill: =ThisItem.NodeColor
+                              Height: |-
+                                =If(
+                                    ThisItem.Emphasize,
+                                    cmpProgressRail.Style.NodeCurrentSize,
+                                    cmpProgressRail.Style.NodeSize
+                                )
+                              RadiusBottomLeft: =Self.Height / 2
+                              RadiusBottomRight: =Self.Height / 2
+                              RadiusTopLeft: =Self.Height / 2
+                              RadiusTopRight: =Self.Height / 2
+                              Visible: =cmpProgressRail.ShowNodes
+                              Width: =Self.Height
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnRailHover:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              Color: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =cmpProgressRail.Style.NodeRing
+                              Height: =Parent.Height - 2 * cmpProgressRail.Style.NodeRing
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(0, 0, 0, 0)
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(0, 0, 0, 0)
+                              Text: =""
+                              Tooltip: |-
+                                =ThisItem.Order
+                                & ". "
+                                & ThisItem.Title
+                                & If(
+                                    IsBlank(ThisItem.Label),
+                                    "",
+                                    "  (" & ThisItem.Label & ")"
+                                )
+                              Visible: =cmpProgressRail.ShowNodes
+                              Width: =Parent.Width - 2 * cmpProgressRail.Style.NodeRing
+                              X: =cmpProgressRail.Style.NodeRing
+                              Y: =cmpProgressRail.Style.NodeRing
+            - conRailEnds:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =RoundUp(cmpProgressRail.Style.LabelSize * 1.4, 0)
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =cmpProgressRail.Style.StackGap
+                  LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  Visible: =cmpProgressRail.ShowEndLabels
+                Children:
+                  - galRailLabels:
+                      Control: Gallery@2.15.0
+                      Variant: Horizontal
+                      Properties:
+                        AccessibleLabel: ="Step labels"
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        DelayItemLoading: =false
+                        Height: =Parent.Height
+                        Items: =cmpProgressRail.ResolvedSteps
+                        LoadingSpinner: =LoadingSpinner.None
+                        ShowScrollbar: =false
+                        TabIndex: =0
+                        TemplatePadding: =cmpProgressRail.Style.NodeGap
+                        TemplateSize: |-
+                          =With(
+                              { n: Max(CountRows(cmpProgressRail.ResolvedSteps), 1) },
+                              Max(
+                                  (Coalesce(Self.Width, 0) - cmpProgressRail.Style.NodeGap * n) / n,
+                                  0
+                              )
+                          )
+                      Children:
+                        - lblRailStepLabel:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              Color: |-
+                                =If(
+                                    ThisItem.IsCurrent,
+                                    cmpProgressRail.Colors.Header,
+                                    cmpProgressRail.Colors.Muted
+                                )
+                              Height: =Parent.TemplateHeight
+                              Size: =cmpProgressRail.Style.LabelSize
+                              Text: =ThisItem.Title
+                              Width: =Parent.TemplateWidth
+                              Wrap: =false

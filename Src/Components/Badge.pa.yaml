@@ -1,0 +1,208 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  Badge:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      BadgeColor:
+        PropertyKind: Input
+        DisplayName: BadgeColor
+        Description: Badge background color
+        DataType: Color
+        Default: =RGBA(220, 38, 38, 1)
+      BadgeCount:
+        PropertyKind: Input
+        DisplayName: BadgeCount
+        Description: Number of notifications (shows count if > 0)
+        DataType: Number
+        Default: =5
+      HasNotifications:
+        PropertyKind: Input
+        DisplayName: HasNotifications
+        Description: Shows notification indicator when true
+        DataType: Boolean
+        Default: =true
+      HoverText:
+        PropertyKind: Input
+        DisplayName: HoverText
+        Description: Tooltip / accessible label text
+        DataType: Text
+        Default: =""
+      IconColor:
+        PropertyKind: Input
+        DisplayName: IconColor
+        Description: Hex color override for the SVG icon stroke
+        DataType: Text
+        Default: =""
+      IconSvg:
+        PropertyKind: Input
+        DisplayName: IconSvg
+        Description: Raw SVG markup. Falls back to default bell if blank.
+        DataType: Text
+        Default: =""
+      OnSelect:
+        PropertyKind: Event
+        DisplayName: OnSelect
+        Description: Action when tapped
+        ReturnType: None
+        Default: =false
+      Size:
+        PropertyKind: Input
+        DisplayName: Size
+        Description: Component width and height in pixels
+        DataType: Number
+        Default: =45
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: Light or Dark
+        DataType: Text
+        Default: ="Light"
+    Properties:
+      Fill: =Color.Transparent
+      Height: =Badge.Size
+      Width: =Badge.Size
+    Children:
+      - cntBellContainer:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            BorderColor: =If(Badge.Theme = "Dark", RGBA(55, 65, 81, 1), RGBA(229, 231, 235, 1))
+            DropShadow: =DropShadow.None
+            Fill: =If(Badge.Theme = "Dark", RGBA(31, 41, 55, 1), RGBA(0, 0, 0, 0.05))
+            Height: =Parent.Height
+            RadiusBottomLeft: =6
+            RadiusBottomRight: =6
+            RadiusTopLeft: =6
+            RadiusTopRight: =6
+            Width: =Parent.Width
+          Children:
+            - imgBell:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: =Badge.HoverText
+                  BorderColor: =Color.Transparent
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height
+                  Image: |-
+                    =With(
+                        {
+                            _svg:
+                                If(
+                                    !IsBlank(Badge.IconSvg),
+                                    Badge.IconSvg,
+                                    "<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 24 24' fill='none' stroke='" &
+                                    If(
+                                        !IsBlank(Badge.IconColor),
+                                        Badge.IconColor,
+                                        If(Badge.Theme = "Dark", "#ffffff", "#000000")
+                                    ) &
+                                    "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>" &
+                                    "<path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/>" &
+                                    "<path d='M10.3 21a1.94 1.94 0 0 0 3.4 0'/>" &
+                                    "</svg>"
+                                )
+                        },
+                        Concatenate("data:image/svg+xml;utf8,", EncodeUrl(_svg))
+                    )
+                  PaddingBottom: =Parent.Height * 0.15
+                  PaddingLeft: =Parent.Width * 0.15
+                  PaddingRight: =Parent.Width * 0.15
+                  PaddingTop: =Parent.Height * 0.15
+                  TabIndex: =0
+                  Width: =Parent.Width
+            - cntPulseAnimation:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =RGBA(220, 38, 38, Max(0, 0.3 * (1 - tmrPulse.Value / tmrPulse.Duration)))
+                  Height: =16 + 12 * Power(tmrPulse.Value / tmrPulse.Duration, 0.6)
+                  RadiusBottomLeft: =Self.Height / 2
+                  RadiusBottomRight: =Self.Height / 2
+                  RadiusTopLeft: =Self.Height / 2
+                  RadiusTopRight: =Self.Height / 2
+                  Visible: =Badge.HasNotifications && Badge.BadgeCount = 0
+                  Width: =16 + 12 * Power(tmrPulse.Value / tmrPulse.Duration, 0.6)
+                  X: =Parent.Width - Self.Width
+                Children:
+                  - tmrPulse:
+                      Control: Timer@2.1.0
+                      Properties:
+                        AutoPause: =false
+                        AutoStart: =true
+                        Duration: =1000
+                        Height: =16
+                        Repeat: =true
+                        Start: =Badge.HasNotifications && Badge.BadgeCount = 0
+                        Visible: =false
+                        Width: =16
+            - cntNotificationBadge:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =Coalesce(Badge.BadgeColor, RGBA(220, 38, 38, 1))
+                  Height: =If(Badge.BadgeCount > 0, Min(20, Parent.Height * 0.45), 12)
+                  RadiusBottomLeft: =Self.Height / 2
+                  RadiusBottomRight: =Self.Height / 2
+                  RadiusTopLeft: =Self.Height / 2
+                  RadiusTopRight: =Self.Height / 2
+                  Visible: =Badge.HasNotifications || Badge.BadgeCount > 0
+                  Width: |-
+                    =If(
+                        Badge.BadgeCount > 0,
+                        Max(
+                            Self.Height,
+                            If(Badge.BadgeCount > 99, 24, If(Badge.BadgeCount > 9, 20, Self.Height))
+                        ),
+                        12
+                    )
+                  X: =Parent.Width - Self.Width - 2
+                  Y: =2
+                Children:
+                  - lblNotificationCount:
+                      Control: Text@0.0.51
+                      Properties:
+                        Align: ='TextCanvas.Align'.Center
+                        Font: =Font.'Segoe UI'
+                        FontColor: =RGBA(255, 255, 255, 1)
+                        Height: =Parent.Height
+                        Size: =Max(7, Parent.Height * 0.5)
+                        Text: =If(Badge.BadgeCount > 99, "99+", If(Badge.BadgeCount > 0, Text(Badge.BadgeCount), ""))
+                        VerticalAlign: =VerticalAlign.Middle
+                        Visible: =Badge.BadgeCount > 0
+                        Weight: ='TextCanvas.Weight'.Bold
+                        Width: =Parent.Width
+            - btnBell:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =Color.Transparent
+                  BorderStyle: =BorderStyle.None
+                  Color: =Color.Transparent
+                  Fill: =Color.Transparent
+                  FocusedBorderColor: =If(Badge.Theme = "Dark", RGBA(255, 255, 255, 0.3), RGBA(0, 0, 0, 0.3))
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Open Sans'
+                  Height: =Parent.Height
+                  HoverBorderColor: =Color.Transparent
+                  HoverColor: =Color.Transparent
+                  HoverFill: =If(Badge.Theme = "Dark", RGBA(255, 255, 255, 0.1), RGBA(0, 0, 0, 0.1))
+                  OnSelect: =Badge.OnSelect()
+                  PressedBorderColor: =Color.Transparent
+                  PressedColor: =Color.Transparent
+                  PressedFill: =Color.Transparent
+                  RadiusBottomLeft: =6
+                  RadiusBottomRight: =6
+                  RadiusTopLeft: =6
+                  RadiusTopRight: =6
+                  Text: =""
+                  Tooltip: =imgBell.AccessibleLabel
+                  Width: =Parent.Width

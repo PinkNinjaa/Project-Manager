@@ -1,0 +1,636 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpDetFinish:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      AssignmentKey:
+        PropertyKind: Input
+        DisplayName: AssignmentKey
+        Description: The AssignmentKey of the task being completed. The component looks the record up in the RequestAssignments LIST itself, on the indexed AssignmentKey, so nothing else about the task needs passing in. It reads the list rather than a collection because this component has instances on BOTH My Tasks and Details, so it must not depend on any one screen's state.
+        DataType: Text
+        Default: =""
+      Comment:
+        PropertyKind: Output
+        DisplayName: Comment
+        Description: The comment the user typed. Read this in OnSubmit and pass it to the flow.
+        DataType: Text
+      OnCancel:
+        PropertyKind: Event
+        DisplayName: OnCancel
+        Description: Fires when the user dismisses the dialog by the scrim, the close button or Cancel. Clear your open flag here AND call Reset() on this instance, or the next open still shows this task's outcome.
+        ReturnType: None
+        Default: =false
+      OnSubmit:
+        PropertyKind: Event
+        DisplayName: OnSubmit
+        Description: Fires when the user confirms. Read OutcomeKey and Comment and call your flow from here, then call Reset() on this instance once the dialog closes. The component never calls a flow and never writes to a data source.
+        ReturnType: None
+        Default: =false
+      OutcomeKey:
+        PropertyKind: Output
+        DisplayName: OutcomeKey
+        Description: 'Approve, Reject or SendBack. These are OutcomeKey keys AS STORED, never the display labels, and never the past tense: this description said Approved, Rejected, SentBack, which are values nothing in the app or the flow recognises. The control code has always emitted the correct three. Skipped is engine only and is deliberately not offered.'
+        DataType: Text
+    Properties:
+      Comment: =_cmpFinishComment
+      Fill: =nfColor.Transparent
+      Height: |-
+        =App.Height
+        // THE COMPONENT COVERS THE APP, and the instance can still override it.
+        // App.Height is the one height in this file that is not derived from
+        // anything inside the dialog, which is what makes it safe to cap
+        // against.
+      OnReset: |-
+        =Set(_cmpFinishOutcome, "");
+        Set(_cmpFinishComment, "")
+        // RESET ON CLOSE, NOT ON OPEN. A canvas component has no lifecycle
+        // events at all: no OnVisible, no OnHidden, no OnStart. Reset() is the
+        // only hook and something outside has to call it.
+        //
+        // The screen calls it on both close paths, which it is already writing,
+        // so this costs nothing extra. Closing rather than opening also fails
+        // better: forget it and the FIRST open is still correct and only a
+        // second one is stale, which someone notices. Reset on open fails
+        // silently on the very first use.
+      OutcomeKey: =_cmpFinishOutcome
+      Width: =App.Width
+    Children:
+      - conFinScrim:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Overlay
+            Height: =Parent.Height
+            Width: =Parent.Width
+          Children:
+            - btnFinDismiss:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =nfColor.Transparent
+                  BorderThickness: =0
+                  Color: =nfColor.Transparent
+                  Fill: =nfColor.Transparent
+                  FocusedBorderThickness: =2
+                  Height: =Parent.Height
+                  HoverBorderColor: =nfColor.Transparent
+                  HoverColor: =nfColor.Transparent
+                  HoverFill: =nfColor.Transparent
+                  OnSelect: |-
+                    =cmpDetFinish.OnCancel()
+                    // RAISES THE EVENT, does not set state. The component does not
+                    // know what flag the screen uses to open it, and does not need
+                    // to. Everything the screen owns stays on the screen.
+                  PressedBorderColor: =nfColor.Transparent
+                  PressedColor: =nfColor.Transparent
+                  PressedFill: =nfColor.Transparent
+                  TabIndex: =-1
+                  Text: =""
+                  Tooltip: ="Dismiss"
+                  Width: =Parent.Width
+      - conFinPanel:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =nfColor.Border
+            BorderThickness: =nfSize.Border
+            DropShadow: =DropShadow.ExtraBold
+            Fill: =nfColor.Surface
+            Height: |-
+              =conFinHeader.Height
+              + conFinBody.Height
+              + conFinFooter.Height
+              // A PLAIN SUM OF THE THREE BANDS, and not one of them reads back
+              // up to this control. An earlier version capped this with
+              // Min(sum, Parent.Height - ...) while the body capped itself
+              // against this panel, which is a straight cycle and Studio
+              // rejects it: "a property cannot reference itself or other
+              // properties affected by its value".
+              //
+              // The cap belongs on the body, against App.Height, which nothing
+              // in this dialog can influence.
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =nfRadius.Xl
+            RadiusBottomRight: =nfRadius.Xl
+            RadiusTopLeft: =nfRadius.Xl
+            RadiusTopRight: =nfRadius.Xl
+            Width: =Min(Parent.Width - 2 * nfSpace.Lg, 420)
+            X: =(Parent.Width - Self.Width) / 2
+            Y: |-
+              =Max(nfSpace.Xl, (Parent.Height - Self.Height) / 2)
+              // Max, SO CENTRING CANNOT GO NEGATIVE. Once the panel is taller
+              // than the space it has, it pins to the top with a margin
+              // instead of hanging off it. Unbounded centring is what put the
+              // footer buttons below the bottom edge.
+          Children:
+            - conFinHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =nfColor.Border
+                  BorderThickness: =nfSize.Border
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Transparent
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Md
+                Children:
+                  - conFinIcon:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.SuccessFill
+                        FillPortions: =0
+                        Height: =nfSize.Row
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        RadiusBottomLeft: =nfRadius.Md
+                        RadiusBottomRight: =nfRadius.Md
+                        RadiusTopLeft: =nfRadius.Md
+                        RadiusTopRight: =nfRadius.Md
+                        Width: =nfSize.Row
+                      Children:
+                        - imgFinIcon:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Fin Icon icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =nfSize.IconSm
+                              Image: |-
+                                ="data:image/svg+xml;utf8,"
+                                & EncodeUrl(
+                                    Substitute(
+                                        "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/><polyline points='22 4 12 14.01 9 11.01'/></svg>",
+                                        "SWAPCOLOR",
+                                        If(nfIsDark, "#86EFAC", "#15803D")
+                                    )
+                                )
+                              TabIndex: =0
+                              Width: =nfSize.IconSm
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
+                  - lblFinTitle:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Center
+                        AutoHeight: =true
+                        Color: =nfColor.TextStrong
+                        FillPortions: =1
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =nfType.Body
+                        Text: ="Complete Task"
+                        Wrap: =false
+                  - conFinClose:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Width: =nfSize.RowSm
+                      Children:
+                        - imgFinClose:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Remove icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =nfSize.IconSm
+                              Image: |-
+                                ="data:image/svg+xml;utf8,"
+                                & EncodeUrl(
+                                    Substitute(
+                                        "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg>",
+                                        "SWAPCOLOR",
+                                        If(nfIsDark, "#94A3B8", "#64748B")
+                                    )
+                                )
+                              TabIndex: =0
+                              Width: =nfSize.IconSm
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnFinClose:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =nfColor.Transparent
+                              BorderThickness: =0
+                              Color: =nfColor.Transparent
+                              Fill: =nfColor.Transparent
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height - 2 * nfSize.FocusRing
+                              HoverBorderColor: =nfColor.Transparent
+                              HoverColor: =nfColor.Transparent
+                              HoverFill: =nfColor.Transparent
+                              OnSelect: =cmpDetFinish.OnCancel()
+                              PressedBorderColor: =nfColor.Transparent
+                              PressedColor: =nfColor.Transparent
+                              PressedFill: =nfColor.Transparent
+                              Text: =""
+                              Tooltip: |-
+                                ="Close without completing the task"
+                                // THE ONLY LABEL AN ICON ONLY BUTTON HAS. Tooltip is
+                                // read by the screen reader on Classic/Button, so it has
+                                // to say what the control does, not what it looks like.
+                                // "Close" was not enough.
+                              Width: =Parent.Width - 2 * nfSize.FocusRing
+                              X: =nfSize.FocusRing
+                              Y: =nfSize.FocusRing
+            - conFinBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Transparent
+                  FillPortions: =0
+                  Height: |-
+                    =Min(
+                        conFinTask.Height + conFinOutcome.Height + conFinComment.Height + 2 * Self.LayoutGap + Self.PaddingTop + Self.PaddingBottom,
+                        App.Height - conFinHeader.Height - conFinFooter.Height - 4 * nfSpace.Xl
+                    )
+                    // THE BODY IS THE PART THAT SCROLLS. Header and footer are
+                    // fixed bands, so the confirm button is always reachable no
+                    // matter how tall the content gets or how short the viewport
+                    // is. This is the behaviour every dialog should have had from
+                    // the start; without it a phone user cannot reach Cancel.
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =nfSpace.Lg
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =nfSpace.Lg
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Lg
+                Children:
+                  - conFinTask:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =nfColor.PrimaryBorder
+                        BorderThickness: =nfSize.Border
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.PrimarySoft
+                        FillPortions: =0
+                        Height: |-
+                          =lblFinTaskWho.Height
+                          + lblFinTaskGoal.Height
+                          + Self.LayoutGap
+                          + Self.PaddingTop
+                          + Self.PaddingBottom
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =nfSpace.Xxs
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =nfSpace.Sm
+                        PaddingLeft: =nfSpace.Md
+                        PaddingRight: =nfSpace.Md
+                        PaddingTop: =nfSpace.Sm
+                        RadiusBottomLeft: =nfRadius.Md
+                        RadiusBottomRight: =nfRadius.Md
+                        RadiusTopLeft: =nfRadius.Md
+                        RadiusTopRight: =nfRadius.Md
+                      Children:
+                        - lblFinTaskWho:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextStrong
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Small
+                              Text: |-
+                                =With(
+                                    { a: LookUp(colAssignments, AssignmentKey = cmpDetFinish.AssignmentKey) },
+                                    a.AssigneeName
+                                    & "   •   "
+                                    & LookUp(nfDepartments, ConfigKey = a.DepartmentCode).Title
+                                )
+                                // READS THE COLLECTIONS DIRECTLY, which is what
+                                // AccessAppScope true buys. The alternative is eight more
+                                // input properties carrying values the component could
+                                // look up itself, and eight more chances for the screen
+                                // and the dialog to disagree about the same task.
+                                //
+                                // AssignmentKey is qualified with the component name
+                                // because the record scope of LookUp also has a column
+                                // called AssignmentKey. Unqualified, the input property
+                                // would be shadowed and the LookUp would compare the
+                                // column to itself and match every row.
+                              Wrap: =false
+                        - lblFinTaskGoal:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =LookUp(
+                                    colAssignments,
+                                    AssignmentKey = cmpDetFinish.AssignmentKey
+                                ).Goal
+                  - conFinOutcome:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: |-
+                          =lblFinOutcomeLabel.Height
+                          + nfSize.Row
+                          + lblFinOutcomeHelp.Height
+                          + 2 * Self.LayoutGap
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =nfSpace.Sm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblFinOutcomeLabel:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: ="OUTCOME"
+                              Wrap: =false
+                        - conFinOutcomeOptions:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Transparent
+                              FillPortions: =0
+                              Height: =nfSize.Row
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =nfSpace.Sm
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - btnFinApprove:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Approve"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: |-
+                                      =If(
+                                          _cmpFinishOutcome = "Approve",
+                                          ButtonAppearance.Primary,
+                                          ButtonAppearance.Secondary
+                                      )
+                                    FillPortions: =1
+                                    FontWeight: =FontWeight.Semibold
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =Set(_cmpFinishOutcome, "Approve")
+                                      // Set, NOT UpdateContext. A component has no context
+                                      // variables at all, so every loc in the original
+                                      // overlay became an underscore prefixed global. The
+                                      // underscore is the house convention for a global that
+                                      // belongs to one component and is not app state.
+                                      //
+                                      // "Approve" is the OutcomeKey AS STORED, verified
+                                      // against a real RequestAssignments row. An earlier
+                                      // version emitted "Approved", which compiles, sends
+                                      // cleanly and writes a value nothing else in the app
+                                      // recognises. The routing panel would have rendered
+                                      // every completed task as Not Started.
+                                    Size: =nfType.Small
+                                    Text: ="Approve"
+                              - btnFinReject:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Reject"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: |-
+                                      =If(
+                                          _cmpFinishOutcome = "Reject",
+                                          ButtonAppearance.Primary,
+                                          ButtonAppearance.Secondary
+                                      )
+                                    FillPortions: =1
+                                    FontWeight: =FontWeight.Semibold
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: =Set(_cmpFinishOutcome, "Reject")
+                                    Size: =nfType.Small
+                                    Text: ="Reject"
+                              - btnFinSendBack:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Send Back"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: |-
+                                      =If(
+                                          _cmpFinishOutcome = "SendBack",
+                                          ButtonAppearance.Primary,
+                                          ButtonAppearance.Secondary
+                                      )
+                                    FillPortions: =1
+                                    FontWeight: =FontWeight.Semibold
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: =Set(_cmpFinishOutcome, "SendBack")
+                                    Size: =nfType.Small
+                                    Text: ="Send Back"
+                        - lblFinOutcomeHelp:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextFaint
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =Switch(
+                                    _cmpFinishOutcome,
+                                    "Approve", "The request advances to the next assignment.",
+                                    "Reject", "The request is parked On Hold for a human decision.",
+                                    "SendBack", "The request returns to the previous phase.",
+                                    "Choose an outcome to continue."
+                                )
+                              VerticalAlign: =VerticalAlign.Top
+                  - conFinComment:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: |-
+                          =lblFinCommentLabel.Height
+                          + nfSize.RowLg
+                          + lblFinCommentHint.Height
+                          + 2 * Self.LayoutGap
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =nfSpace.Sm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblFinCommentLabel:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =If(
+                                    _cmpFinishOutcome = "Approve" || IsBlank(_cmpFinishOutcome),
+                                    "COMMENT",
+                                    "COMMENT   (REQUIRED)"
+                                )
+                              Wrap: =false
+                        - txtFinComment:
+                            Control: ModernTextInput@1.1.1
+                            Properties:
+                              AccessibleLabel: ="Fin Comment"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =Appearance.Outline
+                              Default: =_cmpFinishComment
+                              Height: =nfSize.RowLg
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnChange: =Set(_cmpFinishComment, Self.Text)
+                              Placeholder: ="Add a comment for the audit trail"
+                              Size: =nfType.Small
+                              Type: =TextInputType.Multiline
+                        - lblFinCommentHint:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextFaint
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =If(
+                                    _cmpFinishOutcome = "Approve" || IsBlank(_cmpFinishOutcome),
+                                    "",
+                                    "A rejection or a send back has to say why. This is the only explanation the next person sees."
+                                )
+                                // THE RULE STATED WHERE IT BINDS, not only enforced in the
+                                // footer. A disabled button with no reason beside it reads
+                                // as a bug.
+                              VerticalAlign: =VerticalAlign.Top
+                              Visible: =!(_cmpFinishOutcome = "Approve" || IsBlank(_cmpFinishOutcome))
+            - conFinFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =nfColor.Border
+                  BorderThickness: =nfSize.Border
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.SurfaceAlt
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutJustifyContent: =LayoutJustifyContent.End
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Md
+                  RadiusBottomLeft: =nfRadius.Xl
+                  RadiusBottomRight: =nfRadius.Xl
+                Children:
+                  - btnFinCancel:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Cancel"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Secondary
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =cmpDetFinish.OnCancel()
+                        Size: =nfType.Small
+                        Text: ="Cancel"
+                        Width: =104
+                  - btnFinSubmit:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Complete Task"
+                        AlignInContainer: =AlignInContainer.Center
+                        DisplayMode: |-
+                          =If(
+                              IsBlank(_cmpFinishOutcome)
+                                  || (_cmpFinishOutcome <> "Approve" && IsBlank(Trim(_cmpFinishComment))),
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                          // A COMMENT IS REQUIRED ON ANYTHING THAT IS NOT AN APPROVAL.
+                          // Trim, because a space is not an explanation. The flow
+                          // validates this again: a disabled button is a courtesy, not
+                          // a control, and the flow is the only thing an attacker
+                          // cannot skip.
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =cmpDetFinish.OnSubmit()
+                          // RAISES THE EVENT AND NOTHING ELSE. No Patch, no flow call,
+                          // no Navigate. The screen reads OutcomeKey and Comment off the
+                          // instance and calls CompleteAssignment itself.
+                          //
+                          // That boundary is why this component has no dependency on any
+                          // flow, which is what makes it listable on its own and what
+                          // stops a flow rename from being a component edit.
+                        Size: =nfType.Small
+                        Text: ="Complete Task"
+                        Width: =136

@@ -1,0 +1,3222 @@
+{
+  "department": {
+    "name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Sales, Production, Operations"
+    },
+    "code": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Short unique code"
+    },
+    "is_active": {
+      "type": "Bool",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "user": {
+    "full_name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "email": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Unique. Sign-in identity"
+    },
+    "phone": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "department_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "department",
+      "note": ""
+    },
+    "role": {
+      "type": "Choice",
+      "required": true,
+      "look": "user_role",
+      "note": ""
+    },
+    "is_active": {
+      "type": "Bool",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "external_id": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Directory or OIDC subject ID"
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "account": {
+    "account_number": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Auto-number e.g. ACC-00001"
+    },
+    "name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "account_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "account_type",
+      "note": ""
+    },
+    "email": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "phone": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "billing_street": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "billing_suburb": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "billing_city": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "billing_postcode": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "tax_number": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Business or tax number for company customers"
+    },
+    "source": {
+      "type": "Choice",
+      "required": false,
+      "look": "lead_source",
+      "note": ""
+    },
+    "owner_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": "Account owner (sales rep)"
+    },
+    "is_active": {
+      "type": "Bool",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "notes": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "contact": {
+    "account_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "account",
+      "note": ""
+    },
+    "first_name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "last_name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "email": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Used to match incoming emails to the contact"
+    },
+    "mobile": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "phone": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "job_title": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "is_primary": {
+      "type": "Bool",
+      "required": true,
+      "look": "",
+      "note": "One primary per account"
+    },
+    "preferred_contact": {
+      "type": "Choice",
+      "required": false,
+      "look": "contact_method",
+      "note": ""
+    },
+    "notes": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "site_address": {
+    "account_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "account",
+      "note": ""
+    },
+    "label": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "e.g. Rear lawn, 12 Example St"
+    },
+    "street": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "suburb": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "city": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "postcode": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "latitude": {
+      "type": "Decimal",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "longitude": {
+      "type": "Decimal",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "access_notes": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": "Gates, dogs, parking, power and water"
+    },
+    "site_contact_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "contact",
+      "note": "On-site contact if different from primary"
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "lead": {
+    "lead_number": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Auto-number"
+    },
+    "account_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "account",
+      "note": "Set once matched to an existing customer"
+    },
+    "contact_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "contact",
+      "note": ""
+    },
+    "contact_name": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Captured before a contact record exists"
+    },
+    "contact_email": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "contact_phone": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "site_address_text": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Free text until a site_address is created"
+    },
+    "source": {
+      "type": "Choice",
+      "required": true,
+      "look": "lead_source",
+      "note": ""
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "lead_status",
+      "note": ""
+    },
+    "enquiry_notes": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "owner_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "received_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "qualified_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "disqualified_reason": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Required when status is Disqualified"
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "opportunity": {
+    "opportunity_number": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Auto-number"
+    },
+    "name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "account_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "account",
+      "note": ""
+    },
+    "primary_contact_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "contact",
+      "note": ""
+    },
+    "site_address_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "site_address",
+      "note": ""
+    },
+    "lead_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "lead",
+      "note": "Set when created by converting a lead"
+    },
+    "sale_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "sale_type",
+      "note": "Cash skips the project stages"
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "opportunity_status",
+      "note": ""
+    },
+    "current_stage_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "stage_definition",
+      "note": "Denormalised from stage_instance for fast filtering"
+    },
+    "estimated_value": {
+      "type": "Money",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "probability_pct": {
+      "type": "Decimal",
+      "required": false,
+      "look": "",
+      "note": "0 to 1"
+    },
+    "weighted_value": {
+      "type": "Calc",
+      "required": false,
+      "look": "",
+      "note": "estimated_value x probability_pct"
+    },
+    "expected_close_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "lost_reason": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Required when status is Lost"
+    },
+    "source": {
+      "type": "Choice",
+      "required": false,
+      "look": "lead_source",
+      "note": ""
+    },
+    "owner_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": "Sales rep"
+    },
+    "opened_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "closed_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "quote": {
+    "quote_number": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Base number plus version e.g. Q-1042-v2"
+    },
+    "opportunity_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "opportunity",
+      "note": ""
+    },
+    "version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Starts at 1. New version supersedes the old"
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "quote_status",
+      "note": ""
+    },
+    "issue_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "valid_until": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "subtotal": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": "SUM of quote_line.line_total"
+    },
+    "discount_amount": {
+      "type": "Money",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "tax_rate": {
+      "type": "Decimal",
+      "required": true,
+      "look": "",
+      "note": "Configurable setting, stored per quote"
+    },
+    "tax_amount": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "total": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "terms": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "prepared_by_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "sent_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "accepted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Accepting creates the sale"
+    },
+    "accepted_by_contact_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "contact",
+      "note": ""
+    },
+    "rejection_reason": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "quote_line": {
+    "quote_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "quote",
+      "note": ""
+    },
+    "product_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "product",
+      "note": "Null for free-text lines"
+    },
+    "description": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "area_label": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "e.g. Front lawn"
+    },
+    "quantity": {
+      "type": "Decimal",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "unit": {
+      "type": "Choice",
+      "required": true,
+      "look": "unit",
+      "note": ""
+    },
+    "unit_price": {
+      "type": "Money",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "discount_pct": {
+      "type": "Decimal",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "line_total": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": "quantity x unit_price x (1 - discount_pct)"
+    },
+    "sort_order": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "product": {
+    "sku": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Unique"
+    },
+    "name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "category": {
+      "type": "Choice",
+      "required": true,
+      "look": "product_category",
+      "note": ""
+    },
+    "description": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "unit": {
+      "type": "Choice",
+      "required": true,
+      "look": "unit",
+      "note": ""
+    },
+    "default_unit_price": {
+      "type": "Money",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "default_unit_cost": {
+      "type": "Money",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "pile_height_mm": {
+      "type": "Int",
+      "required": false,
+      "look": "",
+      "note": "Turf products only"
+    },
+    "colour": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Turf products only"
+    },
+    "supplier": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "is_active": {
+      "type": "Bool",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "sale": {
+    "sale_number": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Auto-number"
+    },
+    "opportunity_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "opportunity",
+      "note": "One sale per opportunity"
+    },
+    "quote_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "quote",
+      "note": "The accepted quote"
+    },
+    "account_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "account",
+      "note": ""
+    },
+    "sale_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "sale_type",
+      "note": "Copied from opportunity"
+    },
+    "sale_date": {
+      "type": "Date",
+      "required": true,
+      "look": "",
+      "note": "Date the quote was accepted"
+    },
+    "total_value": {
+      "type": "Money",
+      "required": true,
+      "look": "",
+      "note": "Frozen copy of accepted quote total"
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "sale_status",
+      "note": ""
+    },
+    "contract_sent_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": "Project sales only"
+    },
+    "contract_signed_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": "Project sales only"
+    },
+    "deposit_required_amount": {
+      "type": "Money",
+      "required": false,
+      "look": "",
+      "note": "Project sales only"
+    },
+    "deposit_due_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "notes": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "project": {
+    "project_number": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Auto-number"
+    },
+    "name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "sale_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "sale",
+      "note": "Project sales only"
+    },
+    "opportunity_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "opportunity",
+      "note": ""
+    },
+    "account_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "account",
+      "note": ""
+    },
+    "site_address_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "site_address",
+      "note": ""
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "project_status",
+      "note": ""
+    },
+    "current_stage_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "stage_definition",
+      "note": ""
+    },
+    "project_manager_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "planned_start": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "planned_end": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "actual_start": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "actual_end": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "handover_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "practical_completion_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "hold_reason": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Required when status is On hold"
+    },
+    "revenue": {
+      "type": "Rollup",
+      "required": true,
+      "look": "",
+      "note": "sale.total_value"
+    },
+    "cost_estimates_total": {
+      "type": "Rollup",
+      "required": true,
+      "look": "",
+      "note": "Approved cost_estimate.estimated_cost"
+    },
+    "approved_variations_price": {
+      "type": "Rollup",
+      "required": true,
+      "look": "",
+      "note": "Approved scope_variation.price_impact"
+    },
+    "approved_variations_cost": {
+      "type": "Rollup",
+      "required": true,
+      "look": "",
+      "note": "Approved scope_variation.cost_impact"
+    },
+    "total_invoiced": {
+      "type": "Rollup",
+      "required": true,
+      "look": "",
+      "note": "Non-draft, non-void invoice totals"
+    },
+    "paid_amount": {
+      "type": "Rollup",
+      "required": true,
+      "look": "",
+      "note": "Payments on project invoices"
+    },
+    "gross_margin_amount": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": "See Rollups sheet"
+    },
+    "gross_margin_pct": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": "See Rollups sheet"
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "project_product": {
+    "project_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "project",
+      "note": ""
+    },
+    "product_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "product",
+      "note": ""
+    },
+    "quote_line_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "quote_line",
+      "note": "Traces back to what was quoted"
+    },
+    "area_label": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "quantity": {
+      "type": "Decimal",
+      "required": true,
+      "look": "",
+      "note": "Quoted quantity"
+    },
+    "measured_quantity": {
+      "type": "Decimal",
+      "required": false,
+      "look": "",
+      "note": "From site measure. Difference can trigger a variation"
+    },
+    "unit": {
+      "type": "Choice",
+      "required": true,
+      "look": "unit",
+      "note": ""
+    },
+    "notes": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "cost_estimate": {
+    "project_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "project",
+      "note": ""
+    },
+    "category": {
+      "type": "Choice",
+      "required": true,
+      "look": "cost_category",
+      "note": ""
+    },
+    "description": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "quantity": {
+      "type": "Decimal",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "unit": {
+      "type": "Choice",
+      "required": true,
+      "look": "unit",
+      "note": ""
+    },
+    "unit_cost": {
+      "type": "Money",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "estimated_cost": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": "quantity x unit_cost"
+    },
+    "supplier": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "estimate_status",
+      "note": ""
+    },
+    "version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "approved_by_user_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "user",
+      "note": ""
+    },
+    "approved_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "scope_variation": {
+    "variation_number": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "e.g. V-001 within a project"
+    },
+    "project_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "project",
+      "note": ""
+    },
+    "title": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "description": {
+      "type": "LongText",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "reason": {
+      "type": "Choice",
+      "required": false,
+      "look": "variation_reason",
+      "note": ""
+    },
+    "price_impact": {
+      "type": "Money",
+      "required": true,
+      "look": "",
+      "note": "Signed. Positive adds to price, negative is a credit"
+    },
+    "cost_impact": {
+      "type": "Money",
+      "required": true,
+      "look": "",
+      "note": "Signed"
+    },
+    "schedule_impact_days": {
+      "type": "Int",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "variation_status",
+      "note": "Approved only when both approvals below are set"
+    },
+    "requested_by_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "requested_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "customer_approver_contact_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "contact",
+      "note": ""
+    },
+    "customer_approved_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "internal_approver_user_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "user",
+      "note": ""
+    },
+    "internal_approved_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "decision_notes": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "schedule_entry": {
+    "project_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "project",
+      "note": "At least one of project_id or opportunity_id"
+    },
+    "opportunity_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "opportunity",
+      "note": "For pre-sale site measures"
+    },
+    "title": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "entry_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "schedule_type",
+      "note": ""
+    },
+    "start_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "end_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "assigned_user_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "user",
+      "note": ""
+    },
+    "department_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "department",
+      "note": ""
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "schedule_status",
+      "note": ""
+    },
+    "location_note": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "site_visit": {
+    "project_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "project",
+      "note": "At least one of project_id or opportunity_id"
+    },
+    "opportunity_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "opportunity",
+      "note": ""
+    },
+    "visit_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "visit_type",
+      "note": ""
+    },
+    "visited_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "visited_by_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "summary": {
+      "type": "LongText",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "weather": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "issues_found": {
+      "type": "Bool",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "next_actions": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "schedule_entry_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "schedule_entry",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "site_visit_photo": {
+    "site_visit_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "site_visit",
+      "note": ""
+    },
+    "file_ref": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Storage path or key"
+    },
+    "caption": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "taken_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "sort_order": {
+      "type": "Int",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "task": {
+    "title": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "description": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "project_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "project",
+      "note": ""
+    },
+    "opportunity_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "opportunity",
+      "note": ""
+    },
+    "parent_task_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "task",
+      "note": "Self-link for sub-tasks"
+    },
+    "stage_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "stage_definition",
+      "note": "Ties a task to a stage"
+    },
+    "assigned_user_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "user",
+      "note": ""
+    },
+    "department_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "department",
+      "note": ""
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "task_status",
+      "note": "Kanban column"
+    },
+    "priority": {
+      "type": "Choice",
+      "required": true,
+      "look": "task_priority",
+      "note": ""
+    },
+    "due_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "completed_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "estimate_hours": {
+      "type": "Decimal",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "sort_order": {
+      "type": "Int",
+      "required": false,
+      "look": "",
+      "note": "Order within a Kanban column"
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "document": {
+    "name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "doc_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "doc_type",
+      "note": ""
+    },
+    "storage_ref": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "SharePoint item ID or file path"
+    },
+    "mime_type": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "size_bytes": {
+      "type": "Int",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "satisfies_stage_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "stage_definition",
+      "note": "Counts toward a stage requirement"
+    },
+    "requires_signature": {
+      "type": "Bool",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "signed_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "signed_by": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "uploaded_by_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "document_link": {
+    "document_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "document",
+      "note": ""
+    },
+    "entity_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "link_entity_type",
+      "note": "Table the document is attached to"
+    },
+    "entity_id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Record ID in that table. Validated in the app, not by a database foreign key"
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "meeting": {
+    "title": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "project_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "project",
+      "note": ""
+    },
+    "opportunity_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "opportunity",
+      "note": ""
+    },
+    "start_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "end_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "location": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "agenda": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "summary": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "decisions": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": "Individual decisions also logged as activity rows"
+    },
+    "organiser_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "meeting_attendee": {
+    "meeting_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "meeting",
+      "note": ""
+    },
+    "user_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "user",
+      "note": "One of user_id or contact_id"
+    },
+    "contact_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "contact",
+      "note": ""
+    },
+    "attendance": {
+      "type": "Choice",
+      "required": false,
+      "look": "attendance",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "invoice": {
+    "invoice_number": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Auto-number"
+    },
+    "sale_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "sale",
+      "note": ""
+    },
+    "project_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "project",
+      "note": "Null for cash sales"
+    },
+    "account_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "account",
+      "note": ""
+    },
+    "invoice_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "invoice_type",
+      "note": ""
+    },
+    "scope_variation_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "scope_variation",
+      "note": "Set on variation invoices"
+    },
+    "issue_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "due_date": {
+      "type": "Date",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "subtotal": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": "SUM of invoice_line.line_total"
+    },
+    "tax_amount": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "total": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "invoice_status",
+      "note": ""
+    },
+    "paid_amount": {
+      "type": "Rollup",
+      "required": true,
+      "look": "",
+      "note": "SUM of payment.amount"
+    },
+    "balance": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": "total - paid_amount"
+    },
+    "external_ref": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Accounting system reference"
+    },
+    "sent_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "invoice_line": {
+    "invoice_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "invoice",
+      "note": ""
+    },
+    "product_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "product",
+      "note": ""
+    },
+    "description": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "quantity": {
+      "type": "Decimal",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "unit_price": {
+      "type": "Money",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "line_total": {
+      "type": "Calc",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "sort_order": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "payment": {
+    "invoice_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "invoice",
+      "note": ""
+    },
+    "amount": {
+      "type": "Money",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "paid_on": {
+      "type": "Date",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "method": {
+      "type": "Choice",
+      "required": true,
+      "look": "payment_method",
+      "note": ""
+    },
+    "reference": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "received_by_user_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "user",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "activity": {
+    "activity_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "activity_type",
+      "note": ""
+    },
+    "subject": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Searchable"
+    },
+    "body": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "direction": {
+      "type": "Choice",
+      "required": true,
+      "look": "direction",
+      "note": ""
+    },
+    "occurred_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "contact_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "contact",
+      "note": "Counterparty"
+    },
+    "from_address": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "to_addresses": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "external_message_id": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Outlook or Teams message ID. Unique, prevents duplicate imports"
+    },
+    "meeting_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "meeting",
+      "note": ""
+    },
+    "site_visit_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "site_visit",
+      "note": ""
+    },
+    "task_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "task",
+      "note": ""
+    },
+    "is_decision": {
+      "type": "Bool",
+      "required": false,
+      "look": "",
+      "note": "Flags decisions for the timeline filter"
+    },
+    "logged_by_user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "activity_link": {
+    "activity_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "activity",
+      "note": ""
+    },
+    "entity_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "link_entity_type",
+      "note": "One email can link to account, opportunity and project"
+    },
+    "entity_id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Record ID in that table. Validated in the app"
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "stage_definition": {
+    "code": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": "Unique e.g. DEPOSIT"
+    },
+    "name": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "sequence": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "owner_department_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "department",
+      "note": ""
+    },
+    "applies_to": {
+      "type": "Choice",
+      "required": true,
+      "look": "stage_applies_to",
+      "note": ""
+    },
+    "exit_gate": {
+      "type": "LongText",
+      "required": true,
+      "look": "",
+      "note": "Plain-language gate shown in the UI"
+    },
+    "sla_days": {
+      "type": "Int",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "parallel_group": {
+      "type": "Int",
+      "required": false,
+      "look": "",
+      "note": "Stages sharing a number can run together"
+    },
+    "is_active": {
+      "type": "Bool",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "stage_requirement": {
+    "stage_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "stage_definition",
+      "note": ""
+    },
+    "requirement_type": {
+      "type": "Choice",
+      "required": true,
+      "look": "requirement_type",
+      "note": ""
+    },
+    "doc_type": {
+      "type": "Choice",
+      "required": false,
+      "look": "doc_type",
+      "note": "When requirement_type is Document"
+    },
+    "description": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "is_blocking": {
+      "type": "Bool",
+      "required": true,
+      "look": "",
+      "note": "Blocking means the stage cannot complete without it"
+    },
+    "rule_key": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Machine-checkable rule e.g. deposit_paid, quote_accepted"
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "stage_instance": {
+    "opportunity_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "opportunity",
+      "note": ""
+    },
+    "project_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "project",
+      "note": "Set once the project exists"
+    },
+    "stage_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "stage_definition",
+      "note": ""
+    },
+    "status": {
+      "type": "Choice",
+      "required": true,
+      "look": "stage_status",
+      "note": ""
+    },
+    "entered_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "completed_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "completed_by_user_id": {
+      "type": "Lookup",
+      "required": false,
+      "look": "user",
+      "note": ""
+    },
+    "hold_reason": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "override_reason": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": "Required if a blocking requirement was bypassed"
+    },
+    "notes": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  },
+  "audit_log": {
+    "entity_type": {
+      "type": "Text",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "entity_id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "action": {
+      "type": "Choice",
+      "required": true,
+      "look": "audit_action",
+      "note": ""
+    },
+    "field_name": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "old_value": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "new_value": {
+      "type": "LongText",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "user_id": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "reason": {
+      "type": "Text",
+      "required": false,
+      "look": "",
+      "note": ""
+    },
+    "id": {
+      "type": "Uuid",
+      "required": true,
+      "look": "",
+      "note": "Client-generated primary key"
+    },
+    "created_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "updated_at": {
+      "type": "DateTime",
+      "required": true,
+      "look": "",
+      "note": ""
+    },
+    "created_by": {
+      "type": "Lookup",
+      "required": true,
+      "look": "user",
+      "note": ""
+    },
+    "deleted_at": {
+      "type": "DateTime",
+      "required": false,
+      "look": "",
+      "note": "Soft delete. Null means active"
+    },
+    "row_version": {
+      "type": "Int",
+      "required": true,
+      "look": "",
+      "note": "Optimistic concurrency for multi-user edits"
+    }
+  }
+}

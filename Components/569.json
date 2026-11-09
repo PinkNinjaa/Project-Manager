@@ -1,0 +1,665 @@
+{
+  "TopParent": {
+    "Type": "ControlInfo",
+    "Name": "cmpPieChart",
+    "Template": {
+      "Id": "http://microsoft.com/appmagic/Component",
+      "Version": "1.0",
+      "LastModifiedTimestamp": "639251766543571988",
+      "Name": "ebe0d9bafe2248fda682cde26414e7bf",
+      "FirstParty": true,
+      "IsPremiumPcfControl": false,
+      "IsCustomGroupControlTemplate": false,
+      "CustomGroupControlTemplateName": "",
+      "IsComponentDefinition": true,
+      "CustomProperties": [
+        {
+          "Name": "Animate",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Boolean\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Boolean",
+          "Hidden": false,
+          "DisplayName": "Animate",
+          "Tooltip": "Enable animations"
+        },
+        {
+          "Name": "AnimationDuration",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Number\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Number",
+          "Hidden": false,
+          "DisplayName": "AnimationDuration"
+        },
+        {
+          "Name": "ChartData",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Table\",\"EnumString\":\"\",\"Type\":[{\"Name\":\"Color\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]},{\"Name\":\"Label\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]},{\"Name\":\"Value\",\"Kind\":\"Number\",\"EnumString\":\"\",\"Type\":[]}]}}",
+          "PropertyDataTypeKey": "Table",
+          "Hidden": false,
+          "DisplayName": "ChartData",
+          "Tooltip": "Table with Label, Value, and optional Color columns"
+        },
+        {
+          "Name": "ChartTitle",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "String",
+          "Hidden": false,
+          "DisplayName": "ChartTitle"
+        },
+        {
+          "Name": "DefaultColors",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Table\",\"EnumString\":\"\",\"Type\":[{\"Name\":\"Color\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]}]}}",
+          "PropertyDataTypeKey": "Table",
+          "Hidden": false,
+          "DisplayName": "DefaultColors",
+          "Tooltip": "Default color palette if Color not in data"
+        },
+        {
+          "Name": "DonutMode",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Boolean\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Boolean",
+          "Hidden": false,
+          "DisplayName": "DonutMode",
+          "Tooltip": "Show as donut chart with center hole"
+        },
+        {
+          "Name": "DonutThickness",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Number\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Number",
+          "Hidden": false,
+          "DisplayName": "DonutThickness",
+          "Tooltip": "Thickness of donut ring (0.3 to 0.9)"
+        },
+        {
+          "Name": "ShowLabels",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Boolean\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Boolean",
+          "Hidden": false,
+          "DisplayName": "ShowLabels",
+          "Tooltip": "Show labels on slices"
+        },
+        {
+          "Name": "ShowLegend",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Boolean\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Boolean",
+          "Hidden": false,
+          "DisplayName": "ShowLegend",
+          "Tooltip": "Show legend"
+        },
+        {
+          "Name": "ShowPercentages",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Boolean\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Boolean",
+          "Hidden": false,
+          "DisplayName": "ShowPercentages",
+          "Tooltip": "Show percentage values"
+        },
+        {
+          "Name": "ShowTitle",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Boolean\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Boolean",
+          "Hidden": false,
+          "DisplayName": "ShowTitle",
+          "Tooltip": "Show or hide the chart title"
+        },
+        {
+          "Name": "ShowValues",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"Boolean\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "Boolean",
+          "Hidden": false,
+          "DisplayName": "ShowValues",
+          "Tooltip": "Show actual values in legend"
+        },
+        {
+          "Name": "Theme",
+          "Category": 0,
+          "Type": "{\"Version\":\"1.349\",\"Type\":{\"Name\":\"Root\",\"Kind\":\"String\",\"EnumString\":\"\",\"Type\":[]}}",
+          "PropertyDataTypeKey": "String",
+          "Hidden": false,
+          "DisplayName": "Theme",
+          "Tooltip": "Light or Dark theme"
+        }
+      ],
+      "ComponentType": "CanvasComponent",
+      "OverridableProperties": {}
+    },
+    "Index": 25,
+    "PublishOrderIndex": 0,
+    "VariantName": "",
+    "LayoutName": "",
+    "MetaDataIDKey": "",
+    "PersistMetaDataIDKey": false,
+    "IsFromScreenLayout": false,
+    "StyleName": "",
+    "Parent": "",
+    "IsDataControl": false,
+    "AllowAccessToGlobals": true,
+    "OptimizeForDevices": "Off",
+    "IsGroupControl": false,
+    "IsAutoGenerated": false,
+    "Rules": [
+      {
+        "Property": "ContentLanguage",
+        "Category": "Data",
+        "InvariantScript": "\"\"",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "Animate",
+        "Category": "Data",
+        "InvariantScript": "true",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "AnimationDuration",
+        "Category": "Data",
+        "InvariantScript": "0.8",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "ChartData",
+        "Category": "Data",
+        "InvariantScript": "Table(\n    {Label: \"Marketing\", Value: 35, Color: \"#3B82F6\"},\n    {Label: \"Sales\", Value: 28, Color: \"#10B981\"},\n    {Label: \"Engineering\", Value: 22, Color: \"#F59E0B\"},\n    {Label: \"Operations\", Value: 15, Color: \"#EF4444\"}\n)",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "ChartTitle",
+        "Category": "Data",
+        "InvariantScript": "\"Budget Allocation\"",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "DefaultColors",
+        "Category": "Data",
+        "InvariantScript": "Table(\n    {Color: \"#3B82F6\"},\n    {Color: \"#10B981\"},\n    {Color: \"#F59E0B\"},\n    {Color: \"#EF4444\"},\n    {Color: \"#8B5CF6\"},\n    {Color: \"#EC4899\"},\n    {Color: \"#06B6D4\"},\n    {Color: \"#84CC16\"}\n)",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "DonutMode",
+        "Category": "Data",
+        "InvariantScript": "false",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "DonutThickness",
+        "Category": "Data",
+        "InvariantScript": "0.6",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "ShowLabels",
+        "Category": "Data",
+        "InvariantScript": "true",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "ShowLegend",
+        "Category": "Data",
+        "InvariantScript": "true",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "ShowPercentages",
+        "Category": "Data",
+        "InvariantScript": "true",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "ShowTitle",
+        "Category": "Data",
+        "InvariantScript": "true",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "ShowValues",
+        "Category": "Data",
+        "InvariantScript": "false",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "Theme",
+        "Category": "Data",
+        "InvariantScript": "\"Light\"",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "Fill",
+        "Category": "Design",
+        "InvariantScript": "Color.Transparent",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "Height",
+        "Category": "Design",
+        "InvariantScript": "400",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "Width",
+        "Category": "Design",
+        "InvariantScript": "App.Width",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "X",
+        "Category": "Design",
+        "InvariantScript": "0",
+        "RuleProviderType": "Unknown"
+      },
+      {
+        "Property": "Y",
+        "Category": "Design",
+        "InvariantScript": "0",
+        "RuleProviderType": "Unknown"
+      },
+      {
+        "Property": "Visible",
+        "Category": "Design",
+        "InvariantScript": "true",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "ChildTabPriority",
+        "Category": "Design",
+        "InvariantScript": "true",
+        "RuleProviderType": "System"
+      },
+      {
+        "Property": "EnableChildFocus",
+        "Category": "Design",
+        "InvariantScript": "true",
+        "RuleProviderType": "System"
+      }
+    ],
+    "ControlPropertyState": [
+      "Fill",
+      "Height",
+      "Width",
+      "X",
+      "Y",
+      "Visible",
+      "ChildTabPriority",
+      "EnableChildFocus",
+      "ContentLanguage",
+      "Animate",
+      "AnimationDuration",
+      "ChartData",
+      "ChartTitle",
+      "DefaultColors",
+      "DonutMode",
+      "DonutThickness",
+      "ShowLabels",
+      "ShowLegend",
+      "ShowPercentages",
+      "ShowTitle",
+      "ShowValues",
+      "Theme"
+    ],
+    "IsLocked": false,
+    "ControlUniqueId": "569",
+    "Children": [
+      {
+        "Type": "ControlInfo",
+        "Name": "imgPieChart",
+        "HasDynamicProperties": false,
+        "Template": {
+          "Id": "http://microsoft.com/appmagic/image",
+          "Version": "2.2.3",
+          "LastModifiedTimestamp": "0",
+          "Name": "image",
+          "FirstParty": true,
+          "IsPremiumPcfControl": false,
+          "IsCustomGroupControlTemplate": false,
+          "CustomGroupControlTemplateName": "",
+          "IsComponentDefinition": false,
+          "OverridableProperties": {}
+        },
+        "Index": 0,
+        "PublishOrderIndex": 1134,
+        "VariantName": "",
+        "LayoutName": "",
+        "MetaDataIDKey": "",
+        "PersistMetaDataIDKey": false,
+        "IsFromScreenLayout": false,
+        "StyleName": "defaultImageStyle",
+        "Parent": "cmpPieChart",
+        "IsDataControl": false,
+        "AllowAccessToGlobals": true,
+        "OptimizeForDevices": "Off",
+        "IsGroupControl": false,
+        "IsAutoGenerated": false,
+        "Rules": [
+          {
+            "Property": "Image",
+            "Category": "Data",
+            "InvariantScript": "\"data:image/svg+xml,\" & EncodeUrl(\n    With(\n        {\n            Data: cmpPieChart.ChartData,\n            Colors: cmpPieChart.DefaultColors,\n            vbW: 700,\n            vbH: 350,\n            BgColor: If(cmpPieChart.Theme = \"Dark\", \"#1F2937\", \"#FFFFFF\"),\n            TitleColor: If(cmpPieChart.Theme = \"Dark\", \"#F9FAFB\", \"#0F172A\"),\n            LabelColor: If(cmpPieChart.Theme = \"Dark\", \"#FFFFFF\", \"#FFFFFF\"),\n            LegendTextColor: If(cmpPieChart.Theme = \"Dark\", \"#E5E7EB\", \"#374151\"),\n            LegendValueColor: If(cmpPieChart.Theme = \"Dark\", \"#9CA3AF\", \"#6B7280\"),\n            EmptyTxt: If(cmpPieChart.Theme = \"Dark\", \"#6B7280\", \"#9CA3AF\"),\n            TitleText: cmpPieChart.ChartTitle,\n            ShowLabels: cmpPieChart.ShowLabels,\n            ShowPct: cmpPieChart.ShowPercentages,\n            ShowVals: cmpPieChart.ShowValues,\n            ShowLegend: cmpPieChart.ShowLegend,\n            IsDonut: cmpPieChart.DonutMode,\n            DonutRatio: cmpPieChart.DonutThickness,\n            Animate: cmpPieChart.Animate,\n            AnimDur: cmpPieChart.AnimationDuration,\n            fnt: \"-apple-system,system-ui,Segoe UI,sans-serif\"\n        },\n        With(\n            {\n                cx: If(ShowLegend, 200, vbW / 2),\n                cy: If(cmpPieChart.ShowTitle, 195, 175),\n                radius: 120,\n                total: Sum(Data, Value),\n                n: CountRows(Data),\n                innerR: If(IsDonut, 120 * (1 - DonutRatio), 0),\n                pi: 3.14159265359\n            },\n            With(\n                {\n                    slices: ForAll(\n                        Sequence(n),\n                        With(\n                            {\n                                row: Index(Data, Value),\n                                idx: Value\n                            },\n                            With(\n                                {\n                                    val: row.Value,\n                                    lbl: row.Label,\n                                    clr: If(\n                                        !IsBlank(row.Color),\n                                        row.Color,\n                                        Index(Colors, Mod(idx - 1, CountRows(Colors)) + 1).Color\n                                    ),\n                                    pct: If(total > 0, row.Value / total * 100, 0),\n                                    startAngle: If(\n                                        total > 0,\n                                        Sum(\n                                            Filter(\n                                                ForAll(\n                                                    Sequence(n),\n                                                    {i: Value, v: Index(Data, Value).Value}\n                                                ),\n                                                i < idx\n                                            ),\n                                            v\n                                        ) / total * 360 - 90,\n                                        -90\n                                    )\n                                },\n                                {\n                                    i: idx,\n                                    label: lbl,\n                                    value: val,\n                                    color: clr,\n                                    percent: pct,\n                                    start: startAngle,\n                                    sweep: If(total > 0, val / total * 360, 0)\n                                }\n                            )\n                        )\n                    )\n                },\n                With(\n                    {\n                        slicePaths: Concat(\n                            slices,\n                            With(\n                                {\n                                    startRad: start * pi / 180,\n                                    endRad: (start + sweep) * pi / 180,\n                                    midRad: (start + sweep / 2) * pi / 180,\n                                    largeArc: If(sweep > 180, 1, 0),\n                                    delay: (i - 1) * 0.08\n                                },\n                                With(\n                                    {\n                                        x1: cx + radius * Cos(startRad),\n                                        y1: cy + radius * Sin(startRad),\n                                        x2: cx + radius * Cos(endRad),\n                                        y2: cy + radius * Sin(endRad),\n                                        ix1: cx + innerR * Cos(startRad),\n                                        iy1: cy + innerR * Sin(startRad),\n                                        ix2: cx + innerR * Cos(endRad),\n                                        iy2: cy + innerR * Sin(endRad),\n                                        labelR: If(IsDonut, (radius + innerR) / 2, radius * 0.65),\n                                        lx: cx + If(IsDonut, (radius + innerR) / 2, radius * 0.65) * Cos(midRad),\n                                        ly: cy + If(IsDonut, (radius + innerR) / 2, radius * 0.65) * Sin(midRad)\n                                    },\n                                    If(\n                                        sweep >= 359.9,\n                                        \"<circle cx='\" & cx & \"' cy='\" & cy & \"' r='\" & radius & \"' fill='\" & color & \"'\" &\n                                        If(\n                                            Animate,\n                                            \" style='transform-origin:\" & cx & \"px \" & cy & \"px;animation:pieGrow \" & AnimDur & \"s ease-out forwards;'\",\n                                            \"\"\n                                        ) &\n                                        \"/>\" &\n                                        If(\n                                            IsDonut,\n                                            \"<circle cx='\" & cx & \"' cy='\" & cy & \"' r='\" & innerR & \"' fill='\" & BgColor & \"'/>\",\n                                            \"\"\n                                        ),\n                                        If(\n                                            IsDonut,\n                                            \"<path d='M \" & x1 & \" \" & y1 &\n                                            \" A \" & radius & \" \" & radius & \" 0 \" & largeArc & \" 1 \" & x2 & \" \" & y2 &\n                                            \" L \" & ix2 & \" \" & iy2 &\n                                            \" A \" & innerR & \" \" & innerR & \" 0 \" & largeArc & \" 0 \" & ix1 & \" \" & iy1 &\n                                            \" Z' fill='\" & color & \"'\" &\n                                            If(\n                                                Animate,\n                                                \" style='transform-origin:\" & cx & \"px \" & cy & \"px;opacity:0;animation:sliceFade \" & AnimDur & \"s ease-out \" & delay & \"s forwards;'\",\n                                                \"\"\n                                            ) &\n                                            \"/>\",\n                                            \"<path d='M \" & cx & \" \" & cy &\n                                            \" L \" & x1 & \" \" & y1 &\n                                            \" A \" & radius & \" \" & radius & \" 0 \" & largeArc & \" 1 \" & x2 & \" \" & y2 &\n                                            \" Z' fill='\" & color & \"'\" &\n                                            If(\n                                                Animate,\n                                                \" style='transform-origin:\" & cx & \"px \" & cy & \"px;opacity:0;animation:sliceFade \" & AnimDur & \"s ease-out \" & delay & \"s forwards;'\",\n                                                \"\"\n                                            ) &\n                                            \"/>\"\n                                        )\n                                    ) &\n                                    If(\n                                        ShowLabels && percent >= 5,\n                                        \"<text x='\" & lx & \"' y='\" & ly & \"' text-anchor='middle' dominant-baseline='middle' fill='\" & LabelColor & \"' font-family='\" & fnt & \"' font-size='12' font-weight='600'\" &\n                                        If(\n                                            Animate,\n                                            \" style='opacity:0;animation:labelFade 0.3s ease-out \" & (delay + AnimDur * 0.5) & \"s forwards;'\",\n                                            \"\"\n                                        ) &\n                                        \">\" &\n                                        If(ShowPct, Text(percent, \"[$-en-US]0\") & \"%\", label) &\n                                        \"</text>\",\n                                        \"\"\n                                    )\n                                )\n                            )\n                        ),\n                        legendSvg: If(\n                            ShowLegend,\n                            Concat(\n                                slices,\n                                With(\n                                    {\n                                        ly: If(cmpPieChart.ShowTitle, 80, 60) + (i - 1) * 28,\n                                        lx: 380,\n                                        valText: If(ShowVals, Text(value, \"[$-en-US]#,##0\"), \"\"),\n                                        pctText: If(ShowPct, Text(percent, \"[$-en-US]0.0\") & \"%\", \"\")\n                                    },\n                                    \"<rect x='\" & lx & \"' y='\" & ly & \"' width='14' height='14' rx='3' fill='\" & color & \"'/>\" &\n                                    \"<text x='\" & (lx + 24) & \"' y='\" & (ly + 7) & \"' dominant-baseline='middle' fill='\" & LegendTextColor & \"' font-family='\" & fnt & \"' font-size='13'>\" & label & \"</text>\" &\n                                    \"<text x='\" & (lx + 180) & \"' y='\" & (ly + 7) & \"' dominant-baseline='middle' text-anchor='end' fill='\" & LegendValueColor & \"' font-family='\" & fnt & \"' font-size='12'>\" &\n                                    If(ShowVals && ShowPct, valText & \"  (\" & pctText & \")\", If(ShowVals, valText, If(ShowPct, pctText, \"\"))) &\n                                    \"</text>\"\n                                )\n                            ),\n                            \"\"\n                        ),\n                        titleSvg: If(\n                            cmpPieChart.ShowTitle && !IsBlank(TitleText),\n                            \"<text x='50' y='30' fill='\" & TitleColor & \"' font-family='\" & fnt & \"' font-size='16' font-weight='600'>\" & TitleText & \"</text>\",\n                            \"\"\n                        )\n                    },\n                    If(\n                        n < 1 || total <= 0,\n                        \"<svg xmlns='http://www.w3.org/2000/svg' width='\" & vbW & \"' height='\" & vbH & \"' viewBox='0 0 \" & vbW & \" \" & vbH & \"'>\n                            <rect x='0' y='0' width='100%' height='100%' fill='\" & BgColor & \"'/>\n                            <text x='50%' y='50%' text-anchor='middle' dominant-baseline='middle' fill='\" & EmptyTxt & \"' font-family='\" & fnt & \"' font-size='14'>No data</text>\n                        </svg>\",\n                        \"<svg xmlns='http://www.w3.org/2000/svg' width='\" & vbW & \"' height='\" & vbH & \"' viewBox='0 0 \" & vbW & \" \" & vbH & \"' style='background:\" & BgColor & \"'>\" &\n                        If(\n                            Animate,\n                            \"<style>\n                                @keyframes pieGrow { from { transform: scale(0); } to { transform: scale(1); } }\n                                @keyframes sliceFade { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }\n                                @keyframes labelFade { from { opacity: 0; } to { opacity: 1; } }\n                            </style>\",\n                            \"\"\n                        ) &\n                        titleSvg &\n                        slicePaths &\n                        legendSvg &\n                        \"</svg>\"\n                    )\n                )\n            )\n        )\n    )\n)",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "AccessibleLabel",
+            "Category": "Data",
+            "InvariantScript": "\"Requests by status, pie chart\"",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "Tooltip",
+            "Category": "Data",
+            "InvariantScript": "\"\"",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "ContentLanguage",
+            "Category": "Data",
+            "InvariantScript": "\"\"",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "ZIndex",
+            "Category": "Design",
+            "InvariantScript": "1",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "Transparency",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "ImagePosition",
+            "Category": "Design",
+            "InvariantScript": "ImagePosition.Fit",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "CalculateOriginalDimensions",
+            "Category": "Design",
+            "InvariantScript": "false",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "ImageRotation",
+            "Category": "Design",
+            "InvariantScript": "ImageRotation.None",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "FlipHorizontal",
+            "Category": "Design",
+            "InvariantScript": "false",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "FlipVertical",
+            "Category": "Design",
+            "InvariantScript": "false",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "ApplyEXIFOrientation",
+            "Category": "Design",
+            "InvariantScript": "true",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "AutoDisableOnSelect",
+            "Category": "Design",
+            "InvariantScript": "true",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "X",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "Y",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "Width",
+            "Category": "Design",
+            "InvariantScript": "Parent.Width",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "Height",
+            "Category": "Design",
+            "InvariantScript": "Parent.Height",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "Visible",
+            "Category": "Design",
+            "InvariantScript": "true",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "Fill",
+            "Category": "Design",
+            "InvariantScript": "RGBA(0, 0, 0, 0)",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "DisabledFill",
+            "Category": "Design",
+            "InvariantScript": "RGBA(244, 244, 244, 1)",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "PressedFill",
+            "Category": "Design",
+            "InvariantScript": "ColorFade(Self.Fill, -20%)",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "HoverFill",
+            "Category": "Design",
+            "InvariantScript": "ColorFade(Self.Fill, 20%)",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "BorderColor",
+            "Category": "Design",
+            "InvariantScript": "App.Theme.Colors.Darker40",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "RadiusTopLeft",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "RadiusTopRight",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "RadiusBottomLeft",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "RadiusBottomRight",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "DisabledBorderColor",
+            "Category": "Design",
+            "InvariantScript": "RGBA(166, 166, 166, 1)",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "PressedBorderColor",
+            "Category": "Design",
+            "InvariantScript": "ColorFade(Self.BorderColor, -20%)",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "HoverBorderColor",
+            "Category": "Design",
+            "InvariantScript": "ColorFade(Self.BorderColor, 20%)",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "BorderThickness",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "FocusedBorderColor",
+            "Category": "Design",
+            "InvariantScript": "Self.BorderColor",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "FocusedBorderThickness",
+            "Category": "Design",
+            "InvariantScript": "2",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "BorderStyle",
+            "Category": "Design",
+            "InvariantScript": "BorderStyle.Solid",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "PaddingTop",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "PaddingRight",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "PaddingBottom",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "PaddingLeft",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "DisplayMode",
+            "Category": "Design",
+            "InvariantScript": "DisplayMode.Edit",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "TabIndex",
+            "Category": "Design",
+            "InvariantScript": "0",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "minimumWidth",
+            "Category": "Design",
+            "InvariantScript": "1",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "minimumHeight",
+            "Category": "Design",
+            "InvariantScript": "1",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "maximumWidth",
+            "Category": "Design",
+            "InvariantScript": "1366",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "maximumHeight",
+            "Category": "Design",
+            "InvariantScript": "768",
+            "RuleProviderType": "Unknown"
+          },
+          {
+            "Property": "OnSelect",
+            "Category": "Behavior",
+            "InvariantScript": "false",
+            "RuleProviderType": "Unknown"
+          }
+        ],
+        "ControlPropertyState": [
+          "ZIndex",
+          "Image",
+          "Transparency",
+          "ImagePosition",
+          "CalculateOriginalDimensions",
+          "ImageRotation",
+          "FlipHorizontal",
+          "FlipVertical",
+          "ApplyEXIFOrientation",
+          "AccessibleLabel",
+          "Tooltip",
+          "ContentLanguage",
+          "AutoDisableOnSelect",
+          "X",
+          "Y",
+          "Width",
+          "Height",
+          "Visible",
+          "Fill",
+          "DisabledFill",
+          "PressedFill",
+          "HoverFill",
+          "BorderColor",
+          "RadiusTopLeft",
+          "RadiusTopRight",
+          "RadiusBottomLeft",
+          "RadiusBottomRight",
+          "DisabledBorderColor",
+          "PressedBorderColor",
+          "HoverBorderColor",
+          "BorderThickness",
+          "FocusedBorderColor",
+          "FocusedBorderThickness",
+          "BorderStyle",
+          "PaddingTop",
+          "PaddingRight",
+          "PaddingBottom",
+          "PaddingLeft",
+          "DisplayMode",
+          "TabIndex",
+          "OnSelect",
+          "minimumWidth",
+          "minimumHeight",
+          "maximumWidth",
+          "maximumHeight"
+        ],
+        "IsLocked": false,
+        "ControlUniqueId": "570",
+        "Children": []
+      }
+    ]
+  }
+}

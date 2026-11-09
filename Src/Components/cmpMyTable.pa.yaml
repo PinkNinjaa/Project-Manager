@@ -1,0 +1,1909 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpMyTable:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      CharWidths:
+        PropertyKind: Input
+        DisplayName: CharWidths
+        Description: Character width lookup table (Segoe UI Semibold). Used to size list-view tag pills precisely.
+        DataType: Table
+        Default: |-
+          =Table(
+              {CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:" ",Size:0.369},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"!",Size:0.408},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"""",Size:0.585},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"#",Size:0.788},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"$",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"%",Size:1.123},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"&",Size:0.954},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"'",Size:0.346},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"(",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:")",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"*",Size:0.581},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"+",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:",",Size:0.323},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"-",Size:0.538},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:".",Size:0.323},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"/",Size:0.554},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"0",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"1",Size:0.538},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"2",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"3",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"4",Size:0.769},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"5",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"6",Size:0.746},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"7",Size:0.715},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"8",Size:0.742},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"9",Size:0.746},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:":",Size:0.323},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:";",Size:0.323},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"<",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"=",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:">",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"?",Size:0.592},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"@",Size:1.273},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"A",Size:0.892},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"B",Size:0.808},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"C",Size:0.792},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"D",Size:0.958},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"E",Size:0.692},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"F",Size:0.673},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"G",Size:0.931},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"H",Size:0.981},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"I",Size:0.392},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"J",Size:0.492},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"K",Size:0.815},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"L",Size:0.654},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"M",Size:1.235},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"N",Size:1.023},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"O",Size:1.008},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"P",Size:0.781},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"Q",Size:1.008},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"R",Size:0.831},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"S",Size:0.727},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"T",Size:0.762},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"U",Size:0.938},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"V",Size:0.858},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"W",Size:1.288},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"X",Size:0.823},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"Y",Size:0.773},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"Z",Size:0.785},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"[",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"]",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"^",Size:0.927},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"_",Size:0.55},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"`",Size:0.388},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"a",Size:0.696},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"b",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"c",Size:0.627},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"d",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"e",Size:0.712},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"f",Size:0.462},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"g",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"h",Size:0.777},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"i",Size:0.35},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"j",Size:0.369},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"k",Size:0.7},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"l",Size:0.35},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"m",Size:1.181},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"n",Size:0.781},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"o",Size:0.796},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"p",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"q",Size:0.804},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"r",Size:0.496},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"s",Size:0.573},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"t",Size:0.485},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"u",Size:0.781},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"v",Size:0.677},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"w",Size:1.012},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"x",Size:0.669},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"y",Size:0.681},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"z",Size:0.619},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"{",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"|",Size:0.369},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"}",Size:0.446},{CharFont:Font.'Segoe UI',CharWeight:FontWeight.Semibold,Char:"~",Size:0.927}
+          )
+      ContextMenuItems:
+        PropertyKind: Input
+        DisplayName: ContextMenuItems
+        Description: 'Table of menu items (ItemKey, ItemDisplayName, ItemEnabled, ItemVisible). NOTE: ItemIconSvg and ItemIconColor are reserved and not currently rendered — the native TabList menu does not support custom SVG icons or per-item colors.'
+        DataType: Table
+        Default: |-
+          =Table(
+              {ItemKey: "view", ItemDisplayName: "View", ItemIconSvg: "<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'/><circle cx='12' cy='12' r='3'/></svg>", ItemIconColor: "60,60,60,1", ItemEnabled: true, ItemVisible: true},
+              {ItemKey: "edit", ItemDisplayName: "Edit", ItemIconSvg: "<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7'/><path d='M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z'/></svg>", ItemIconColor: "60,60,60,1", ItemEnabled: true, ItemVisible: true},
+              {ItemKey: "delete", ItemDisplayName: "Delete", ItemIconSvg: "<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 6h18'/><path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6'/><path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2'/></svg>", ItemIconColor: "248,113,113,1", ItemEnabled: true, ItemVisible: true}
+          )
+      EnableHover:
+        PropertyKind: Input
+        DisplayName: EnableHover
+        Description: Enable row hover effects
+        DataType: Boolean
+        Default: =true
+      EnableMenu:
+        PropertyKind: Input
+        DisplayName: EnableMenu
+        Description: Enable context menu on rows
+        DataType: Boolean
+        Default: =true
+      Filters:
+        PropertyKind: Input
+        DisplayName: Filters
+        Description: 'Filter state from the screen. A RECORD, not a table: a record carries no data source so it does not materialise anything, and the QUERY LIVES INSIDE THIS COMPONENT so the galleries can page. Passing a table here would cap the table at the data row limit. Add a filter as a FIELD here rather than as a new component property. ShowDeleted is TWO STATE, active OR deleted, never both: IsDeleted = <variable> delegates, but IsDeleted = false || IsDeleted = true is an OR over a column and drops the whole Filter to the client.'
+        DataType: Record
+        Default: |-
+          ={ Search: "", StatusKey: "all", CategoryKey: "all", MineOnly: false, UserEmail: "", ShowDeleted: false }
+      OnMenuItemSelect:
+        PropertyKind: Event
+        DisplayName: OnMenuItemSelect
+        Description: Action when menu item is selected
+        ReturnType: None
+        Default: =
+      OnRowSelect:
+        PropertyKind: Event
+        DisplayName: OnRowSelect
+        Description: Action when row is selected
+        ReturnType: None
+        Default: =
+      OnViewChange:
+        PropertyKind: Event
+        DisplayName: OnViewChange
+        Description: Action when view mode changes
+        ReturnType: None
+        Default: =
+      PriorityConfig:
+        PropertyKind: Input
+        DisplayName: PriorityConfig
+        Description: Priority badge configuration table
+        DataType: Table
+        Default: |-
+          =Table(
+              {PriorityKey: "StandardApproval", Label: "Standard Approval", Background: "219,234,254,1", TextColor: "29,78,216,1"},
+              {PriorityKey: "ExpeditedReview",  Label: "Expedited Review",  Background: "254,243,199,1", TextColor: "180,83,9,1"},
+              {PriorityKey: "DocumentReview",   Label: "Document Review",   Background: "220,252,231,1", TextColor: "21,128,61,1"},
+              {PriorityKey: "ChangeRequest",    Label: "Change Request",    Background: "237,233,254,1", TextColor: "109,40,217,1"},
+              {PriorityKey: "default",          Label: "",                 Background: "243,244,246,1", TextColor: "75,85,99,1"}
+          )
+      ProgressActiveColor:
+        PropertyKind: Input
+        DisplayName: ProgressActiveColor
+        Description: 'Color for completed progress segments (hex without #)'
+        DataType: Text
+        Default: ="2563EB"
+      ProgressInactiveColor:
+        PropertyKind: Input
+        DisplayName: ProgressInactiveColor
+        Description: 'Color for incomplete progress segments (hex without #)'
+        DataType: Text
+        Default: ="E2E8F0"
+      RowCount:
+        PropertyKind: Output
+        DisplayName: RowCount
+        Description: Number of rows the filter matches. CountRows does not delegate on SharePoint, so past the data row limit this reports only what was fetched. The screen shows a capped indicator rather than a smaller number, because a smaller number would be quietly wrong.
+        DataType: Number
+      SelectedItem:
+        PropertyKind: Output
+        DisplayName: SelectedItem
+        Description: Currently selected item record
+        DataType: Record
+      SelectedMenuItem:
+        PropertyKind: Output
+        DisplayName: SelectedMenuItem
+        Description: The currently selected menu item record
+        DataType: Record
+      SelectedViewMode:
+        PropertyKind: Output
+        DisplayName: SelectedViewMode
+        Description: 'Current view mode: table, card, or list'
+        DataType: Text
+      ShowHeader:
+        PropertyKind: Input
+        DisplayName: ShowHeader
+        Description: Show column headers (table view only)
+        DataType: Boolean
+        Default: =true
+      ShowViewToggle:
+        PropertyKind: Input
+        DisplayName: ShowViewToggle
+        Description: Show the view toggle buttons
+        DataType: Boolean
+        Default: =true
+      StatusConfig:
+        PropertyKind: Input
+        DisplayName: StatusConfig
+        Description: Status badge configuration table
+        DataType: Table
+        Default: |-
+          =Table(
+              {StatusKey: "NotStarted", Label: "Not Started", Background: "241,245,249,1", TextColor: "71,85,105,1"},
+              {StatusKey: "InProgress", Label: "In Progress", Background: "254,243,199,1", TextColor: "180,83,9,1"},
+              {StatusKey: "OnHold",     Label: "On Hold",     Background: "254,226,226,1", TextColor: "185,28,28,1"},
+              {StatusKey: "Completed",  Label: "Completed",   Background: "220,252,231,1", TextColor: "21,128,61,1"},
+              {StatusKey: "Suspended",  Label: "Suspended",   Background: "254,243,199,1", TextColor: "180,83,9,1"},
+              {StatusKey: "Cancelled",  Label: "Cancelled",   Background: "241,245,249,1", TextColor: "71,85,105,1"},
+              {StatusKey: "default",    Label: "",            Background: "240,240,240,1", TextColor: "96,96,96,1"}
+          )
+      ThemeConfig:
+        PropertyKind: Input
+        DisplayName: ThemeConfig
+        Description: Theme configuration record
+        DataType: Record
+        Default: |-
+          ={
+              container: {background: "255,255,255,1", border: "224,224,224,1", borderThickness: 1, radius: 12},
+              header: {background: "249,250,251,1", border: "224,224,224,1", borderThickness: 2, textColor: "96,96,96,1", fontSize: 11, fontWeight: "Semibold", height: 50},
+              row: {background: "0,0,0,0", hoverBackground: "248,249,250,0.5", borderColor: "240,240,240,1", borderThickness: 1, height: 60},
+              card: {background: "255,255,255,1", border: "229,231,235,1", borderThickness: 1, radius: 12, height: 300, gap: 16},
+              list: {background: "255,255,255,1", border: "229,231,235,1", divider: "243,244,246,1", text: "17,24,39,1", textMuted: "107,114,128,1", radius: 12},
+              text: {primary: "32,32,32,1", secondary: "96,96,96,1", accent: "37,99,235,1", fontFamily: "Segoe UI", fontSizeNormal: 12, fontSizeSmall: 11},
+              spacing: {paddingLeft: 20, columnGap: 10}
+          }
+      ViewMode:
+        PropertyKind: Input
+        DisplayName: ViewMode
+        Description: 'View mode: "table", "card", or "list"'
+        DataType: Text
+        Default: ="table"
+    Properties:
+      Height: =600
+      OnReset: |-
+        =Set(varCT_ViewMode, If(cmpMyTable.ShowViewToggle, cmpMyTable.ViewMode, Blank()));
+                Set(varCT_SelectedItem, Blank())
+      RowCount: =CountRows(SortByColumns(Filter(colRequests, IsDeleted = cmpMyTable.Filters.ShowDeleted, StartsWith(PrimaryPocEmail, If(cmpMyTable.Filters.MineOnly, cmpMyTable.Filters.UserEmail, "")), StartsWith(Title, cmpMyTable.Filters.Search) || StartsWith(RequestKey, cmpMyTable.Filters.Search), StartsWith(StatusKey, If(cmpMyTable.Filters.StatusKey = "all", "", cmpMyTable.Filters.StatusKey)), StartsWith(CategoryKey, If(cmpMyTable.Filters.CategoryKey = "all", "", cmpMyTable.Filters.CategoryKey))), "RequestDueDate", SortOrder.Ascending))
+      SelectedItem: =varCT_SelectedItem
+      SelectedMenuItem: =varCT_SelectedMenuItem
+      SelectedViewMode: =Coalesce(varCT_ViewMode, cmpMyTable.ViewMode)
+      Width: =1200
+    Children:
+      - conTableView_4:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: |-
+              =With(
+                  {parts: Split(cmpMyTable.ThemeConfig.container.border, ",")},
+                  RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+              )
+            BorderThickness: =cmpMyTable.ThemeConfig.container.borderThickness
+            DropShadow: =DropShadow.None
+            Fill: |-
+              =With(
+                  {parts: Split(cmpMyTable.ThemeConfig.container.background, ",")},
+                  RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+              )
+            Height: =Parent.Height - If(cmpMyTable.ShowViewToggle, 56, 0)
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutOverflowX: =LayoutOverflow.Scroll
+            RadiusBottomLeft: =cmpMyTable.ThemeConfig.container.radius
+            RadiusBottomRight: =cmpMyTable.ThemeConfig.container.radius
+            RadiusTopLeft: =cmpMyTable.ThemeConfig.container.radius
+            RadiusTopRight: =cmpMyTable.ThemeConfig.container.radius
+            Visible: |-
+              =galTableRows_4.AllItemsCount > 0 && If(
+                  cmpMyTable.ShowViewToggle,
+                      Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "table",
+                      cmpMyTable.ViewMode = "table"
+              )
+            Width: '=Parent.Width '
+            Y: =If(cmpMyTable.ShowViewToggle, 56, 0)
+          Children:
+            - conTableContent_4:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  FillPortions: =0
+                  Height: =Parent.Height
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  Width: =Max(Parent.Width - 1, 1240)
+                Children:
+                  - conTableHeader_4:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Start
+                        DropShadow: =DropShadow.None
+                        Fill: |-
+                          =With(
+                              {parts: Split(cmpMyTable.ThemeConfig.header.background, ",")},
+                              RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                          )
+                        FillPortions: =0
+                        Height: =cmpMyTable.ThemeConfig.header.height
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =cmpMyTable.ThemeConfig.spacing.columnGap
+                        PaddingLeft: =cmpMyTable.ThemeConfig.spacing.paddingLeft
+                        RadiusTopLeft: =cmpMyTable.ThemeConfig.container.radius
+                        RadiusTopRight: =cmpMyTable.ThemeConfig.container.radius
+                        Visible: =cmpMyTable.ShowHeader
+                        Width: =Parent.Width
+                      Children:
+                        - hdrActions_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxWidth: =50
+                              LayoutMinWidth: =50
+                              Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                              TabIndex: =0
+                              Text: =
+                              Width: =50
+                        - hdrCaseID_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxWidth: =120
+                              LayoutMinWidth: =120
+                              Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                              TabIndex: =0
+                              Text: ="Case ID"
+                        - hdrTitle_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxWidth: =280
+                              LayoutMinWidth: =280
+                              Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                              TabIndex: =0
+                              Text: ="Title"
+                              Wrap: =false
+                        - hdrStatus_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxWidth: =120
+                              LayoutMinWidth: =120
+                              Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                              TabIndex: =0
+                              Text: ="Status"
+                              Width: =120
+                        - hdrProgress_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxWidth: =180
+                              LayoutMinWidth: =180
+                              Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                              TabIndex: =0
+                              Text: ="Progress"
+                              Width: =180
+                        - hdrAssignee_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxWidth: =150
+                              Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                              TabIndex: =0
+                              Text: ="Assignee"
+                        - hdrDueDate_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxWidth: =120
+                              LayoutMinWidth: =120
+                              Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                              TabIndex: =0
+                              Text: ="Due Date"
+                        - hdrPriority_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =Parent.Height
+                              LayoutMaxWidth: =100
+                              Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                              TabIndex: =0
+                              Text: ="Category"
+                  - galTableRows_4:
+                      Control: Gallery@2.15.0
+                      Variant: Vertical
+                      Properties:
+                        AccessibleLabel: ="Table Rows list"
+                        BorderStyle: =BorderStyle.None
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height - If(cmpMyTable.ShowHeader, cmpMyTable.ThemeConfig.header.height, 0)
+                        Items: =SortByColumns(Filter(colRequests, IsDeleted = cmpMyTable.Filters.ShowDeleted, StartsWith(PrimaryPocEmail, If(cmpMyTable.Filters.MineOnly, cmpMyTable.Filters.UserEmail, "")), StartsWith(Title, cmpMyTable.Filters.Search) || StartsWith(RequestKey, cmpMyTable.Filters.Search), StartsWith(StatusKey, If(cmpMyTable.Filters.StatusKey = "all", "", cmpMyTable.Filters.StatusKey)), StartsWith(CategoryKey, If(cmpMyTable.Filters.CategoryKey = "all", "", cmpMyTable.Filters.CategoryKey))), "RequestDueDate", SortOrder.Ascending)
+                        TabIndex: =0
+                        TemplatePadding: =0
+                        TemplateSize: =cmpMyTable.ThemeConfig.row.height
+                        Width: =Parent.Width
+                      Children:
+                        - rectRowBorder_5:
+                            Control: Rectangle@2.3.0
+                            Properties:
+                              AccessibleLabel: ="Open row divider"
+                              BorderStyle: =BorderStyle.None
+                              Fill: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.row.borderColor, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Height: =cmpMyTable.ThemeConfig.row.borderThickness
+                              TabIndex: =0
+                              Width: =Parent.Width
+                              Y: =Parent.TemplateHeight - cmpMyTable.ThemeConfig.row.borderThickness
+                        - conRowCells_5:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderStyle: =BorderStyle.None
+                              DropShadow: =DropShadow.None
+                              Height: =Parent.TemplateHeight
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =cmpMyTable.ThemeConfig.spacing.columnGap
+                              PaddingLeft: =cmpMyTable.ThemeConfig.spacing.paddingLeft
+                              Width: =Parent.TemplateWidth
+                            Children:
+                              - conRowActions_4:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderStyle: =BorderStyle.None
+                                    DropShadow: =DropShadow.None
+                                    Height: =Parent.Height
+                                    LayoutMaxWidth: =50
+                                    LayoutMinWidth: =50
+                                    Width: =50
+                                  Children:
+                                    - tabRowMenu_4:
+                                        Control: TabList@2.2.31
+                                        Properties:
+                                          AccessibleLabel: ="Row Actions"
+                                          Alignment: ='TabList.Alignment'.Horizontal
+                                          Height: =24
+                                          Items: =Filter(cmpMyTable.ContextMenuItems, ItemVisible)
+                                          OnSelect: |-
+                                            =Set(varCT_SelectedMenuItem, Self.Selected);
+                                            Set(varCT_SelectedItem, ThisItem);
+                                              cmpMyTable.OnMenuItemSelect()
+                                          Width: =24
+                                          X: =(Parent.Width - 24) / 2
+                                          Y: =(Parent.Height - 24) / 2
+                                        Children:
+                                          - ItemDisplayName_4:
+                                              Control: TabListDataField@1.5.0
+                                              Variant: textualColumn
+                                              Properties:
+                                                FieldDisplayName: ="ItemDisplayName"
+                                                FieldName: ="ItemDisplayName"
+                                                FieldType: ="s"
+                                                Order: =1
+                                          - ItemIconSvg_4:
+                                              Control: TabListDataField@1.5.0
+                                              Variant: textualColumn
+                                              Properties:
+                                                FieldDisplayName: ="ItemIconSvg"
+                                                FieldName: ="ItemIconSvg"
+                                                FieldType: ="s"
+                                                Order: =2
+                              - lblCaseID_4:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: |-
+                                      =With(
+                                          {parts: Split(cmpMyTable.ThemeConfig.text.primary, ",")},
+                                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                      )
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =47
+                                    LayoutMaxWidth: =120
+                                    LayoutMinWidth: =120
+                                    Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                                    TabIndex: =0
+                                    Text: =ThisItem.RequestKey
+                                    Tooltip: =ThisItem.RequestKey
+                              - lblTitle_4:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: |-
+                                      =With(
+                                          {parts: Split(cmpMyTable.ThemeConfig.text.primary, ",")},
+                                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                      )
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =32
+                                    LayoutMaxWidth: =280
+                                    LayoutMinWidth: =280
+                                    Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                                    TabIndex: =0
+                                    Text: =ThisItem.Title
+                                    Tooltip: =ThisItem.Title
+                                    Wrap: =false
+                              - conStatusCell_4:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderStyle: =BorderStyle.None
+                                    DropShadow: =DropShadow.None
+                                    Height: =28
+                                    LayoutMaxWidth: =120
+                                    LayoutMinWidth: =120
+                                  Children:
+                                    - btnStatusPill_4:
+                                        Control: Classic/Button@2.2.0
+                                        Properties:
+                                          BorderStyle: =BorderStyle.None
+                                          DisplayMode: =DisplayMode.View
+                                          Fill: |-
+                                            =With(
+                                                {_m: Coalesce(
+                                                    LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))),
+                                                    LookUp(cmpMyTable.StatusConfig, StatusKey = "default")
+                                                )},
+                                                With({p: Split(_m.Background, ",")},
+                                                    RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                )
+                                            )
+                                          FocusedBorderThickness: =0.5
+                                          Height: =Parent.Height
+                                          RadiusBottomLeft: =14
+                                          RadiusBottomRight: =14
+                                          RadiusTopLeft: =14
+                                          RadiusTopRight: =14
+                                          Text: =
+                                          Tooltip: ="Status Pill"
+                                          Width: =Parent.Width
+                                    - lblStatusText_4:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
+                                          Color: |-
+                                            =With(
+                                                {_m: Coalesce(
+                                                    LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))),
+                                                    LookUp(cmpMyTable.StatusConfig, StatusKey = "default")
+                                                )},
+                                                With({p: Split(_m.TextColor, ",")},
+                                                    RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                )
+                                            )
+                                          FocusedBorderThickness: =0.5
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          Size: =11
+                                          TabIndex: =0
+                                          Text: =Coalesce(LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))).Label, Text(ThisItem.StatusKey))
+                                          Width: =Parent.Width
+                              - conProgressCell_4:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderStyle: =BorderStyle.None
+                                    DropShadow: =DropShadow.None
+                                    Height: =32
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =8
+                                    LayoutMaxWidth: =180
+                                    LayoutMinWidth: =180
+                                  Children:
+                                    - imgProgressBar_5:
+                                        Control: Image@2.2.3
+                                        Properties:
+                                          AccessibleLabel: ="Progress Bar icon"
+                                          BorderStyle: =BorderStyle.None
+                                          FillPortions: =1
+                                          FocusedBorderThickness: =0.5
+                                          Height: =6
+                                          Image: |-
+                                            =With(
+                                                {barWidth: 120, segGap: 3, total: ThisItem.PhaseCount, done: ThisItem.CurrentPhaseOrder, cActive: cmpMyTable.ProgressActiveColor, cInactive: cmpMyTable.ProgressInactiveColor},
+                                                With(
+                                                    {segW: (barWidth - (segGap * (total - 1))) / total},
+                                                    "data:image/svg+xml," &
+                                                    "<svg xmlns='http://www.w3.org/2000/svg' width='" & barWidth & "' height='6'>" &
+                                                    If(total >= 1,  "<rect x='0' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(1  <= done, cActive, cInactive) & "'/>", "") &
+                                                    If(total >= 2,  "<rect x='" & (1*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(2  <= done, cActive, cInactive) & "'/>", "") &
+                                                    If(total >= 3,  "<rect x='" & (2*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(3  <= done, cActive, cInactive) & "'/>", "") &
+                                                    If(total >= 4,  "<rect x='" & (3*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(4  <= done, cActive, cInactive) & "'/>", "") &
+                                                    If(total >= 5,  "<rect x='" & (4*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(5  <= done, cActive, cInactive) & "'/>", "") &
+                                                    "</svg>"
+                                                )
+                                            )
+                                          ImagePosition: =ImagePosition.Fill
+                                          TabIndex: =0
+                                          Tooltip: |-
+                                            =With(
+                                                { _ph: Sort(Filter(colPhases, RequestKey = ThisItem.RequestKey), PhaseOrder) },
+                                                "Phase " & Text(ThisItem.CurrentPhaseOrder) & " of " & Text(ThisItem.PhaseCount)
+                                                & Char(10)
+                                                & Concat(
+                                                    _ph As p,
+                                                    Text(p.PhaseOrder) & ". " & p.Title & "  -  "
+                                                    & Coalesce(
+                                                        LookUp(cmpMyTable.StatusConfig As sc, Lower(sc.StatusKey) = Lower(Text(p.PhaseStatusKey))).Label,
+                                                        Text(p.PhaseStatusKey)
+                                                    ),
+                                                    Char(10)
+                                                )
+                                            )
+                                    - lblPhaseCount_4:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderStyle: =BorderStyle.None
+                                          Color: |-
+                                            =With(
+                                                {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                                RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                            )
+                                          FocusedBorderThickness: =0.5
+                                          Font: =Font.'Segoe UI'
+                                          Height: =20
+                                          Size: =11
+                                          TabIndex: =0
+                                          Text: =ThisItem.CurrentPhaseOrder & "/" & ThisItem.PhaseCount
+                                          Tooltip: |-
+                                            =With(
+                                                { _ph: Sort(Filter(colPhases, RequestKey = ThisItem.RequestKey), PhaseOrder) },
+                                                "Phase " & Text(ThisItem.CurrentPhaseOrder) & " of " & Text(ThisItem.PhaseCount)
+                                                & Char(10)
+                                                & Concat(
+                                                    _ph As p,
+                                                    Text(p.PhaseOrder) & ". " & p.Title & "  -  "
+                                                    & Coalesce(
+                                                        LookUp(cmpMyTable.StatusConfig As sc, Lower(sc.StatusKey) = Lower(Text(p.PhaseStatusKey))).Label,
+                                                        Text(p.PhaseStatusKey)
+                                                    ),
+                                                    Char(10)
+                                                )
+                                            )
+                                          Width: =60
+                                          Wrap: =false
+                              - lblAssignee_4:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: |-
+                                      =With(
+                                          {parts: Split(cmpMyTable.ThemeConfig.text.primary, ",")},
+                                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                      )
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =47
+                                    LayoutMaxWidth: =150
+                                    Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                                    TabIndex: =0
+                                    Text: =ThisItem.PrimaryPocName
+                              - lblDueDate_4:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: |-
+                                      =With(
+                                          {parts: Split(cmpMyTable.ThemeConfig.text.primary, ",")},
+                                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                      )
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =32
+                                    LayoutMaxWidth: =120
+                                    LayoutMinWidth: =120
+                                    Size: =cmpMyTable.ThemeConfig.text.fontSizeNormal
+                                    TabIndex: =0
+                                    Text: =nfDay(ThisItem.RequestDueDate)
+                              - conPriorityCell_4:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderStyle: =BorderStyle.None
+                                    DropShadow: =DropShadow.None
+                                    Height: =28
+                                    LayoutMaxWidth: =150
+                                    LayoutMinWidth: =150
+                                  Children:
+                                    - btnPriorityPill_4:
+                                        Control: Classic/Button@2.2.0
+                                        Properties:
+                                          BorderStyle: =BorderStyle.None
+                                          DisplayMode: =DisplayMode.View
+                                          Fill: |-
+                                            =With(
+                                                {_m: Coalesce(
+                                                    LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))),
+                                                    LookUp(cmpMyTable.PriorityConfig, PriorityKey = "default")
+                                                )},
+                                                With({p: Split(_m.Background, ",")},
+                                                    RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                )
+                                            )
+                                          FocusedBorderThickness: =0.5
+                                          Height: =Parent.Height
+                                          RadiusBottomLeft: =14
+                                          RadiusBottomRight: =14
+                                          RadiusTopLeft: =14
+                                          RadiusTopRight: =14
+                                          Text: =
+                                          Tooltip: ="Priority Pill"
+                                          Width: =Parent.Width * .8
+                                          X: =(Parent.Width - Self.Width) / 2
+                                    - lblPriorityText_4:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
+                                          Color: |-
+                                            =With(
+                                                {_m: Coalesce(
+                                                    LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))),
+                                                    LookUp(cmpMyTable.PriorityConfig, PriorityKey = "default")
+                                                )},
+                                                With({p: Split(_m.TextColor, ",")},
+                                                    RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                )
+                                            )
+                                          FocusedBorderThickness: =0.5
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =Parent.Height
+                                          Size: =11
+                                          TabIndex: =0
+                                          Text: =Coalesce(LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))).Label, Text(ThisItem.CategoryKey))
+                                          Tooltip: =Self.Text
+                                          Width: =Parent.Width * .8
+                                          Wrap: =false
+                                          X: =(Parent.Width - Self.Width) / 2
+                        - btnRowOverlay_5:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0,0,0,0)
+                              BorderStyle: =BorderStyle.None
+                              Fill: =RGBA(0,0,0,0)
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.TemplateHeight
+                              HoverFill: =If(cmpMyTable.EnableHover, RGBA(0,0,0,0.04), RGBA(0,0,0,0))
+                              OnSelect: |-
+                                =                                Set(varCT_SelectedItem, ThisItem);
+                                cmpMyTable.OnRowSelect()
+                              PressedFill: =RGBA(0,0,0,0.08)
+                              Text: =
+                              Visible: =false
+                              Width: =Parent.TemplateWidth - 80
+                              X: =70
+      - conCardView_4:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =Parent.Height - If(cmpMyTable.ShowViewToggle, 52, 0)
+            LayoutDirection: =LayoutDirection.Vertical
+            PaddingBottom: =16
+            PaddingTop: =24
+            Visible: |-
+              =galCards_4.AllItemsCount > 0 && If(
+                  cmpMyTable.ShowViewToggle,
+                      Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "card",
+                      cmpMyTable.ViewMode = "card"
+              )
+            Width: =Parent.Width
+            Y: =If(cmpMyTable.ShowViewToggle, 52, 0)
+          Children:
+            - galCards_4:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Card Gallery"
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height - 32
+                  Items: =SortByColumns(Filter(colRequests, IsDeleted = cmpMyTable.Filters.ShowDeleted, StartsWith(PrimaryPocEmail, If(cmpMyTable.Filters.MineOnly, cmpMyTable.Filters.UserEmail, "")), StartsWith(Title, cmpMyTable.Filters.Search) || StartsWith(RequestKey, cmpMyTable.Filters.Search), StartsWith(StatusKey, If(cmpMyTable.Filters.StatusKey = "all", "", cmpMyTable.Filters.StatusKey)), StartsWith(CategoryKey, If(cmpMyTable.Filters.CategoryKey = "all", "", cmpMyTable.Filters.CategoryKey))), "RequestDueDate", SortOrder.Ascending)
+                  LayoutMinWidth: =100
+                  TabIndex: =0
+                  TemplatePadding: =8
+                  TemplateSize: =cmpMyTable.ThemeConfig.card.height + cmpMyTable.ThemeConfig.card.gap
+                  Width: =Parent.Width - 16
+                  WrapCount: =If(Parent.Width < 600, 1, If(Parent.Width < 1024, 2, 3))
+                Children:
+                  - conCard_4:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: |-
+                          =With(
+                              {parts: Split(cmpMyTable.ThemeConfig.card.border, ",")},
+                              RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                          )
+                        BorderThickness: =cmpMyTable.ThemeConfig.card.borderThickness
+                        DropShadow: =DropShadow.Semilight
+                        Fill: |-
+                          =With(
+                              {parts: Split(cmpMyTable.ThemeConfig.card.background, ",")},
+                              RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                          )
+                        Height: =cmpMyTable.ThemeConfig.card.height
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =8
+                        PaddingBottom: =16
+                        PaddingLeft: =16
+                        PaddingRight: =16
+                        PaddingTop: =16
+                        RadiusBottomLeft: =cmpMyTable.ThemeConfig.card.radius
+                        RadiusBottomRight: =cmpMyTable.ThemeConfig.card.radius
+                        RadiusTopLeft: =cmpMyTable.ThemeConfig.card.radius
+                        RadiusTopRight: =cmpMyTable.ThemeConfig.card.radius
+                        Width: =Parent.TemplateWidth - 16
+                        X: =8
+                      Children:
+                        - conCardHeader_4:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =24
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                              LayoutMinWidth: =100
+                              Width: =Parent.Width - 40
+                            Children:
+                              - lblCardCaseID_4:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: |-
+                                      =With(
+                                          {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                      )
+                                    FillPortions: =1
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =20
+                                    LayoutMinWidth: =100
+                                    Size: =11
+                                    TabIndex: =0
+                                    Text: =ThisItem.RequestKey
+                              - tabCardMenu_4:
+                                  Control: TabList@2.2.31
+                                  Properties:
+                                    AccessibleLabel: ="Row Actions"
+                                    Alignment: ='TabList.Alignment'.Horizontal
+                                    Height: =24
+                                    Items: =Filter(cmpMyTable.ContextMenuItems, ItemVisible)
+                                    OnSelect: |-
+                                      =Set(varCT_SelectedMenuItem, Self.Selected);
+                                        Set(varCT_SelectedItem, ThisItem);
+                                        cmpMyTable.OnMenuItemSelect()
+                                    Width: =24
+                                    Y: =(Parent.Height - 24) / 2
+                                  Children:
+                                    - CardItemDisplayName_4:
+                                        Control: TabListDataField@1.5.0
+                                        Variant: textualColumn
+                                        Properties:
+                                          FieldDisplayName: ="ItemDisplayName"
+                                          FieldName: ="ItemDisplayName"
+                                          FieldType: ="s"
+                                          Order: =1
+                                    - CardItemIconSvg_4:
+                                        Control: TabListDataField@1.5.0
+                                        Variant: textualColumn
+                                        Properties:
+                                          FieldDisplayName: ="ItemIconSvg"
+                                          FieldName: ="ItemIconSvg"
+                                          FieldType: ="s"
+                                          Order: =2
+                        - lblCardTitle_4:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderStyle: =BorderStyle.None
+                              Color: |-
+                                =With(
+                                    {parts: Split(cmpMyTable.ThemeConfig.text.primary, ",")},
+                                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                )
+                              FocusedBorderThickness: =0.5
+                              Font: =Font.'Segoe UI'
+                              FontWeight: =FontWeight.Semibold
+                              Height: =24
+                              Size: =15
+                              TabIndex: =0
+                              Text: =ThisItem.Title
+                              Width: =Parent.Width - 40
+                        - conCardBadges_4:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =28
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =8
+                              Width: =Parent.Width - 40
+                            Children:
+                              - conCardStatusBadge_4:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: |-
+                                      =With(
+                                          {_m: Coalesce(
+                                              LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))),
+                                              LookUp(cmpMyTable.StatusConfig, StatusKey = "default")
+                                          )},
+                                          With({p: Split(_m.Background, ",")},
+                                              RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                          )
+                                      )
+                                    FillPortions: =0
+                                    Height: =24
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    PaddingLeft: =10
+                                    PaddingRight: =10
+                                    RadiusBottomLeft: =12
+                                    RadiusBottomRight: =12
+                                    RadiusTopLeft: =12
+                                    RadiusTopRight: =12
+                                    Width: =105
+                                  Children:
+                                    - lblCardStatusText_4:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
+                                          Color: |-
+                                            =With(
+                                                {_m: Coalesce(
+                                                    LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))),
+                                                    LookUp(cmpMyTable.StatusConfig, StatusKey = "default")
+                                                )},
+                                                With({p: Split(_m.TextColor, ",")},
+                                                    RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                )
+                                            )
+                                          FocusedBorderThickness: =0.5
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =20
+                                          Size: =10
+                                          TabIndex: =0
+                                          Text: =Coalesce(LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))).Label, Text(ThisItem.StatusKey))
+                                          Width: =85
+                              - conCardPriorityBadge_4:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: |-
+                                      =With(
+                                          {_m: Coalesce(
+                                              LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))),
+                                              LookUp(cmpMyTable.PriorityConfig, PriorityKey = "default")
+                                          )},
+                                          With({p: Split(_m.Background, ",")},
+                                              RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                          )
+                                      )
+                                    FillPortions: =0
+                                    Height: =24
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    PaddingLeft: =10
+                                    PaddingRight: =10
+                                    RadiusBottomLeft: =12
+                                    RadiusBottomRight: =12
+                                    RadiusTopLeft: =12
+                                    RadiusTopRight: =12
+                                    Width: =80
+                                  Children:
+                                    - lblCardPriorityText_4:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderStyle: =BorderStyle.None
+                                          Color: |-
+                                            =With(
+                                                {_m: Coalesce(
+                                                    LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))),
+                                                    LookUp(cmpMyTable.PriorityConfig, PriorityKey = "default")
+                                                )},
+                                                With({p: Split(_m.TextColor, ",")},
+                                                    RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                )
+                                            )
+                                          FocusedBorderThickness: =0.5
+                                          Font: =Font.'Segoe UI'
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =20
+                                          Size: =10
+                                          TabIndex: =0
+                                          Text: =Coalesce(LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))).Label, Text(ThisItem.CategoryKey))
+                                          Tooltip: =ThisItem.CategoryKey
+                                          Width: =50
+                                          Wrap: =false
+                        - conCardProgress_4:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =20
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =12
+                              Width: =Parent.Width - 40
+                            Children:
+                              - imgCardProgressBar_4:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="Card Progress Bar icon"
+                                    BorderStyle: =BorderStyle.None
+                                    FillPortions: =1
+                                    FocusedBorderThickness: =0.5
+                                    Height: =6
+                                    Image: |-
+                                      =With(
+                                          {barWidth: 140, segGap: 3, total: ThisItem.PhaseCount, done: ThisItem.CurrentPhaseOrder, cActive: cmpMyTable.ProgressActiveColor, cInactive: cmpMyTable.ProgressInactiveColor},
+                                          With(
+                                              {segW: (barWidth - (segGap * (total - 1))) / total},
+                                              "data:image/svg+xml," &
+                                              "<svg xmlns='http://www.w3.org/2000/svg' width='" & barWidth & "' height='6'>" &
+                                              If(total >= 1,  "<rect x='0' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(1  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 2,  "<rect x='" & (1*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(2  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 3,  "<rect x='" & (2*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(3  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 4,  "<rect x='" & (3*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(4  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 5,  "<rect x='" & (4*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(5  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 6,  "<rect x='" & (5*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(6  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 7,  "<rect x='" & (6*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(7  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 8,  "<rect x='" & (7*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(8  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 9,  "<rect x='" & (8*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(9  <= done, cActive, cInactive) & "'/>", "") &
+                                              If(total >= 10, "<rect x='" & (9*(segW+segGap))  & "' y='0' width='" & segW & "' height='6' rx='2' fill='%23" & If(10 <= done, cActive, cInactive) & "'/>", "") &
+                                              "</svg>"
+                                          )
+                                      )
+                                    ImagePosition: =ImagePosition.Fill
+                                    TabIndex: =0
+                                    Tooltip: |-
+                                      =With(
+                                          { _ph: Sort(Filter(colPhases, RequestKey = ThisItem.RequestKey), PhaseOrder) },
+                                          "Phase " & Text(ThisItem.CurrentPhaseOrder) & " of " & Text(ThisItem.PhaseCount)
+                                          & Char(10)
+                                          & Concat(
+                                              _ph As p,
+                                              Text(p.PhaseOrder) & ". " & p.Title & "  -  "
+                                              & Coalesce(
+                                                  LookUp(cmpMyTable.StatusConfig As sc, Lower(sc.StatusKey) = Lower(Text(p.PhaseStatusKey))).Label,
+                                                  Text(p.PhaseStatusKey)
+                                              ),
+                                              Char(10)
+                                          )
+                                      )
+                              - lblCardPhaseCount_4:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderStyle: =BorderStyle.None
+                                    Color: |-
+                                      =With(
+                                          {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                      )
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =18
+                                    Size: =11
+                                    TabIndex: =0
+                                    Text: =ThisItem.CurrentPhaseOrder & "/" & ThisItem.PhaseCount
+                                    Tooltip: |-
+                                      =With(
+                                          { _ph: Sort(Filter(colPhases, RequestKey = ThisItem.RequestKey), PhaseOrder) },
+                                          "Phase " & Text(ThisItem.CurrentPhaseOrder) & " of " & Text(ThisItem.PhaseCount)
+                                          & Char(10)
+                                          & Concat(
+                                              _ph As p,
+                                              Text(p.PhaseOrder) & ". " & p.Title & "  -  "
+                                              & Coalesce(
+                                                  LookUp(cmpMyTable.StatusConfig As sc, Lower(sc.StatusKey) = Lower(Text(p.PhaseStatusKey))).Label,
+                                                  Text(p.PhaseStatusKey)
+                                              ),
+                                              Char(10)
+                                          )
+                                      )
+                                    Width: =70
+                                    Wrap: =false
+                        - rectCardDivider_4:
+                            Control: Rectangle@2.3.0
+                            Properties:
+                              AccessibleLabel: ="Card Divider divider"
+                              BorderStyle: =BorderStyle.None
+                              Fill: |-
+                                =With(
+                                      {parts: Split(cmpMyTable.ThemeConfig.list.divider, ",")},
+                                      RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                  )
+                              FocusedBorderThickness: =0.5
+                              Height: =1
+                              TabIndex: =0
+                              Width: =Parent.Width - 40
+                        - conCardMeta_4:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =6
+                              LayoutJustifyContent: =LayoutJustifyContent.End
+                              Width: =Parent.Width - 40
+                            Children:
+                              - conCardMetaAssignee_4:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =20
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =8
+                                    Width: =Parent.Width
+                                  Children:
+                                    - imgMetaAssigneeIcon_4:
+                                        Control: Image@2.2.3
+                                        Properties:
+                                          AccessibleLabel: ="Meta Assignee Icon icon"
+                                          BorderStyle: =BorderStyle.None
+                                          FocusedBorderThickness: =0.5
+                                          Height: =16
+                                          Image: ="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E"
+                                          TabIndex: =0
+                                          Width: =16
+                                    - lblCardMetaAssignee_4:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderStyle: =BorderStyle.None
+                                          Color: |-
+                                            =With(
+                                                {parts: Split(cmpMyTable.ThemeConfig.text.primary, ",")},
+                                                RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                            )
+                                          FillPortions: =1
+                                          FocusedBorderThickness: =0.5
+                                          Font: =Font.'Segoe UI'
+                                          Height: =18
+                                          Size: =12
+                                          TabIndex: =0
+                                          Text: =ThisItem.PrimaryPocName
+                              - conCardMetaDueDate_4:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =20
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =8
+                                    Width: =Parent.Width
+                                  Children:
+                                    - imgMetaDueDateIcon_4:
+                                        Control: Image@2.2.3
+                                        Properties:
+                                          AccessibleLabel: ="Meta Due Date Icon icon"
+                                          BorderStyle: =BorderStyle.None
+                                          FocusedBorderThickness: =0.5
+                                          Height: =16
+                                          Image: ="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='4' rx='2' ry='2'/%3E%3Cline x1='16' x2='16' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='2' y2='6'/%3E%3Cline x1='3' x2='21' y1='10' y2='10'/%3E%3C/svg%3E"
+                                          TabIndex: =0
+                                          Width: =16
+                                    - lblCardMetaDueDate_4:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          BorderStyle: =BorderStyle.None
+                                          Color: |-
+                                            =With(
+                                                {parts: Split(cmpMyTable.ThemeConfig.text.primary, ",")},
+                                                RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                            )
+                                          FillPortions: =1
+                                          FocusedBorderThickness: =0.5
+                                          Font: =Font.'Segoe UI'
+                                          Height: =18
+                                          Size: =12
+                                          TabIndex: =0
+                                          Text: |-
+                                            ="Due: " & nfDay(ThisItem.RequestDueDate)
+                        - btnCardOverlay_6:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0,0,0,0)
+                              BorderStyle: =BorderStyle.None
+                              Fill: =RGBA(0,0,0,0)
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height
+                              HoverFill: =RGBA(0,0,0,0.02)
+                              OnSelect: |-
+                                =Set(varCT_SelectedItem, ThisItem);
+                                cmpMyTable.OnRowSelect()
+                              PressedFill: =RGBA(0,0,0,0.04)
+                              RadiusBottomLeft: =cmpMyTable.ThemeConfig.card.radius
+                              RadiusBottomRight: =cmpMyTable.ThemeConfig.card.radius
+                              RadiusTopLeft: =cmpMyTable.ThemeConfig.card.radius
+                              RadiusTopRight: =cmpMyTable.ThemeConfig.card.radius
+                              Text: =
+                              Tooltip: ="Open card"
+                              Width: =Parent.Width
+      - conListView_5:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            BorderColor: |-
+              =With(
+                  {parts: Split(cmpMyTable.ThemeConfig.list.border, ",")},
+                  RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+              )
+            BorderThickness: =1
+            DropShadow: =DropShadow.None
+            Fill: |-
+              =With(
+                  {parts: Split(cmpMyTable.ThemeConfig.list.background, ",")},
+                  RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+              )
+            Height: =Parent.Height - If(cmpMyTable.ShowViewToggle, 56, 0)
+            RadiusBottomLeft: =cmpMyTable.ThemeConfig.container.radius
+            RadiusBottomRight: =cmpMyTable.ThemeConfig.container.radius
+            RadiusTopLeft: =cmpMyTable.ThemeConfig.container.radius
+            RadiusTopRight: =cmpMyTable.ThemeConfig.container.radius
+            Visible: |-
+              =galListRows_5.AllItemsCount > 0 && If(
+                  cmpMyTable.ShowViewToggle,
+                      Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "list",
+                      cmpMyTable.ViewMode = "list"
+              )
+            Width: '=Parent.Width '
+            Y: =If(cmpMyTable.ShowViewToggle, 56, 0)
+          Children:
+            - galListRows_5:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Rows list"
+                  BorderStyle: =BorderStyle.None
+                  Fill: =RGBA(0,0,0,0)
+                  Height: =Parent.Height
+                  Items: =SortByColumns(Filter(colRequests, IsDeleted = cmpMyTable.Filters.ShowDeleted, StartsWith(PrimaryPocEmail, If(cmpMyTable.Filters.MineOnly, cmpMyTable.Filters.UserEmail, "")), StartsWith(Title, cmpMyTable.Filters.Search) || StartsWith(RequestKey, cmpMyTable.Filters.Search), StartsWith(StatusKey, If(cmpMyTable.Filters.StatusKey = "all", "", cmpMyTable.Filters.StatusKey)), StartsWith(CategoryKey, If(cmpMyTable.Filters.CategoryKey = "all", "", cmpMyTable.Filters.CategoryKey))), "RequestDueDate", SortOrder.Ascending)
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplateFill: =RGBA(0,0,0,0)
+                  TemplatePadding: =0
+                  TemplateSize: =84
+                  Width: =Parent.Width
+                Children:
+                  - conListRow_5:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: |-
+                          =With(
+                              {parts: Split(cmpMyTable.ThemeConfig.list.background, ",")},
+                              RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                          )
+                        Height: =76
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =12
+                        PaddingLeft: =14
+                        PaddingRight: =14
+                        Width: =Parent.TemplateWidth
+                      Children:
+                        - conListIconBox_5:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              DropShadow: =DropShadow.None
+                              Fill: |-
+                                =With(
+                                    {_m: Coalesce(
+                                        LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))),
+                                        LookUp(cmpMyTable.StatusConfig, StatusKey = "default")
+                                    )},
+                                    With({p: Split(_m.Background, ",")},
+                                        RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                    )
+                                )
+                              FillPortions: =0
+                              Height: =40
+                              RadiusBottomLeft: =10
+                              RadiusBottomRight: =10
+                              RadiusTopLeft: =10
+                              RadiusTopRight: =10
+                              Width: =40
+                            Children:
+                              - imgListIcon_6:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="List Icon icon"
+                                    BorderColor: =RGBA(0,0,0,0)
+                                    BorderStyle: =BorderStyle.None
+                                    FocusedBorderThickness: =0.5
+                                    Height: =20
+                                    Image: |-
+                                      ="data:image/svg+xml;utf8," & EncodeUrl(
+                                          Substitute(
+                                              "<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='COLOR' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/><line x1='16' y1='13' x2='8' y2='13'/><line x1='16' y1='17' x2='8' y2='17'/></svg>",
+                                              "COLOR",
+                                              With(
+                                                  {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                                                  "rgb(" & Index(parts,1).Value & "," & Index(parts,2).Value & "," & Index(parts,3).Value & ")"
+                                              )
+                                          )
+                                      )
+                                    TabIndex: =0
+                                    Width: =20
+                                    X: =10
+                                    Y: =10
+                        - conListContent_5:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =2
+                              LayoutJustifyContent: =LayoutJustifyContent.Center
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - lblListTitle_5:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    BorderStyle: =BorderStyle.None
+                                    Color: |-
+                                      =With(
+                                          {parts: Split(cmpMyTable.ThemeConfig.list.text, ",")},
+                                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                      )
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =20
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    TabIndex: =0
+                                    Text: =ThisItem.Title
+                                    Tooltip: =ThisItem.Title
+                                    Wrap: =false
+                              - lblListCaseID_5:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    AutoHeight: =true
+                                    BorderStyle: =BorderStyle.None
+                                    Color: |-
+                                      =With(
+                                          {parts: Split(cmpMyTable.ThemeConfig.list.textMuted, ",")},
+                                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                                      )
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =16
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Size: =11
+                                    TabIndex: =0
+                                    Text: =ThisItem.RequestKey
+                                    Tooltip: =ThisItem.RequestKey
+                                    Wrap: =false
+                              - conListTags_5:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =18
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =4
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingLeft: =5
+                                  Children:
+                                    - conListStatusTag_5:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Center
+                                          DropShadow: =DropShadow.None
+                                          Fill: |-
+                                            =With(
+                                                {_m: Coalesce(
+                                                    LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))),
+                                                    LookUp(cmpMyTable.StatusConfig, StatusKey = "default")
+                                                )},
+                                                With({p: Split(_m.Background, ",")},
+                                                    RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                )
+                                            )
+                                          FillPortions: =0
+                                          Height: =18
+                                          LayoutAlignItems: =LayoutAlignItems.Center
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutJustifyContent: =LayoutJustifyContent.Center
+                                          PaddingLeft: =8
+                                          PaddingRight: =8
+                                          RadiusBottomLeft: =20
+                                          RadiusBottomRight: =20
+                                          RadiusTopLeft: =20
+                                          RadiusTopRight: =20
+                                          Width: |-
+                                            =Sum(
+                                                AddColumns(
+                                                    Split(Upper(Text(ThisItem.StatusKey)), ""),
+                                                    _w,
+                                                    Coalesce(
+                                                        LookUp(cmpMyTable.CharWidths, CharFont = Font.'Segoe UI' && CharWeight = FontWeight.Semibold && Char = Value).Size,
+                                                        0.7
+                                                    )
+                                                ),
+                                                _w
+                                            ) * 9 * 1.05 + 6 + 16
+                                        Children:
+                                          - lblListStatusTag_5:
+                                              Control: Label@2.5.1
+                                              Properties:
+                                                Align: =Align.Center
+                                                BorderStyle: =BorderStyle.None
+                                                Color: |-
+                                                  =With(
+                                                      {_m: Coalesce(
+                                                          LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))),
+                                                          LookUp(cmpMyTable.StatusConfig, StatusKey = "default")
+                                                      )},
+                                                      With({p: Split(_m.TextColor, ",")},
+                                                          RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                      )
+                                                  )
+                                                FocusedBorderThickness: =0.5
+                                                Font: =Font.'Segoe UI'
+                                                FontWeight: =FontWeight.Semibold
+                                                Height: =18
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingRight: =0
+                                                PaddingTop: =0
+                                                Size: =9
+                                                TabIndex: =0
+                                                Text: =Upper(Coalesce(LookUp(cmpMyTable.StatusConfig, Lower(StatusKey) = Lower(Text(ThisItem.StatusKey))).Label, Text(ThisItem.StatusKey)))
+                                                Width: |-
+                                                  =Sum(
+                                                      AddColumns(
+                                                          Split(Upper(Text(ThisItem.StatusKey)), ""),
+                                                          _w,
+                                                          Coalesce(
+                                                              LookUp(cmpMyTable.CharWidths, CharFont = Font.'Segoe UI' && CharWeight = FontWeight.Semibold && Char = Value).Size,
+                                                              0.7
+                                                          )
+                                                      ),
+                                                      _w
+                                                  ) * 9 * 1.05 + 6
+                                                Wrap: =false
+                                    - conListPriorityTag_5:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Center
+                                          DropShadow: =DropShadow.None
+                                          Fill: |-
+                                            =With(
+                                                {_m: Coalesce(
+                                                    LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))),
+                                                    LookUp(cmpMyTable.PriorityConfig, PriorityKey = "default")
+                                                )},
+                                                With({p: Split(_m.Background, ",")},
+                                                    RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                )
+                                            )
+                                          FillPortions: =0
+                                          Height: =18
+                                          LayoutAlignItems: =LayoutAlignItems.Center
+                                          LayoutDirection: =LayoutDirection.Horizontal
+                                          LayoutJustifyContent: =LayoutJustifyContent.Center
+                                          PaddingLeft: =8
+                                          PaddingRight: =8
+                                          RadiusBottomLeft: =20
+                                          RadiusBottomRight: =20
+                                          RadiusTopLeft: =20
+                                          RadiusTopRight: =20
+                                          Visible: =Len(Trim(Text(ThisItem.CategoryKey))) > 0
+                                          Width: |-
+                                            =Sum(
+                                                AddColumns(
+                                                    Split(Upper(Text(ThisItem.CategoryKey)), ""),
+                                                    _w,
+                                                    Coalesce(
+                                                        LookUp(cmpMyTable.CharWidths, CharFont = Font.'Segoe UI' && CharWeight = FontWeight.Semibold && Char = Value).Size,
+                                                        0.7
+                                                    )
+                                                ),
+                                                _w
+                                            ) * 9 * 1.05 + 6 + 16
+                                        Children:
+                                          - lblListPriorityTag_5:
+                                              Control: Label@2.5.1
+                                              Properties:
+                                                Align: =Align.Center
+                                                BorderStyle: =BorderStyle.None
+                                                Color: |-
+                                                  =With(
+                                                      {_m: Coalesce(
+                                                          LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))),
+                                                          LookUp(cmpMyTable.PriorityConfig, PriorityKey = "default")
+                                                      )},
+                                                      With({p: Split(_m.TextColor, ",")},
+                                                          RGBA(Value(Index(p,1).Value), Value(Index(p,2).Value), Value(Index(p,3).Value), Value(Index(p,4).Value))
+                                                      )
+                                                  )
+                                                FocusedBorderThickness: =0.5
+                                                Font: =Font.'Segoe UI'
+                                                FontWeight: =FontWeight.Semibold
+                                                Height: =18
+                                                LayoutMinWidth: =0
+                                                PaddingBottom: =0
+                                                PaddingLeft: =0
+                                                PaddingRight: =0
+                                                PaddingTop: =0
+                                                Size: =9
+                                                TabIndex: =0
+                                                Text: =Upper(Coalesce(LookUp(cmpMyTable.PriorityConfig, Lower(PriorityKey) = Lower(Text(ThisItem.CategoryKey))).Label, Text(ThisItem.CategoryKey)))
+                                                Tooltip: =Self.Text
+                                                Width: |-
+                                                  =Sum(
+                                                      AddColumns(
+                                                          Split(Upper(Text(ThisItem.CategoryKey)), ""),
+                                                          _w,
+                                                          Coalesce(
+                                                              LookUp(cmpMyTable.CharWidths, CharFont = Font.'Segoe UI' && CharWeight = FontWeight.Semibold && Char = Value).Size,
+                                                              0.7
+                                                          )
+                                                      ),
+                                                      _w
+                                                  ) * 9 * 1.05 + 6
+                                                Wrap: =false
+                        - conListChevron_5:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              DropShadow: =DropShadow.None
+                              FillPortions: =0
+                              Height: =16
+                              Width: =16
+                            Children:
+                              - imgListChevron_5:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="List Chevron icon"
+                                    BorderColor: =RGBA(0,0,0,0)
+                                    BorderStyle: =BorderStyle.None
+                                    FocusedBorderThickness: =0.5
+                                    Height: =16
+                                    Image: ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#9CA3AF' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='M9 18l6-6-6-6'/></svg>")
+                                    TabIndex: =0
+                                    Width: =16
+                  - rctListDivider_5:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        AccessibleLabel: ="List Divider divider"
+                        BorderStyle: =BorderStyle.None
+                        Fill: |-
+                          =With(
+                              {parts: Split(cmpMyTable.ThemeConfig.list.divider, ",")},
+                              RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                          )
+                        FocusedBorderThickness: =0.5
+                        Height: =1
+                        TabIndex: =0
+                        Width: =Parent.TemplateWidth - 28
+                        X: =14
+                        Y: =80
+                  - btnListRowOverlay_5:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0,0,0,0)
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(0,0,0,0)
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.TemplateHeight
+                        HoverBorderColor: =RGBA(0,0,0,0)
+                        HoverColor: =RGBA(0,0,0,0)
+                        HoverFill: =RGBA(0,0,0,0.03)
+                        OnSelect: |-
+                          =Set(varCT_SelectedItem, ThisItem);
+                          cmpMyTable.OnRowSelect()
+                        PressedBorderColor: =RGBA(0,0,0,0)
+                        PressedColor: =RGBA(0,0,0,0)
+                        PressedFill: =RGBA(0,0,0,0.06)
+                        Text: =""
+                        Tooltip: =ThisItem.Title
+                        Width: =Parent.TemplateWidth
+      - conViewToggle_4:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: |-
+              =With(
+                    {parts: Split(cmpMyTable.ThemeConfig.header.background, ",")},
+                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                )
+            Height: =40
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutGap: =2
+            PaddingBottom: =2
+            PaddingLeft: =2
+            PaddingRight: =2
+            PaddingTop: =2
+            RadiusBottomLeft: =8
+            RadiusBottomRight: =8
+            RadiusTopLeft: =8
+            RadiusTopRight: =8
+            Visible: =cmpMyTable.ShowViewToggle
+            Width: =288
+            X: =Parent.Width - Self.Width - 16
+            Y: =8
+          Children:
+            - conTableViewBtn_5:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  Fill: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "table", RGBA(255,255,255,1), RGBA(0,0,0,0))
+                  Height: =36
+                  LayoutMinWidth: =0
+                  RadiusBottomLeft: =6
+                  RadiusBottomRight: =6
+                  RadiusTopLeft: =6
+                  RadiusTopRight: =6
+                Children:
+                  - imgTableIcon_5:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Switch tab icon"
+                        BorderStyle: =BorderStyle.None
+                        FocusedBorderThickness: =0.5
+                        Height: =16
+                        Image: ="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='" & If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "table", "%232563EB", "%236B7280") & "' stroke-width='2'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cline x1='3' x2='21' y1='9' y2='9'/%3E%3Cline x1='3' x2='21' y1='15' y2='15'/%3E%3Cline x1='9' x2='9' y1='9' y2='21'/%3E%3C/svg%3E"
+                        TabIndex: =0
+                        Width: =16
+                        X: =16
+                        Y: =(Parent.Height - 16) / 2
+                  - lblTableText_4:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "table", RGBA(37,99,235,1), RGBA(107,114,128,1))
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "table", FontWeight.Semibold, FontWeight.Normal)
+                        Height: =20
+                        Size: =12
+                        TabIndex: =0
+                        Text: ="Table"
+                        Width: =50
+                        X: =36
+                        Y: =(Parent.Height - 20) / 2
+                  - btnTableView_5:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0,0,0,0)
+                        BorderStyle: =BorderStyle.None
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =36
+                        HoverFill: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "table", RGBA(0,0,0,0), RGBA(0,0,0,0.03))
+                        OnSelect: |-
+                          =Set(varCT_ViewMode, "table");
+                          cmpMyTable.OnViewChange()
+                        PressedFill: =RGBA(0,0,0,0.05)
+                        RadiusBottomLeft: =6
+                        RadiusBottomRight: =6
+                        RadiusTopLeft: =6
+                        RadiusTopRight: =6
+                        Text: =
+                        Tooltip: ="Switch tab"
+                        Width: =Parent.Width
+            - conCardViewBtn_5:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  Fill: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "card", RGBA(255,255,255,1), RGBA(0,0,0,0))
+                  Height: =36
+                  LayoutMinWidth: =0
+                  RadiusBottomLeft: =6
+                  RadiusBottomRight: =6
+                  RadiusTopLeft: =6
+                  RadiusTopRight: =6
+                Children:
+                  - imgCardIcon_5:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Card Icon icon"
+                        BorderStyle: =BorderStyle.None
+                        FocusedBorderThickness: =0.5
+                        Height: =16
+                        Image: ="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='" & If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "card", "%232563EB", "%236B7280") & "' stroke-width='2'%3E%3Crect width='7' height='7' x='3' y='3' rx='1'/%3E%3Crect width='7' height='7' x='14' y='3' rx='1'/%3E%3Crect width='7' height='7' x='14' y='14' rx='1'/%3E%3Crect width='7' height='7' x='3' y='14' rx='1'/%3E%3C/svg%3E"
+                        TabIndex: =0
+                        Width: =16
+                        X: =16
+                        Y: =(Parent.Height - 16) / 2
+                  - lblCardText_4:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "card", RGBA(37,99,235,1), RGBA(107,114,128,1))
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "card", FontWeight.Semibold, FontWeight.Normal)
+                        Height: =20
+                        Size: =12
+                        TabIndex: =0
+                        Text: ="Card"
+                        Width: =50
+                        X: =36
+                        Y: =(Parent.Height - 20) / 2
+                  - btnCardView_5:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0,0,0,0)
+                        BorderStyle: =BorderStyle.None
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =36
+                        HoverFill: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "card", RGBA(0,0,0,0), RGBA(0,0,0,0.03))
+                        OnSelect: |-
+                          =Set(varCT_ViewMode, "card");
+                          cmpMyTable.OnViewChange()
+                        PressedFill: =RGBA(0,0,0,0.05)
+                        RadiusBottomLeft: =6
+                        RadiusBottomRight: =6
+                        RadiusTopLeft: =6
+                        RadiusTopRight: =6
+                        Text: =
+                        Tooltip: ="Card View"
+                        Width: =Parent.Width
+            - conListViewBtn_5:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  Fill: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "list", RGBA(255,255,255,1), RGBA(0,0,0,0))
+                  Height: =36
+                  LayoutMinWidth: =0
+                  RadiusBottomLeft: =6
+                  RadiusBottomRight: =6
+                  RadiusTopLeft: =6
+                  RadiusTopRight: =6
+                Children:
+                  - imgListBtnIcon_5:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="List Btn Icon icon"
+                        BorderStyle: =BorderStyle.None
+                        FocusedBorderThickness: =0.5
+                        Height: =16
+                        Image: ="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='" & If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "list", "%232563EB", "%236B7280") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='8' y1='6' x2='21' y2='6'/%3E%3Cline x1='8' y1='12' x2='21' y2='12'/%3E%3Cline x1='8' y1='18' x2='21' y2='18'/%3E%3Ccircle cx='3' cy='6' r='1' fill='currentColor' stroke='none'/%3E%3Ccircle cx='3' cy='12' r='1' fill='currentColor' stroke='none'/%3E%3Ccircle cx='3' cy='18' r='1' fill='currentColor' stroke='none'/%3E%3C/svg%3E"
+                        TabIndex: =0
+                        Width: =16
+                        X: =16
+                        Y: =(Parent.Height - 16) / 2
+                  - lblListBtnText_5:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Color: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "list", RGBA(37,99,235,1), RGBA(107,114,128,1))
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "list", FontWeight.Semibold, FontWeight.Normal)
+                        Height: =20
+                        Size: =12
+                        TabIndex: =0
+                        Text: ="List"
+                        Width: =50
+                        X: =36
+                        Y: =(Parent.Height - 20) / 2
+                  - btnListView_5:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0,0,0,0)
+                        BorderStyle: =BorderStyle.None
+                        Fill: =RGBA(0,0,0,0)
+                        FocusedBorderThickness: =0.5
+                        Height: =36
+                        HoverFill: =If(Coalesce(varCT_ViewMode, cmpMyTable.ViewMode) = "list", RGBA(0,0,0,0), RGBA(0,0,0,0.03))
+                        OnSelect: |-
+                          =Set(varCT_ViewMode, "list");
+                          cmpMyTable.OnViewChange()
+                        PressedFill: =RGBA(0,0,0,0.05)
+                        RadiusBottomLeft: =6
+                        RadiusBottomRight: =6
+                        RadiusTopLeft: =6
+                        RadiusTopRight: =6
+                        Text: =
+                        Tooltip: ="List View"
+                        Width: =Parent.Width
+      - conEmptyState_4:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: |-
+              =With(
+                    {parts: Split(cmpMyTable.ThemeConfig.container.background, ",")},
+                    RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                )
+            Height: =Parent.Height - If(cmpMyTable.ShowViewToggle, 56, 0)
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =12
+            LayoutJustifyContent: =LayoutJustifyContent.Center
+            RadiusBottomLeft: =cmpMyTable.ThemeConfig.container.radius
+            RadiusBottomRight: =cmpMyTable.ThemeConfig.container.radius
+            RadiusTopLeft: =cmpMyTable.ThemeConfig.container.radius
+            RadiusTopRight: =cmpMyTable.ThemeConfig.container.radius
+            Visible: =IsEmpty(SortByColumns(Filter(colRequests, IsDeleted = cmpMyTable.Filters.ShowDeleted, StartsWith(PrimaryPocEmail, If(cmpMyTable.Filters.MineOnly, cmpMyTable.Filters.UserEmail, "")), StartsWith(Title, cmpMyTable.Filters.Search) || StartsWith(RequestKey, cmpMyTable.Filters.Search), StartsWith(StatusKey, If(cmpMyTable.Filters.StatusKey = "all", "", cmpMyTable.Filters.StatusKey)), StartsWith(CategoryKey, If(cmpMyTable.Filters.CategoryKey = "all", "", cmpMyTable.Filters.CategoryKey))), "RequestDueDate", SortOrder.Ascending))
+            Width: =Parent.Width
+            Y: =If(cmpMyTable.ShowViewToggle, 56, 0)
+          Children:
+            - imgEmptyIcon_4:
+                Control: Image@2.2.3
+                Properties:
+                  AccessibleLabel: ="Empty Icon icon"
+                  BorderStyle: =BorderStyle.None
+                  FocusedBorderThickness: =0.5
+                  Height: =48
+                  Image: ="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='9' y1='15' x2='15' y2='15'/%3E%3C/svg%3E"
+                  TabIndex: =0
+                  Width: =48
+            - lblEmptyTitle_5:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderStyle: =BorderStyle.None
+                  Color: |-
+                    =With(
+                          {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                      )
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  Size: =14
+                  TabIndex: =0
+                  Text: ="No items found"
+                  Width: =Parent.Width
+            - lblEmptySubtitle_4:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderStyle: =BorderStyle.None
+                  Color: |-
+                    =With(
+                          {parts: Split(cmpMyTable.ThemeConfig.text.secondary, ",")},
+                          RGBA(Value(Index(parts,1).Value), Value(Index(parts,2).Value), Value(Index(parts,3).Value), Value(Index(parts,4).Value))
+                      )
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Segoe UI'
+                  Height: =20
+                  Size: =12
+                  TabIndex: =0
+                  Text: ="Try adjusting your search or filters"
+                  Width: =Parent.Width

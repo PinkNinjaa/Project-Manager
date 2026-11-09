@@ -1,0 +1,365 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpBottomNavigation:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      ActiveColor:
+        PropertyKind: Input
+        DisplayName: ActiveColor
+        Description: Color for selected item and indicator
+        DataType: Color
+        Default: =RGBA(59, 130, 246, 1)
+      ActiveColorHex:
+        PropertyKind: Input
+        DisplayName: ActiveColorHex
+        Description: Hex color for selected icon (without
+        DataType: Text
+        Default: ="3B82F6"
+      ActiveIndicator:
+        PropertyKind: Input
+        DisplayName: ActiveIndicator
+        Description: Indicator style - "pill", "dot", "underline", or "bar"
+        DataType: Text
+        Default: ="underline"
+      BadgeColor:
+        PropertyKind: Input
+        DisplayName: BadgeColor
+        Description: Badge background color
+        DataType: Color
+        Default: =RGBA(220, 38, 38, 1)
+      InactiveColorHex:
+        PropertyKind: Input
+        DisplayName: InactiveColorHex
+        Description: Hex color for unselected icon (without
+        DataType: Text
+        Default: ="6B7280"
+      Items:
+        PropertyKind: Input
+        DisplayName: Items
+        Description: Navigation items with Icon, Label, Badge fields
+        DataType: Table
+        Default: |-
+          =Table(
+              {Icon: "home", Label: "Home", Badge: 0},
+              {Icon: "search", Label: "Explore", Badge: 0},
+              {Icon: "bell", Label: "Alerts", Badge: 3},
+              {Icon: "user", Label: "Profile", Badge: 0}
+          )
+      OnSelect:
+        PropertyKind: Event
+        DisplayName: OnSelect
+        Description: Action when tab is selected
+        ReturnType: None
+        Default: =
+      SelectedIndex:
+        PropertyKind: Input
+        DisplayName: SelectedIndex
+        Description: Currently selected tab index (1-based)
+        DataType: Number
+        Default: =1
+      SelectedItemIndex:
+        PropertyKind: Output
+        DisplayName: SelectedItemIndex
+        Description: Index of the currently selected/clicked item
+        DataType: Number
+      ShowLabels:
+        PropertyKind: Input
+        DisplayName: ShowLabels
+        Description: Label display mode - "always", "selected", or "never"
+        DataType: Text
+        Default: ="always"
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: Light or Dark theme
+        DataType: Text
+        Default: ="Light"
+    Properties:
+      Fill: =If(cmpBottomNavigation.Theme = "Dark", RGBA(39, 39, 42, 1), RGBA(255, 255, 255, 1))
+      Height: =64
+      SelectedItemIndex: =Coalesce(_navClickedIndex, cmpBottomNavigation.SelectedIndex)
+      Width: =App.Width
+    Children:
+      - galNavItems:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            AccessibleLabel: ="Items list"
+            BorderColor: =RGBA(0, 0, 0, 0)
+            Fill: =Color.Transparent
+            FocusedBorderThickness: =0.5
+            Height: =Parent.Height
+            Items: |-
+              =ForAll(
+                  Sequence(CountRows(cmpBottomNavigation.Items)),
+                  {
+                      Index: Value,
+                      Icon: Index(cmpBottomNavigation.Items, Value).Icon,
+                      Label: Index(cmpBottomNavigation.Items, Value).Label,
+                      Badge: Coalesce(Index(cmpBottomNavigation.Items, Value).Badge, 0)
+                  }
+              )
+            OnSelect: =
+            TabIndex: =0
+            TemplatePadding: =0
+            TemplateSize: =Parent.Width / Max(CountRows(cmpBottomNavigation.Items), 1)
+            Width: =Parent.Width
+          Children:
+            - cntNavItem:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =Color.Transparent
+                  Height: =Parent.TemplateHeight
+                  Width: =Parent.TemplateWidth
+                Children:
+                  - cntActiveIndicator:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: |-
+                          =If(
+                              ThisItem.Index = cmpBottomNavigation.SelectedIndex,
+                              ColorFade(cmpBottomNavigation.ActiveColor, 50%),    
+                              Color.Transparent
+                          )
+                        Height: |-
+                          =Switch(
+                              cmpBottomNavigation.ActiveIndicator,
+                              "pill", 32,
+                              "dot", 8,
+                              "underline", 3,
+                              "bar", 4,                    
+                              32
+                          )
+                        RadiusBottomLeft: |-
+                          =Switch(
+                              cmpBottomNavigation.ActiveIndicator,
+                              "pill", 16,
+                              "dot", 4,
+                              0
+                          )
+                        RadiusBottomRight: |-
+                          =Switch(
+                              cmpBottomNavigation.ActiveIndicator,
+                              "pill", 16,
+                              "dot", 4,
+                              0
+                          )
+                        RadiusTopLeft: |-
+                          =Switch(
+                              cmpBottomNavigation.ActiveIndicator,
+                              "pill", 16,
+                              "dot", 4,
+                              0
+                          )
+                        RadiusTopRight: |-
+                          =Switch(
+                              cmpBottomNavigation.ActiveIndicator,
+                              "pill", 16,
+                              "dot", 4,
+                              0
+                          )
+                        Visible: =ThisItem.Index = cmpBottomNavigation.SelectedIndex
+                        Width: |-
+                          =Switch(
+                              cmpBottomNavigation.ActiveIndicator,
+                              "pill", 64,
+                              "dot", 8,
+                              "underline", Parent.Width - 32,
+                              "bar", Parent.Width,
+                              64
+                          )
+                        X: |-
+                          =Switch(
+                              cmpBottomNavigation.ActiveIndicator,
+                              "pill", (Parent.Width - 64) / 2,
+                              "dot", (Parent.Width - 8) / 2,
+                              "underline", 16,
+                              "bar", 0,
+                              (Parent.Width - 64) / 2
+                          )
+                        Y: |-
+                          =Switch(
+                              cmpBottomNavigation.ActiveIndicator,
+                              "pill", imgIcon_3.Y - 4,
+                              "dot", Parent.Height - 8,
+                              "underline", Parent.Height - 3,
+                              "bar", 0,                   
+                              imgIcon_3.Y - 4
+                          )
+                  - imgIcon_3:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Icon icon"
+                        FocusedBorderThickness: =0.5
+                        Height: =24
+                        Image: |-
+                          =With(
+                              {
+                                  _iconName: Lower(ThisItem.Icon),
+                                  _strokeColor: If(
+                                      ThisItem.Index = cmpBottomNavigation.SelectedIndex,
+                                      "%23" & cmpBottomNavigation.ActiveColorHex,
+                                      "%23" & cmpBottomNavigation.InactiveColorHex
+                                  )
+                              },
+                              Switch(
+                                  _iconName,
+                                  "home",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E",
+                                  "search",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' x2='16.65' y1='21' y2='16.65'/%3E%3C/svg%3E",
+                                  "bell",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/%3E%3Cpath d='M10.3 21a1.94 1.94 0 0 0 3.4 0'/%3E%3C/svg%3E",
+                                  "user",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E",
+                                  "heart",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z'/%3E%3C/svg%3E",
+                                  "settings",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E",
+                                  "menu",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='4' x2='20' y1='12' y2='12'/%3E%3Cline x1='4' x2='20' y1='6' y2='6'/%3E%3Cline x1='4' x2='20' y1='18' y2='18'/%3E%3C/svg%3E",
+                                  "folder",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z'/%3E%3C/svg%3E",
+                                  "mail",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='20' height='16' x='2' y='4' rx='2'/%3E%3Cpath d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'/%3E%3C/svg%3E",
+                                  "calendar",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='4' rx='2' ry='2'/%3E%3Cline x1='16' x2='16' y1='2' y2='6'/%3E%3Cline x1='8' x2='8' y1='2' y2='6'/%3E%3Cline x1='3' x2='21' y1='10' y2='10'/%3E%3C/svg%3E",
+                                  "home",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='7' height='9' x='3' y='3' rx='1'/%3E%3Crect width='7' height='5' x='14' y='3' rx='1'/%3E%3Crect width='7' height='9' x='14' y='12' rx='1'/%3E%3Crect width='7' height='5' x='3' y='16' rx='1'/%3E%3C/svg%3E",
+                                  "analytics",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' x2='18' y1='20' y2='10'/%3E%3Cline x1='12' x2='12' y1='20' y2='4'/%3E%3Cline x1='6' x2='6' y1='20' y2='14'/%3E%3C/svg%3E",
+                                  "plus",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='12' x2='12' y1='5' y2='19'/%3E%3Cline x1='5' x2='19' y1='12' y2='12'/%3E%3C/svg%3E",
+                                  "layers",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5z'/%3E%3Cpath d='M2 17l10 5 10-5'/%3E%3Cpath d='M2 12l10 5 10-5'/%3E%3C/svg%3E",
+                                  "file",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpolyline points='14 2 14 8 20 8'/%3E%3Cline x1='16' x2='8' y1='13' y2='13'/%3E%3Cline x1='16' x2='8' y1='17' y2='17'/%3E%3C/svg%3E",
+                                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='" & _strokeColor & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3C/svg%3E"
+                              )
+                          )
+                        TabIndex: =0
+                        Width: =24
+                        X: =(Parent.Width - Self.Width) / 2
+                        Y: |-
+                          =If(
+                              cmpBottomNavigation.ShowLabels = "always" || 
+                              (cmpBottomNavigation.ShowLabels = "selected" && ThisItem.Index = cmpBottomNavigation.SelectedIndex),
+                              (Parent.Height - Self.Height - 20) / 2,
+                              (Parent.Height - Self.Height) / 2
+                          )
+                  - lblNavLabel:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        Align: =Align.Center
+                        Color: |-
+                          =If(
+                              ThisItem.Index = cmpBottomNavigation.SelectedIndex,
+                              cmpBottomNavigation.ActiveColor,
+                              If(cmpBottomNavigation.Theme = "Dark", RGBA(156, 163, 175, 1), RGBA(107, 114, 128, 1))
+                          )
+                        FontWeight: |-
+                          =If(
+                              ThisItem.Index = cmpBottomNavigation.SelectedIndex,
+                              FontWeight.Semibold,
+                              FontWeight.Normal
+                          )
+                        Height: =16
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                        Size: =11
+                        Text: =ThisItem.Label
+                        Visible: |-
+                          =cmpBottomNavigation.ShowLabels = "always" || 
+                           (cmpBottomNavigation.ShowLabels = "selected" && ThisItem.Index = cmpBottomNavigation.SelectedIndex)
+                        Width: =Parent.Width
+                        Y: =imgIcon_3.Y + imgIcon_3.Height + 2
+                  - cntBadge:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: =cmpBottomNavigation.BadgeColor
+                        Height: =16
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Visible: =ThisItem.Badge > 0
+                        Width: |-
+                          =If(
+                              ThisItem.Badge > 9,
+                              If(ThisItem.Badge > 99, 24, 20),
+                              16
+                          )
+                        X: =imgIcon_3.X + imgIcon_3.Width - 12
+                        Y: =imgIcon_3.Y - 2
+                      Children:
+                        - lblBadge:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              Align: =Align.Center
+                              Color: =RGBA(255, 255, 255, 1)
+                              FontWeight: =FontWeight.Bold
+                              Height: =Parent.Height
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              RadiusBottomLeft: =0
+                              RadiusBottomRight: =0
+                              RadiusTopLeft: =0
+                              RadiusTopRight: =0
+                              Size: =9
+                              Text: |-
+                                =If(
+                                    ThisItem.Badge > 99,
+                                    "99+",
+                                    Text(ThisItem.Badge)
+                                )
+                              Width: =Parent.Width
+                  - btnNavItem:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =Color.Transparent
+                        BorderStyle: =BorderStyle.None
+                        Color: =RGBA(255, 255, 255, 1)
+                        Fill: =Color.Transparent
+                        FocusedBorderColor: |-
+                          =If(
+                              cmpBottomNavigation.Theme = "Dark",
+                              RGBA(255, 255, 255, 0.3),
+                              RGBA(0, 0, 0, 0.3)
+                          )
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: |-
+                          =If(
+                              cmpBottomNavigation.Theme = "Dark",
+                              RGBA(255, 255, 255, 0.05),
+                              RGBA(0, 0, 0, 0.05)
+                          )
+                        OnSelect: =Set(_navClickedIndex, ThisItem.Index); cmpBottomNavigation.OnSelect()
+                        PressedFill: =Color.Transparent
+                        Text: =""
+                        Tooltip: =ThisItem.Label
+                        Width: =Parent.Width

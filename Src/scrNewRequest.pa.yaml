@@ -1,0 +1,2500 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrNewRequest:
+    Properties:
+      Fill: =nfColor.Canvas
+      OnVisible: |-
+        =Reset(txtNrqTitle);
+        Reset(txtNrqDescription);
+        Reset(txtNrqLinks);
+        Reset(cmbNrqPoc);
+        Reset(drpNrqProcessing);
+        Reset(drpNrqDepartment);
+        Reset(drpNrqPriority);
+        Reset(dtpNrqDue);
+        Reset(cmpNrqUpload);
+        Reset(cmpNrqEditWorkflow);
+        Clear(colNrqWfSnapPhases);
+        Clear(colNrqWfSnapWorkers);
+        UpdateContext({ locNrqStep: 1, locNrqTried: false });
+        UpdateContext({ locNrqCategoryKey: "" });
+        UpdateContext({ locNrqPocName: "" });
+        UpdateContext({ locNrqPocEmail: "" });
+        UpdateContext({ locNrqWfOpen: false });
+        UpdateContext({ locNrqWfLoaded: false })
+        // THE RESETS ARE THE POINT OF THIS BLOCK, and their absence was a real
+        // defect: leaving the wizard and coming back showed every previous
+        // answer still sitting there.
+        //
+        // A CONTEXT VARIABLE IS NOT THE FORM. Nine of the eleven answers on this
+        // wizard live on their CONTROLS, read as txtNrqTitle.Text and the like,
+        // and a control keeps its value across navigation. Clearing the six
+        // context variables therefore reset the step number and the category
+        // highlight while leaving the title, the description, the links, the
+        // three dropdowns, the date, the staged files and the whole workflow
+        // draft exactly as the last person left them. The wizard LOOKED reset
+        // because step 1 was showing.
+        //
+        // Reset() RETURNS EACH CONTROL TO ITS Default, which is why
+        // drpNrqPriority comes back to Medium rather than to blank.
+        //
+        // Reset(cmpNrqEditWorkflow) IS NOT OPTIONAL AND IS NOT COSMETIC. The
+        // workflow draft lives in colWfDraftPhases and colWfDraftWorkers, which
+        // are APP scope, so nothing about leaving this screen clears them. The
+        // component's own OnReset clears both plus _cmpWfNextId, _cmpWfDirty,
+        // _cmpWfSeedKey and the expanded phase, which is the whole of its state.
+        //
+        // Reset(cmpNrqUpload) drops the staged files. That is safe HERE and only
+        // here: this is a brand new request, so there is no pending write whose
+        // only copy those files are.
+        //
+        // A context variable is only recognised on a screen that SETS it, so the
+        // UpdateContext block is the declaration as much as the initialisation.
+        // See house-rules section 9. Do not move any of it to App.OnStart.
+    Children:
+      - conNrqRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Canvas
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            PaddingLeft: =If(nfIsDesktop, conNrqNavHost.Width, 0)
+            Width: =Parent.Width
+          Children:
+            - conNrqMiddle:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                Children:
+                  - conNrqRight:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - conNrqTopBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderStyle: =If(nfIsMobile, BorderStyle.None, BorderStyle.Solid)
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =If(nfIsMobile, nfColor.Transparent, nfColor.Surface)
+                              FillPortions: =0
+                              Height: =nfHeights.topBar
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =If(nfIsMobile, nfSpace.Sm, nfSpace.Md)
+                              LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                              LayoutMaxHeight: =nfHeights.topBar
+                              LayoutMinHeight: =nfHeights.topBar
+                              LayoutMinWidth: =0
+                              PaddingRight: =If(nfIsMobile, nfSpace.Md, nfSpace.Xxl)
+                            Children:
+                              - conNrqTitleGroup:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =2.5
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                  Children:
+                                    - cmpNrqCrumbs:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpBreadcrumbs
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          CharWidths: =nfCharWidths
+                                          Config: |-
+                                            ={
+                                                Theme: If(nfIsDark, "dark", "light"),
+                                                SeparatorIcon: "chevron",
+                                                Gap: 4,
+                                                Size: nfType.ChromeTitle,
+                                                MaxItems: 4,
+                                                ItemsBeforeCollapse: 1,
+                                                ItemsAfterCollapse: 2,
+                                                ActiveLastItem: false,
+                                                BackButton: false
+                                            }
+                                          CurrentColor: |-
+                                            =If(
+                                                nfIsDark,
+                                                "#F1F5F9",
+                                                "#1E293B"
+                                            )
+                                          Height: =nfHeights.breadcrumb
+                                          Icons: =nfBreadcrumbIcons
+                                          Items: |-
+                                            =Table(
+                                                { id: "home", label: "Home" },
+                                                { id: "new", label: "New request" }
+                                            )
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          LinkColor: |-
+                                            =If(
+                                                nfIsDark,
+                                                "#94A3B8",
+                                                "#64748B"
+                                            )
+                                          OnBack: =false
+                                          OnSelect: |-
+                                            =If(
+                                                Self.SelectedItem.id = "home",
+                                                Navigate(scrHome, ScreenTransition.None)
+                                            )
+                                          Width: =Parent.Width
+                              - cmpNrqBell:
+                                  Control: CanvasComponent
+                                  ComponentName: Badge
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BadgeColor: =nfColor.DangerSolid
+                                    BadgeCount: =0
+                                    HasNotifications: =false
+                                    Height: =Self.Size
+                                    HoverText: ="Notifications"
+                                    IconColor: =""
+                                    IconSvg: =""
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =false
+                                      // INERT ON PURPOSE. Same reason as scrHome: CLAUDE.md
+                                      // open question 2 is unresolved and colAudit is the wrong
+                                      // shape. Do NOT bind this to colAudit.
+                                    Size: =If(nfIsMobile, 32, 35)
+                                    Theme: =nfThemeName
+                                    Width: =Self.Size
+                              - conNrqAvatar:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Primary
+                                    FillPortions: =0
+                                    Height: =nfHeights.avatar
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    RadiusBottomLeft: =nfHeights.avatar / 2
+                                    RadiusBottomRight: =nfHeights.avatar / 2
+                                    RadiusTopLeft: =nfHeights.avatar / 2
+                                    RadiusTopRight: =nfHeights.avatar / 2
+                                    Width: =nfHeights.avatar
+                                  Children:
+                                    - lblNrqInitials:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          Color: =nfColor.TextOnPrimary
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =Parent.Height
+                                          Size: =nfType.Initials
+                                          Text: =nfInitials
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                        - conNrqGutter:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Canvas
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =nfSpace.Xxl
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              LayoutOverflowY: =LayoutOverflow.Scroll
+                              PaddingBottom: =nfSpace.Xxl
+                              PaddingLeft: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingRight: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingTop: =nfSpace.Xxl
+                              Width: =Parent.Width
+                            Children:
+                              - conNrqHeader:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: |-
+                                      =lblNrqPageTitle.Height
+                                      + lblNrqPageSub.Height
+                                      + Self.LayoutGap
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutGap: =nfSpace.Xxs
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblNrqPageTitle:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextStrong
+                                          FontWeight: =FontWeight.Semibold
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =If(nfIsDesktop, nfType.PageTitle, 20)
+                                          Text: ="New request"
+                                          Wrap: =false
+                                    - lblNrqPageSub:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextMuted
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =nfType.Body
+                                          Text: ="Five steps. Nothing is saved until the last one."
+                                          VerticalAlign: =VerticalAlign.Top
+                                          Wrap: =false
+                              - cmpNrqStepper:
+                                  Control: CanvasComponent
+                                  ComponentName: cmpStepper
+                                  Properties:
+                                    AccentColor: =nfColor.Primary
+                                    AlignInContainer: =AlignInContainer.Center
+                                    CheckIcon: =Blank()
+                                    ClickableSteps: ="Completed"
+                                    CurrentStep: =locNrqStep
+                                    Density: ="Full"
+                                    Height: |-
+                                      =If(
+                                          Self.Type = "Bar",
+                                          Switch(Self.Size, "Small", 4, "Medium", 6, "Large", 8, 6),
+                                          If(
+                                              Self.Density = "Full",
+                                              Switch(Self.Size, "Small", 60, "Medium", 72, "Large", 86, 72),
+                                              Switch(Self.Size, "Small", 26, "Medium", 32, "Large", 40, 32)
+                                          )
+                                      )
+                                      // REPRODUCED FROM THE COMPONENT'S OWN Height, not measured
+                                      // and hardcoded. house-rules section 5: a component that
+                                      // computes its own size still has to be sized by the
+                                      // consumer, and a literal goes stale the first time Size or
+                                      // Density changes. Self.Size and Self.Density are inputs, so
+                                      // reading them here is not circular.
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnStepSelect: |-
+                                      =UpdateContext({ locNrqStep: Self.SelectedStep, locNrqTried: false })
+                                      // ClickableSteps is "Completed", so this only ever moves
+                                      // BACKWARD. Forward movement goes through the Next button
+                                      // and its gate. That is why nothing is re-validated here.
+                                    Size: ="Medium"
+                                    StepLabels: |-
+                                      =Table(
+                                          { Label: "Category" },
+                                          { Label: "Basic info" },
+                                          { Label: "Documents" },
+                                          { Label: "Workflow" },
+                                          { Label: "Review" }
+                                      )
+                                    Theme: =nfThemeName
+                                    Type: ="Step"
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                              - conNrqStepHost:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: |-
+                                      =Switch(
+                                          locNrqStep,
+                                          1, conNrqStep1.Height,
+                                          2, conNrqStep2.Height,
+                                          3, conNrqStep3.Height,
+                                          4, conNrqStep4.Height,
+                                          5, conNrqStep5.Height,
+                                          conNrqStep1.Height
+                                      )
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - conNrqStep1:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =nfColor.Border
+                                          BorderThickness: =nfSize.Border
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Surface
+                                          FillPortions: =0
+                                          Height: |-
+                                            =lblNrqS1Title.Height
+                                            + lblNrqS1Sub.Height
+                                            + galNrqCategories.Height
+                                            + 2 * Self.LayoutGap
+                                            + Self.PaddingTop
+                                            + Self.PaddingBottom
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Md
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =nfSpace.Xxl
+                                          PaddingLeft: =nfSpace.Xxl
+                                          PaddingRight: =nfSpace.Xxl
+                                          PaddingTop: =nfSpace.Xxl
+                                          RadiusBottomLeft: =nfRadius.Lg
+                                          RadiusBottomRight: =nfRadius.Lg
+                                          RadiusTopLeft: =nfRadius.Lg
+                                          RadiusTopRight: =nfRadius.Lg
+                                          Visible: =locNrqStep = 1
+                                        Children:
+                                          - lblNrqS1Title:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextStrong
+                                                FontWeight: =FontWeight.Semibold
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.CardTitle
+                                                Text: ="What kind of request is this?"
+                                                Wrap: =false
+                                          - lblNrqS1Sub:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextMuted
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Small
+                                                Text: ="The category decides which workflow template the request starts from."
+                                                VerticalAlign: =VerticalAlign.Top
+                                          - galNrqCategories:
+                                              Control: Gallery@2.15.0
+                                              Variant: Vertical
+                                              Properties:
+                                                AccessibleLabel: ="Request categories"
+                                                FillPortions: =0
+                                                Height: |-
+                                                  =RoundUp(CountRows(nfCategories) / If(nfIsMobile, 1, 2), 0)
+                                                  * (Self.TemplateHeight + Self.TemplatePadding)
+                                                  // CountRows(colCategories), NOT Self.AllItemsCount.
+                                                  // A gallery Height reading its own AllItemsCount is
+                                                  // circular and settles at about one pixel per row.
+                                                  // Recorded as PAL009 against five galleries already
+                                                  // in this repo. The collection is the same length
+                                                  // and is not circular.
+                                                  //
+                                                  // DELEGATION: none here. colCategories is in memory,
+                                                  // seeded in App.OnStart from colConfig filtered on
+                                                  // ConfigType. The delegation question for this data
+                                                  // was answered at that seed, not on this screen.
+                                                Items: =Sort(nfCategories, SortOrder)
+                                                LayoutMinHeight: =0
+                                                LoadingSpinner: =LoadingSpinner.None
+                                                ShowScrollbar: =false
+                                                TabIndex: =0
+                                                TemplatePadding: =nfSpace.Md
+                                                TemplateSize: |-
+                                                  =112
+                                                  // 112, NOT 96. A literal because a tile height is not a
+                                                  // spacing rung and forcing it into one would resize the
+                                                  // tile to make the token table tidy. 96 left the second
+                                                  // line nowhere to go, so the description clipped.
+                                                  // TemplateSize cannot reference ThisItem and must stay
+                                                  // constant, so it cannot be derived from the text.
+                                                WrapCount: =If(nfIsMobile, 1, 2)
+                                              Children:
+                                                - conNrqCatTile:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      BorderColor: |-
+                                                        =If(
+                                                            locNrqCategoryKey = ThisItem.ConfigKey,
+                                                            nfColor.Primary,
+                                                            nfColor.BorderStrong
+                                                        )
+                                                        // BorderStrong, NOT Border. These tiles sit on a Surface
+                                                        // card, and slate-200 on white is very nearly invisible.
+                                                      BorderThickness: |-
+                                                        =If(
+                                                            locNrqCategoryKey = ThisItem.ConfigKey,
+                                                            2,
+                                                            nfSize.Border
+                                                        )
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: |-
+                                                        =If(
+                                                            locNrqCategoryKey = ThisItem.ConfigKey,
+                                                            nfColor.PrimarySoft,
+                                                            nfColor.Canvas
+                                                        )
+                                                        // Canvas, NOT Surface. An unselected tile was Surface white
+                                                        // on a Surface white card with a slate-200 border, so the
+                                                        // tile had no visible edge at all and the card read as an
+                                                        // empty white area with letters floating in it.
+                                                      Height: =Parent.TemplateHeight
+                                                      RadiusBottomLeft: =nfRadius.Md
+                                                      RadiusBottomRight: =nfRadius.Md
+                                                      RadiusTopLeft: =nfRadius.Md
+                                                      RadiusTopRight: =nfRadius.Md
+                                                      Width: =Parent.TemplateWidth
+                                                    Children:
+                                                      - conNrqCatBadge:
+                                                          Control: GroupContainer@1.5.0
+                                                          Variant: ManualLayout
+                                                          Properties:
+                                                            DropShadow: =DropShadow.None
+                                                            Fill: |-
+                                                              =Switch(
+                                                                  Mod(ThisItem.SortOrder - 1, 4),
+                                                                  0, nfColor.Primary,
+                                                                  1, nfColor.GroupText,
+                                                                  2, nfColor.WarnText,
+                                                                  nfColor.SuccessText
+                                                              )
+                                                              // SOLID, NOT A PASTEL PLATE. The design draws a pastel
+                                                              // plate with a coloured glyph. That was built and it
+                                                              // failed: the tile Fill is nfColor.Canvas and
+                                                              // PrimarySoft is the same lightness, so the plate
+                                                              // disappeared and only the letter showed. Do not
+                                                              // "fix" it back to a soft fill.
+                                                              //
+                                                              // Mod so a fifth category wraps round rather than
+                                                              // sticking on the default arm forever.
+                                                              //
+                                                              // THESE ARE TEXT TOKENS USED AS FILLS. WarnSolid and
+                                                              // SuccessSolid do exist, but they are the 500 rung and
+                                                              // too light to carry a glyph; the 700 rung reads
+                                                              // properly. There is no GroupSolid at all. If the
+                                                              // palette ever gains a plate ramp, swap these four for
+                                                              // it rather than adding more Text tokens as fills.
+                                                            Height: =nfSize.IconTile
+                                                            RadiusBottomLeft: =nfRadius.Md
+                                                            RadiusBottomRight: =nfRadius.Md
+                                                            RadiusTopLeft: =nfRadius.Md
+                                                            RadiusTopRight: =nfRadius.Md
+                                                            Width: =nfSize.IconTile
+                                                            X: =nfSpace.Lg
+                                                            Y: =nfSpace.Lg
+                                                          Children:
+                                                            - lblNrqCatLetter:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  Align: =Align.Center
+                                                                  Color: |-
+                                                                    =If(nfIsDark, nfColor.Canvas, nfColor.TextOnPrimary)
+                                                                    // THE GLYPH FOLLOWS THE THEME BECAUSE THE PLATE
+                                                                    // DOES. Three of the four hue tokens INVERT on
+                                                                    // dark: WarnText goes amber-700 to amber-300,
+                                                                    // SuccessText green-700 to green-300, GroupText
+                                                                    // purple-600 to purple-300. A fixed white glyph
+                                                                    // is legible on all four in light and vanishes
+                                                                    // on three of them in dark.
+                                                                    //
+                                                                    // Checked against nfColorDark rather than
+                                                                    // assumed: a token named Text is not promised to
+                                                                    // stay dark, and these do not.
+                                                                  FontWeight: =FontWeight.Bold
+                                                                  Height: =Parent.Height
+                                                                  Size: =nfType.Subhead
+                                                                  Text: =Upper(Left(ThisItem.Title, 1))
+                                                                  Width: =Parent.Width
+                                                                  Wrap: =false
+                                                      - lblNrqCatTitle:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            FontWeight: =FontWeight.Semibold
+                                                            Size: =nfType.Body
+                                                            Text: =ThisItem.Title
+                                                            Width: =Parent.Width - (nfSpace.Lg + nfSize.IconTile + nfSpace.Md) - nfSpace.Lg
+                                                            Wrap: =false
+                                                            X: =nfSpace.Lg + nfSize.IconTile + nfSpace.Md
+                                                            Y: =nfSpace.Lg
+                                                      - lblNrqCatTemplate:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextMuted
+                                                            Size: =nfType.Caption
+                                                            Text: |-
+                                                              =With(
+                                                                  { _t: LookUp(colTemplates, TemplateKey = ThisItem.DefaultTemplateKey) },
+                                                                  If(
+                                                                      IsBlank(_t.TemplateKey),
+                                                                      "No default workflow",
+                                                                      _t.Title
+                                                                      & "   -   "
+                                                                      & CountRows(Table(ParseJSON(_t.DefinitionJson).phases))
+                                                                      & " phases"
+                                                                  )
+                                                              )
+                                                              // NAMED IN WORDS ON A MISS, not left blank. house-rules
+                                                              // section 5: a lookup with a fallback turns a wiring
+                                                              // error into an invisible one. A category whose
+                                                              // DefaultTemplateKey matches no template is a config
+                                                              // defect somebody has to see.
+                                                              //
+                                                              // THE MISS IS TESTED ON TemplateKey, NOT ON Title.
+                                                              // Coalesce on .Title reported a template that exists
+                                                              // with a blank name as missing, which hides one config
+                                                              // defect behind the message meant to surface a
+                                                              // different one. TemplateKey is blank only when the
+                                                              // LookUp actually found nothing.
+                                                              //
+                                                              // THE PHASE COUNT IS DERIVED FROM THE PAYLOAD, the same
+                                                              // expression the template combo box uses for its own
+                                                              // labels, so the tile and the workflow cannot disagree
+                                                              // about how many phases a category starts with.
+                                                              //
+                                                              // ONE ParseJSON PER TILE PER RENDER is fine at this row
+                                                              // count. If colCategories ever grows past a screenful,
+                                                              // project the count once in App.OnStart instead of
+                                                              // parsing per row.
+                                                            Width: =Parent.Width - (nfSpace.Lg + nfSize.IconTile + nfSpace.Md) - nfSpace.Lg
+                                                            Wrap: |-
+                                                              =true
+                                                              // WRAPS ONTO THE SECOND LINE THE TALLER TILE BOUGHT.
+                                                              // With Wrap false this clipped mid-word on the
+                                                              // narrower desktop column.
+                                                            X: =nfSpace.Lg + nfSize.IconTile + nfSpace.Md
+                                                            Y: |-
+                                                              =lblNrqCatTitle.Y + lblNrqCatTitle.Height + nfSpace.Xxs
+                                                              // MEASURED FROM THE TITLE, which is declared EARLIER.
+                                                              // That asymmetry is deliberate: a backward reference
+                                                              // resolves, and a control reading a sibling declared
+                                                              // LATER is a forward reference that Studio drops on
+                                                              // paste in silence. The title keeps a fixed Y for the
+                                                              // same reason, so nothing in this tile reads forward.
+                                                      - btnNrqCatSelect:
+                                                          Control: Classic/Button@2.2.0
+                                                          Properties:
+                                                            BorderStyle: |-
+                                                              =BorderStyle.None
+                                                              // NO RESTING BORDER. The tile underneath already draws
+                                                              // one, and the overlay's own border doubled it.
+                                                              //
+                                                              // FocusedBorderThickness SURVIVES THIS and is why the
+                                                              // control is still keyboard visible: BorderStyle governs
+                                                              // the resting border only. Do not drop that property to
+                                                              // tidy up, or this becomes a focusable control with no
+                                                              // focus indicator.
+                                                            Fill: =nfColor.Transparent
+                                                            FocusedBorderThickness: =2
+                                                            Height: =Parent.Height
+                                                            HoverFill: =nfColor.Transparent
+                                                            OnSelect: |-
+                                                              =If(
+                                                                  locNrqCategoryKey <> ThisItem.ConfigKey,
+                                                                  UpdateContext({ locNrqWfLoaded: false })
+                                                              );
+                                                              UpdateContext({ locNrqCategoryKey: ThisItem.ConfigKey })
+                                                              // CHANGING CATEGORY INVALIDATES THE LOADED WORKFLOW.
+                                                              // locNrqWfLoaded latches true the first time step 4 is
+                                                              // reached, so without this reset a category change would
+                                                              // leave the PREVIOUS category's template standing while
+                                                              // step 1 and step 5 both showed the new category.
+                                                            PressedFill: =nfColor.Transparent
+                                                            Text: =""
+                                                            Tooltip: |-
+                                                              =ThisItem.Title
+                                                              & ", starts from "
+                                                              & Coalesce(
+                                                                  LookUp(
+                                                                      colTemplates,
+                                                                      TemplateKey = ThisItem.DefaultTemplateKey
+                                                                  ).Title,
+                                                                  "no default workflow"
+                                                              )
+                                                              // THE TOOLTIP IS THE WHOLE ACCESSIBLE AFFORDANCE HERE.
+                                                              // Classic/Button has no AccessibleLabel and Studio
+                                                              // rejects it with PA2108, so this is the only place the
+                                                              // tile can name itself to a screen reader.
+                                                              //
+                                                              // The three labels inside the tile deliberately carry
+                                                              // NO AccessibleLabel: adding them would announce the
+                                                              // category name three times before reaching anything
+                                                              // actionable.
+                                                            Width: =Parent.Width
+                                    - conNrqStep2:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =nfColor.Border
+                                          BorderThickness: =nfSize.Border
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Surface
+                                          FillPortions: =0
+                                          Height: |-
+                                            =lblNrqS2Title.Height
+                                            + lblNrqS2Sub.Height
+                                            + conNrqS2Fields.Height
+                                            + 2 * Self.LayoutGap
+                                            + Self.PaddingTop
+                                            + Self.PaddingBottom
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Md
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =nfSpace.Xxl
+                                          PaddingLeft: =nfSpace.Xxl
+                                          PaddingRight: =nfSpace.Xxl
+                                          PaddingTop: =nfSpace.Xxl
+                                          RadiusBottomLeft: =nfRadius.Lg
+                                          RadiusBottomRight: =nfRadius.Lg
+                                          RadiusTopLeft: =nfRadius.Lg
+                                          RadiusTopRight: =nfRadius.Lg
+                                          Visible: =locNrqStep = 2
+                                        Children:
+                                          - lblNrqS2Title:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextStrong
+                                                FontWeight: =FontWeight.Semibold
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.CardTitle
+                                                Text: ="Request details"
+                                                Wrap: =false
+                                          - lblNrqS2Sub:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextMuted
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Small
+                                                Text: ="Fields marked required must be filled before you can continue."
+                                                VerticalAlign: =VerticalAlign.Top
+                                          - conNrqS2Fields:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                FillPortions: =0
+                                                Height: |-
+                                                  =conNrqFTitle.Height
+                                                  + conNrqFPoc.Height
+                                                  + conNrqFProc.Height
+                                                  + conNrqFDept.Height
+                                                  + conNrqFPriority.Height
+                                                  + conNrqFDue.Height
+                                                  + conNrqFDesc.Height
+                                                  + conNrqFLinks.Height
+                                                  + 7 * Self.LayoutGap
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutGap: =nfSpace.Lg
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                              Children:
+                                                - conNrqFTitle:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =lblNrqFTitleLbl.Height
+                                                        + nfSize.Row
+                                                        + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqFTitleLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextBody
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Title, required"
+                                                            Wrap: =false
+                                                      - txtNrqTitle:
+                                                          Control: ModernTextInput@1.1.1
+                                                          Properties:
+                                                            AccessibleLabel: ="Request title"
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            Appearance: =Appearance.Outline
+                                                            Color: =nfColor.TextStrong
+                                                            Height: =nfSize.Row
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            MaxLength: =255
+                                                            Placeholder: ="Short name for this request"
+                                                            Size: =nfType.Body
+                                                            ValidationState: |-
+                                                              =If(
+                                                                  IsBlank(Trim(Self.Text)),
+                                                                  ValidationState.Error,
+                                                                  ValidationState.None
+                                                              )
+                                                - conNrqFPoc:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =lblNrqFPocLbl.Height
+                                                        + lblNrqPocCurrent.Height
+                                                        + nfSize.Row
+                                                        + 2 * Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqFPocLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextBody
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Primary point of contact, required"
+                                                            Wrap: =false
+                                                      - lblNrqPocCurrent:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextMuted
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Micro
+                                                            Text: |-
+                                                              =If(
+                                                                  IsBlank(locNrqPocEmail),
+                                                                  "Nobody chosen yet.",
+                                                                  "Chosen: " & locNrqPocName & ", " & locNrqPocEmail
+                                                              )
+                                                              // KEPT AFTER THE MOVE TO ModernCombobox, and the reason
+                                                              // got stronger rather than weaker. Once the search text
+                                                              // clears, Items reverts to nfDirectory, and nfDirectory
+                                                              // is only the first 200 people in the tenant. If the
+                                                              // chosen person is not in that slice the input can read
+                                                              // as empty while the selection is perfectly intact.
+                                                              //
+                                                              // Same insurance the current-assignee line gives in the
+                                                              // Add Worker panel.
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                            Wrap: =false
+                                                      - cmbNrqPoc:
+                                                          Control: ModernCombobox@1.1.1
+                                                          Properties:
+                                                            AccessibleLabel: ="Primary point of contact"
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            Appearance: =Appearance.Outline
+                                                            Color: =nfColor.TextStrong
+                                                            DefaultSelectedItems: =[]
+                                                            DelayOutput: |-
+                                                              =true
+                                                              // NOT OPTIONAL. Items reads Self.SearchText, so without
+                                                              // this the property re-evaluates on every keystroke and
+                                                              // fires one connector call per character against a
+                                                              // throttle that is per user per connection.
+                                                            Height: =nfSize.Row
+                                                            InputTextPlaceholder: ="Type a name or email"
+                                                            ItemDisplayText: |-
+                                                              =ThisItem.DisplayName
+                                                              & "   -   "
+                                                              & ThisItem.Mail
+                                                            Items: |-
+                                                              =If(
+                                                                  IsBlank(Trim(Self.SearchText)),
+                                                                  nfDirectory,
+                                                                  nfDirectory
+                                                              )
+                                                              // SUGGESTIONS WHEN IDLE, DIRECTORY WHEN TYPING. An
+                                                              // untouched picker opens from nfDirectory with no
+                                                              // connector call at all, and the live search runs only
+                                                              // once somebody types. Same pattern the Send Email
+                                                              // dialog on Details already runs.
+                                                              //
+                                                              // BOTH ARMS AGREE ON THE COLUMNS THIS SCREEN READS.
+                                                              // nfDirectory is ShowColumns'd to DisplayName, Mail and
+                                                              // JobTitle in App.OnStart, and SearchUser returns a
+                                                              // superset. ItemDisplayText and OnChange read only
+                                                              // DisplayName and Mail, which are in both.
+                                                              //
+                                                              // nfDirectory IS BOUNDED AT top: 200 and is therefore
+                                                              // not a search. That is why the typed arm exists at all.
+                                                              //
+                                                              // Self.SearchText, not the instance name: both resolve,
+                                                              // Self survives a rename.
+                                                              //
+                                                              // Office365Users is STANDARD, so this stays off premium.
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            OnChange: |-
+                                                              =If(
+                                                                  !IsBlank(Self.Selected.Mail),
+                                                                  UpdateContext({ locNrqPocName: Self.Selected.DisplayName });
+                                                                  UpdateContext({ locNrqPocEmail: Lower(Self.Selected.Mail) })
+                                                              )
+                                                            SelectMultiple: |-
+                                                              =false
+                                                              // WRITTEN OUT because the modern default is true, unlike
+                                                              // the classic combo box this replaced.
+                                                            Size: =nfType.Small
+                                                            ValidationState: |-
+                                                              =If(
+                                                                  IsBlank(locNrqPocEmail),
+                                                                  ValidationState.Error,
+                                                                  ValidationState.None
+                                                              )
+                                                - conNrqFProc:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =lblNrqFProcLbl.Height
+                                                        + nfSize.Row
+                                                        + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqFProcLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextBody
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Processing type, required"
+                                                            Wrap: =false
+                                                      - drpNrqProcessing:
+                                                          Control: ModernDropdown@1.0.2
+                                                          Properties:
+                                                            AccessibleLabel: ="Processing type"
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            Appearance: =Appearance.Outline
+                                                            Color: =nfColor.TextStrong
+                                                            Height: =nfSize.Row
+                                                            ItemDisplayText: =ThisItem.Title
+                                                            Items: =Sort(nfProcessingTypes, SortOrder)
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            ValidationState: |-
+                                                              =If(
+                                                                  IsBlank(Self.Selected.ConfigKey),
+                                                                  ValidationState.Error,
+                                                                  ValidationState.None
+                                                              )
+                                                - conNrqFDept:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =lblNrqFDeptLbl.Height
+                                                        + nfSize.Row
+                                                        + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqFDeptLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextBody
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Department, required"
+                                                            Wrap: =false
+                                                      - drpNrqDepartment:
+                                                          Control: ModernDropdown@1.0.2
+                                                          Properties:
+                                                            AccessibleLabel: ="Department"
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            Appearance: =Appearance.Outline
+                                                            Color: =nfColor.TextStrong
+                                                            Height: =nfSize.Row
+                                                            ItemDisplayText: =ThisItem.Title
+                                                            Items: =Sort(nfDepartments, SortOrder)
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            ValidationState: |-
+                                                              =If(
+                                                                  IsBlank(Self.Selected.ConfigKey),
+                                                                  ValidationState.Error,
+                                                                  ValidationState.None
+                                                              )
+                                                - conNrqFPriority:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =lblNrqFPriorityLbl.Height
+                                                        + nfSize.Row
+                                                        + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqFPriorityLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextBody
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Priority"
+                                                            Wrap: =false
+                                                      - drpNrqPriority:
+                                                          Control: ModernDropdown@1.0.2
+                                                          Properties:
+                                                            AccessibleLabel: ="Priority"
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            Appearance: =Appearance.Outline
+                                                            Color: =nfColor.TextStrong
+                                                            Default: |-
+                                                              =LookUp(nfPriorityTable, PriorityKey = "Medium")
+                                                              // A RECORD FROM Items, because ModernDropdown.Default is
+                                                              // typed Record and a bare key selects nothing.
+                                                              //
+                                                              // PRIORITY IS THE ONLY STEP 2 FIELD OUTSIDE THE GATE, so
+                                                              // without a default a blank PriorityKey reaches the
+                                                              // create payload. Medium is the neutral rung.
+                                                            Height: =nfSize.Row
+                                                            ItemDisplayText: =ThisItem.Title
+                                                            Items: =Sort(nfPriorityTable, SortOrder)
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                - conNrqFDue:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =lblNrqFDueLbl.Height
+                                                        + nfSize.Row
+                                                        + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqFDueLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextBody
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Needed by, required"
+                                                            Wrap: =false
+                                                      - dtpNrqDue:
+                                                          Control: ModernDatePicker@1.0.1
+                                                          Properties:
+                                                            AccessibleLabel: ="Date the request is needed by"
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            Appearance: =Appearance.Outline
+                                                            Color: =nfColor.TextStrong
+                                                            Format: =DatePickerFormat.Short
+                                                            Height: =nfSize.Row
+                                                            IsEditable: =true
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Placeholder: ="Pick a date"
+                                                            Size: =nfType.Body
+                                                            StartDate: =nfToday
+                                                            StartOfWeek: =StartOfWeek.Monday
+                                                            ValidationState: |-
+                                                              =If(
+                                                                  IsBlank(Self.SelectedDate),
+                                                                  ValidationState.Error,
+                                                                  ValidationState.None
+                                                              )
+                                                - conNrqFDesc:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =lblNrqFDescLbl.Height
+                                                        + txtNrqDescription.Height
+                                                        + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqFDescLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextBody
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Description"
+                                                            Wrap: =false
+                                                      - txtNrqDescription:
+                                                          Control: ModernTextInput@1.1.1
+                                                          Properties:
+                                                            AccessibleLabel: ="Request description"
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            Appearance: =Appearance.Outline
+                                                            Color: =nfColor.TextStrong
+                                                            Height: =112
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            MaxLength: =2000
+                                                            Placeholder: ="What is being asked for, and why"
+                                                            Size: =nfType.Body
+                                                            Type: =TextInputType.Multiline
+                                                - conNrqFLinks:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =lblNrqFLinksLbl.Height
+                                                        + nfSize.Row
+                                                        + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqFLinksLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextBody
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Reference links"
+                                                            Wrap: =false
+                                                      - txtNrqLinks:
+                                                          Control: ModernTextInput@1.1.1
+                                                          Properties:
+                                                            AccessibleLabel: ="Reference links"
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            Appearance: =Appearance.Outline
+                                                            Color: =nfColor.TextStrong
+                                                            Height: =nfSize.Row
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            MaxLength: =500
+                                                            Placeholder: ="One or more links, separated by a semicolon"
+                                                            Size: =nfType.Body
+                                    - conNrqStep3:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =nfColor.Border
+                                          BorderThickness: =nfSize.Border
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Surface
+                                          FillPortions: =0
+                                          Height: |-
+                                            =lblNrqS3Title.Height
+                                            + lblNrqS3Sub.Height
+                                            + cmpNrqUpload.Height
+                                            + 2 * Self.LayoutGap
+                                            + Self.PaddingTop
+                                            + Self.PaddingBottom
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Md
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =nfSpace.Xxl
+                                          PaddingLeft: =nfSpace.Xxl
+                                          PaddingRight: =nfSpace.Xxl
+                                          PaddingTop: =nfSpace.Xxl
+                                          RadiusBottomLeft: =nfRadius.Lg
+                                          RadiusBottomRight: =nfRadius.Lg
+                                          RadiusTopLeft: =nfRadius.Lg
+                                          RadiusTopRight: =nfRadius.Lg
+                                          Visible: =locNrqStep = 3
+                                        Children:
+                                          - lblNrqS3Title:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextStrong
+                                                FontWeight: =FontWeight.Semibold
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.CardTitle
+                                                Text: ="Supporting documents"
+                                                Wrap: =false
+                                          - lblNrqS3Sub:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextMuted
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Small
+                                                Text: ="Optional. Files stage here and upload when the request is created."
+                                                VerticalAlign: =VerticalAlign.Top
+                                          - cmpNrqUpload:
+                                              Control: CanvasComponent
+                                              ComponentName: cmpFileUpload
+                                              Properties:
+                                                AcceptedText: ="PDF, DOC, XLSX, PNG"
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AllowDelete: =true
+                                                AllowUpload: |-
+                                                  =true
+                                                  // AllowUpload AND AllowDelete, NOT ShowUpload AND ReadOnly.
+                                                  // THREE VERSIONS OF THIS COMPONENT EXIST and they do not
+                                                  // share a property list:
+                                                  //   catalog copy   four properties, no outputs at all
+                                                  //   repo copy      ReadOnly, ShowUpload
+                                                  //   LIVE APP       AllowDelete, AllowUpload, StagedFilesData
+                                                  // These names are the LIVE ones, confirmed by exporting the
+                                                  // solution. This screen was first written against the repo
+                                                  // copy, and those two properties do not exist on the control
+                                                  // that will actually run.
+                                                Colors: |-
+                                                  ={
+                                                      Surface:    nfColor.Surface,
+                                                      RowFill:    nfColor.Surface,
+                                                      RowBorder:  nfColor.Border,
+                                                      DropFill:   nfColor.Canvas,
+                                                      DropBorder: nfColor.BorderStrong,
+                                                      Text:       nfColor.TextStrong,
+                                                      Muted:      nfColor.TextMuted,
+                                                      Faint:      nfColor.TextFaint,
+                                                      Accent:     nfColor.Primary,
+                                                      Danger:     nfColor.DangerSolid
+                                                  }
+                                                  // ALL TEN KEYS, and passed rather than inherited. A
+                                                  // Record input's Default does not survive a paste, and
+                                                  // a missing key resolves blank and paints nothing with
+                                                  // no error. house-rules section 5.
+                                                HeaderText: |-
+                                                  =""
+                                                  // BLANK AND EXPLICIT. ShowHeader is false so nothing
+                                                  // renders it, but an omitted component input is
+                                                  // materialised EMPTY on the next round trip, and an
+                                                  // empty value overrides the Default with nothing
+                                                  // rather than inheriting it.
+                                                Height: =Self.DesiredHeight
+                                                Items: |-
+                                                  =FirstN(
+                                                      Table(
+                                                          {
+                                                              Id: "",
+                                                              Name: "",
+                                                              SizeBytes: 0,
+                                                              UploadedOn: nfToday,
+                                                              UploadedBy: "",
+                                                              Ext: ""
+                                                          }
+                                                      ),
+                                                      0
+                                                  )
+                                                  // TYPED EMPTY TABLE. A brand new request has no existing
+                                                  // documents, and Items is the EXISTING list, not the
+                                                  // staged one. FirstN rather than Filter(..., false):
+                                                  // both are correct but Filter warns once per instance
+                                                  // that the predicate is a literal. house-rules s7.
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                MaxFileSize: =25
+                                                MaxFiles: =10
+                                                OnCancel: =false
+                                                OnDelete: =false
+                                                OnDownload: =false
+                                                OnDownloadAll: =false
+                                                OnSave: |-
+                                                  =Notify(
+                                                      "Files are staged. They upload when you create the request.",
+                                                      NotificationType.Information
+                                                  )
+                                                  // MARKED CALL SITE 1 OF 2. DO NOT GUESS A SIGNATURE.
+                                                  //
+                                                  // Staged files cannot be written yet, and the reason is
+                                                  // ordering rather than a missing connector: the library
+                                                  // folder is created by Flow from RequestKey, and
+                                                  // RequestKey is minted from the SharePoint item Id AFTER
+                                                  // insert. There is no folder to upload into until the
+                                                  // request exists. See CLAUDE.md, Flows.
+                                                  //
+                                                  // The component deliberately keeps StagedFiles after
+                                                  // OnSave, so the Create handler below is where they get
+                                                  // sent. Reset(cmpNrqUpload) belongs there, on success
+                                                  // only, and nowhere else.
+                                                OnView: =false
+                                                ShowFooter: =true
+                                                ShowHeader: =false
+                                                ShowRowActions: =true
+                                                Style: |-
+                                                  ={
+                                                      DropHeight:   168,
+                                                      RowHeight:    72,
+                                                      TileSize:     48,
+                                                      ActionSize:   32,
+                                                      Gap:          nfSpace.Md,
+                                                      StackGap:     nfSpace.Md,
+                                                      Radius:       nfRadius.Md,
+                                                      HeaderSize:   nfType.ChromeTitle,
+                                                      NameSize:     nfType.Body,
+                                                      MetaSize:     nfType.Caption,
+                                                      TileTextSize: nfType.Micro
+                                                  }
+                                                TypeColors: |-
+                                                  =Table(
+                                                      { Ext: "pdf",     Fill: nfColor.DangerFill,  Text: nfColor.DangerText },
+                                                      { Ext: "xlsx",    Fill: nfColor.SuccessFill, Text: nfColor.SuccessText },
+                                                      { Ext: "xls",     Fill: nfColor.SuccessFill, Text: nfColor.SuccessText },
+                                                      { Ext: "docx",    Fill: nfColor.PrimarySoft, Text: nfColor.PrimaryHover },
+                                                      { Ext: "doc",     Fill: nfColor.PrimarySoft, Text: nfColor.PrimaryHover },
+                                                      { Ext: "png",     Fill: nfColor.GroupFill,   Text: nfColor.GroupText },
+                                                      { Ext: "jpg",     Fill: nfColor.GroupFill,   Text: nfColor.GroupText },
+                                                      { Ext: "default", Fill: nfColor.NeutralFill, Text: nfColor.NeutralText }
+                                                  )
+                                    - conNrqStep4:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =nfColor.Border
+                                          BorderThickness: =nfSize.Border
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Surface
+                                          FillPortions: =0
+                                          Height: |-
+                                            =lblNrqS4Title.Height
+                                            + lblNrqS4Sub.Height
+                                            + lblNrqS4Summary.Height
+                                            + If(
+                                                cmpNrqEditWorkflow.UnresolvedCount > 0,
+                                                lblNrqS4Warning.Height + Self.LayoutGap,
+                                                0
+                                            )
+                                            + nfSize.Row
+                                            + 3 * Self.LayoutGap
+                                            + Self.PaddingTop
+                                            + Self.PaddingBottom
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Md
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =nfSpace.Xxl
+                                          PaddingLeft: =nfSpace.Xxl
+                                          PaddingRight: =nfSpace.Xxl
+                                          PaddingTop: =nfSpace.Xxl
+                                          RadiusBottomLeft: =nfRadius.Lg
+                                          RadiusBottomRight: =nfRadius.Lg
+                                          RadiusTopLeft: =nfRadius.Lg
+                                          RadiusTopRight: =nfRadius.Lg
+                                          Visible: =locNrqStep = 4
+                                        Children:
+                                          - lblNrqS4Title:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextStrong
+                                                FontWeight: =FontWeight.Semibold
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.CardTitle
+                                                Text: ="Who works on it, and in what order"
+                                                Wrap: =false
+                                          - lblNrqS4Sub:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextMuted
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Small
+                                                Text: ="The workflow starts from the category's template. Edit it here if this request needs something different."
+                                                VerticalAlign: =VerticalAlign.Top
+                                          - lblNrqS4Summary:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextBody
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Body
+                                                Text: |-
+                                                  =CountRows(cmpNrqEditWorkflow.DraftPhases)
+                                                  & If(CountRows(cmpNrqEditWorkflow.DraftPhases) = 1, " phase, ", " phases, ")
+                                                  & CountRows(cmpNrqEditWorkflow.DraftWorkers)
+                                                  & If(CountRows(cmpNrqEditWorkflow.DraftWorkers) = 1, " worker", " workers")
+                                                VerticalAlign: =VerticalAlign.Top
+                                                Wrap: =false
+                                          - lblNrqS4Warning:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.WarnText
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Small
+                                                Text: |-
+                                                  =cmpNrqEditWorkflow.UnresolvedCount
+                                                  & " assignment(s) still carry a role rather than a person or group. You can continue, and assign them here or later."
+                                                VerticalAlign: =VerticalAlign.Top
+                                                Visible: |-
+                                                  =cmpNrqEditWorkflow.UnresolvedCount > 0
+                                                  // HIDDEN RATHER THAN BLANK. An AutoHeight label holding "" still
+                                                  // occupies a line box and its gap, so the card carried a ragged
+                                                  // space under the summary whenever there was nothing to say. The
+                                                  // parent Height gates on the SAME expression, gap included.
+                                          - btnNrqS4Edit:
+                                              Control: ModernButton@1.0.0
+                                              Properties:
+                                                AccessibleLabel: ="Open the workflow editor"
+                                                AlignInContainer: =AlignInContainer.Start
+                                                Appearance: =ButtonAppearance.Secondary
+                                                Color: =nfColor.TextBody
+                                                Height: =nfSize.Row
+                                                Layout: =ButtonLayout.TextOnly
+                                                OnSelect: |-
+                                                  =ClearCollect(colNrqWfSnapPhases, colWfDraftPhases);
+                                                  ClearCollect(colNrqWfSnapWorkers, colWfDraftWorkers);
+                                                  UpdateContext({ locNrqWfOpen: true })
+                                                  // SNAPSHOT BEFORE OPENING, because dismissing that dialog
+                                                  // DESTROYS the draft. Tapping the scrim runs
+                                                  // Select(btnWfCancel), which Clears every draft collection
+                                                  // before it raises OnCancel.
+                                                  //
+                                                  // That is right for an existing request, where cancelling
+                                                  // means "forget my edits" and the next open reloads from
+                                                  // the lists. It is wrong here: on a new request the draft
+                                                  // IS the only copy, there is no list to reload from, and a
+                                                  // stray click outside the dialog wiped the whole workflow.
+                                                  //
+                                                  // OnCancel restores from these two.
+                                                RadiusBottomLeft: =nfRadius.Md
+                                                RadiusBottomRight: =nfRadius.Md
+                                                RadiusTopLeft: =nfRadius.Md
+                                                RadiusTopRight: =nfRadius.Md
+                                                Size: =nfType.Small
+                                                Text: ="Edit workflow"
+                                                Tooltip: ="Add phases and workers, or change the order"
+                                                Width: =160
+                                    - conNrqStep5:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =nfColor.Border
+                                          BorderThickness: =nfSize.Border
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Surface
+                                          FillPortions: =0
+                                          Height: |-
+                                            =lblNrqS5Title.Height
+                                            + lblNrqS5Sub.Height
+                                            + conNrqS5Rows.Height
+                                            + 2 * Self.LayoutGap
+                                            + Self.PaddingTop
+                                            + Self.PaddingBottom
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Md
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =nfSpace.Xxl
+                                          PaddingLeft: =nfSpace.Xxl
+                                          PaddingRight: =nfSpace.Xxl
+                                          PaddingTop: =nfSpace.Xxl
+                                          RadiusBottomLeft: =nfRadius.Lg
+                                          RadiusBottomRight: =nfRadius.Lg
+                                          RadiusTopLeft: =nfRadius.Lg
+                                          RadiusTopRight: =nfRadius.Lg
+                                          Visible: =locNrqStep = 5
+                                        Children:
+                                          - lblNrqS5Title:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextStrong
+                                                FontWeight: =FontWeight.Semibold
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.CardTitle
+                                                Text: ="Check this over"
+                                                Wrap: =false
+                                          - lblNrqS5Sub:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextMuted
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Small
+                                                Text: ="Use the step rail above to go back and change anything."
+                                                VerticalAlign: =VerticalAlign.Top
+                                          - conNrqS5Rows:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                FillPortions: =0
+                                                Height: |-
+                                                  =conNrqRvCategory.Height
+                                                  + conNrqRvTitle.Height
+                                                  + conNrqRvPoc.Height
+                                                  + conNrqRvProc.Height
+                                                  + conNrqRvDept.Height
+                                                  + conNrqRvPriority.Height
+                                                  + conNrqRvDue.Height
+                                                  + conNrqRvDesc.Height
+                                                  + conNrqRvLinks.Height
+                                                  + conNrqRvDocs.Height
+                                                  + conNrqRvWorkflow.Height
+                                                  + 10 * Self.LayoutGap
+                                                LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutGap: =nfSpace.Lg
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                              Children:
+                                                - conNrqRvCategory:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvCategoryLbl.Height + lblNrqRvCategoryVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvCategoryLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Category"
+                                                            Wrap: =false
+                                                      - lblNrqRvCategoryVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: |-
+                                                              =Coalesce(
+                                                                  LookUp(nfCategories, ConfigKey = locNrqCategoryKey).Title,
+                                                                  "Not chosen"
+                                                              )
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvTitle:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvTitleLbl.Height + lblNrqRvTitleVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvTitleLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Title"
+                                                            Wrap: =false
+                                                      - lblNrqRvTitleVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: |-
+                                                              =If(
+                                                                  IsBlank(Trim(txtNrqTitle.Text)),
+                                                                  "Not entered",
+                                                                  Trim(txtNrqTitle.Text)
+                                                              )
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvPoc:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvPocLbl.Height + lblNrqRvPocVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvPocLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Primary point of contact"
+                                                            Wrap: =false
+                                                      - lblNrqRvPocVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: |-
+                                                              =If(
+                                                                  IsBlank(locNrqPocEmail),
+                                                                  "Not chosen",
+                                                                  locNrqPocName & ", " & locNrqPocEmail
+                                                              )
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvProc:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvProcLbl.Height + lblNrqRvProcVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvProcLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Processing type"
+                                                            Wrap: =false
+                                                      - lblNrqRvProcVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: =Coalesce(drpNrqProcessing.Selected.Title, "Not chosen")
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvDept:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvDeptLbl.Height + lblNrqRvDeptVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvDeptLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Department"
+                                                            Wrap: =false
+                                                      - lblNrqRvDeptVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: =Coalesce(drpNrqDepartment.Selected.Title, "Not chosen")
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvPriority:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvPriorityLbl.Height + lblNrqRvPriorityVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvPriorityLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Priority"
+                                                            Wrap: =false
+                                                      - lblNrqRvPriorityVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: =Coalesce(drpNrqPriority.Selected.Title, "Not chosen")
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvDue:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvDueLbl.Height + lblNrqRvDueVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvDueLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Needed by"
+                                                            Wrap: =false
+                                                      - lblNrqRvDueVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: |-
+                                                              =If(
+                                                                  IsBlank(dtpNrqDue.SelectedDate),
+                                                                  "Not set",
+                                                                  Text(dtpNrqDue.SelectedDate, DateTimeFormat.LongDate)
+                                                              )
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvDesc:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvDescLbl.Height + lblNrqRvDescVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvDescLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Description"
+                                                            Wrap: =false
+                                                      - lblNrqRvDescVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: |-
+                                                              =If(
+                                                                  IsBlank(Trim(txtNrqDescription.Text)),
+                                                                  "Not entered",
+                                                                  Trim(txtNrqDescription.Text)
+                                                              )
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvLinks:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvLinksLbl.Height + lblNrqRvLinksVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvLinksLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Reference links"
+                                                            Wrap: =false
+                                                      - lblNrqRvLinksVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: |-
+                                                              =If(
+                                                                  IsBlank(Trim(txtNrqLinks.Text)),
+                                                                  "Not entered",
+                                                                  Trim(txtNrqLinks.Text)
+                                                              )
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvDocs:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvDocsLbl.Height + lblNrqRvDocsVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvDocsLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Documents"
+                                                            Wrap: =false
+                                                      - lblNrqRvDocsVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: |-
+                                                              =If(
+                                                                  cmpNrqUpload.StagedCount = 0,
+                                                                  "None attached",
+                                                                  cmpNrqUpload.StagedCount
+                                                                  & If(cmpNrqUpload.StagedCount = 1, " file staged", " files staged")
+                                                              )
+                                                            VerticalAlign: =VerticalAlign.Top
+                                                - conNrqRvWorkflow:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =lblNrqRvWorkflowLbl.Height + lblNrqRvWorkflowVal.Height + Self.LayoutGap
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblNrqRvWorkflowLbl:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: ="Workflow"
+                                                            Wrap: =false
+                                                      - lblNrqRvWorkflowVal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: |-
+                                                              =CountRows(cmpNrqEditWorkflow.DraftPhases)
+                                                              & If(CountRows(cmpNrqEditWorkflow.DraftPhases) = 1, " phase, ", " phases, ")
+                                                              & CountRows(cmpNrqEditWorkflow.DraftWorkers)
+                                                              & If(CountRows(cmpNrqEditWorkflow.DraftWorkers) = 1, " worker", " workers")
+                                                            VerticalAlign: =VerticalAlign.Top
+                                    - lblNrqGate:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Start
+                                          Color: =nfColor.Transparent
+                                          Height: =0
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =nfType.Micro
+                                          Text: |-
+                                            =If(
+                                                Switch(
+                                                    locNrqStep,
+                                                    1, !IsBlank(locNrqCategoryKey),
+                                                    2, !IsBlank(Trim(txtNrqTitle.Text))
+                                                       && !IsBlank(locNrqPocEmail)
+                                                       && !IsBlank(drpNrqProcessing.Selected.ConfigKey)
+                                                       && !IsBlank(drpNrqDepartment.Selected.ConfigKey)
+                                                       && !IsBlank(dtpNrqDue.SelectedDate),
+                                                    3, true,
+                                                    4, CountRows(cmpNrqEditWorkflow.DraftPhases) > 0
+                                                       && CountRows(cmpNrqEditWorkflow.DraftWorkers) > 0,
+                                                    5, true,
+                                                    false
+                                                ),
+                                                "1",
+                                                "0"
+                                            )
+                                            // STEP 4 GATES ON STRUCTURE, NOT ON RESOLUTION, and the
+                                            // omission of UnresolvedCount is deliberate. A template
+                                            // assignment ARRIVES unresolved by design: the payload
+                                            // carries a role name and a department and no email, and
+                                            // resolving every one of them is not something a requester
+                                            // can always do at creation time. Requiring it made step 4
+                                            // impassable the moment the template loaded, because
+                                            // UnresolvedCount equals the assignment count on arrival.
+                                            //
+                                            // What is still checked is the hole this gate exists for:
+                                            // a request with no phases or no workers at all.
+                                            // lblNrqS4Warning stays visible and says what is
+                                            // outstanding; it just does not block.
+                                            //
+                                            // ONE HIDDEN LABEL RATHER THAN THE SAME BOOLEAN IN THREE PLACES.
+                                            // The gate is read by btnNrqNext, by cmpNrqFab and by
+                                            // lblNrqFooterHint. Written inline it would be three copies of a
+                                            // fifteen line expression, and the copies would drift the first
+                                            // time a field is added.
+                                            //
+                                            // It cannot be a named formula: named formulas take no
+                                            // parameters, cannot see context variables, and cannot reference
+                                            // screen controls. It cannot be a UDF either, since a UDF
+                                            // signature is scalars only. house-rules section 7.
+                                            //
+                                            // Height 0 and Visible false, so it costs nothing in the
+                                            // zero-gap stack it sits in.
+                                          Visible: =false
+                                          Width: =0
+                                          Wrap: =false
+                                    - btnNrqAdvance:
+                                        Control: Classic/Button@2.2.0
+                                        Properties:
+                                          BorderThickness: =0
+                                          Fill: =nfColor.Transparent
+                                          FocusedBorderThickness: =0.5
+                                          Height: =1
+                                          HoverFill: =nfColor.Transparent
+                                          OnSelect: |-
+                                            =If(
+                                                locNrqStep = 3 && !locNrqWfLoaded,
+                                                cmpNrqEditWorkflow.LoadDraft();
+                                            cmpNrqEditWorkflow.LoadTemplate();
+                                                UpdateContext({ locNrqWfLoaded: true })
+                                            );
+                                            If(
+                                                locNrqStep < 5,
+                                                UpdateContext({ locNrqStep: locNrqStep + 1, locNrqTried: false }),
+                                                Notify(
+                                                    "Create is not wired yet. Nothing has been saved.",
+                                                    NotificationType.Warning
+                                                )
+                                            )
+                                            // MARKED CALL SITE 2 OF 2. DO NOT GUESS A SIGNATURE.
+                                            //
+                                            // ONE ADVANCE HANDLER. btnNrqNext and the FAB were fifteen
+                                            // identical lines each; both now Select this button. Two copies
+                                            // of a handler this long drift, and the FAB is the one nobody
+                                            // opens on a desktop to notice.
+                                            //
+                                            // LoadDraft THEN LoadTemplate, in that order. LoadDraft clears
+                                            // the draft and resets _cmpWfNextId, _cmpWfDirty and the
+                                            // expanded phase; LoadTemplate appends the category's template
+                                            // on top. Reversed, the template is wiped.
+                                            //
+                                            // CLAUDE.md, Flows: no create flow exists, and until one does
+                                            // no formula here may assume its name, trigger or response
+                                            // shape. Canvas writes intent, Flow owns truth, and Canvas
+                                            // NEVER mints a key: RequestKey is REQ-YYYY-000000 derived by
+                                            // Flow from the SharePoint item Id AFTER insert.
+                                            //
+                                            // That ordering is also why the mockup's navigation does not
+                                            // survive translation. It navigates to Details passing null,
+                                            // and Details falls through to a hardcoded demo record. In
+                                            // Canvas the same shape renders WRONG data rather than
+                                            // placeholder data, so it is deliberately not reproduced.
+                                            //
+                                            // WHAT THE FLOW NEEDS, all of it already on this screen:
+                                            //   CategoryKey    locNrqCategoryKey
+                                            //   Title          Trim(txtNrqTitle.Text)
+                                            //   PocName/Email  locNrqPocName, locNrqPocEmail
+                                            //   ProcessingKey  drpNrqProcessing.Selected.ConfigKey
+                                            //   DepartmentCode drpNrqDepartment.Selected.ConfigKey
+                                            //   PriorityKey    drpNrqPriority.Selected.PriorityKey
+                                            //   RequestDueDate dtpNrqDue.SelectedDate
+                                            //   Description    Trim(txtNrqDescription.Text)
+                                            //   Links          Trim(txtNrqLinks.Text)
+                                            //   Phases         cmpNrqEditWorkflow.DraftPhases
+                                            //   Assignments    cmpNrqEditWorkflow.DraftWorkers
+                                            //   Documents      cmpNrqUpload.StagedFiles
+                                            //
+                                            // ON SUCCESS the flow returns the minted RequestKey, and only
+                                            // then can this navigate:
+                                            //   Navigate(scrDetails, ScreenTransition.None,
+                                            //            { locRequestKey: <returned key> })
+                                            // Reset(cmpNrqUpload) belongs on that success path and nowhere
+                                            // else, because the component holds the only copy of the
+                                            // staged files until the write is confirmed.
+                                          PressedFill: =nfColor.Transparent
+                                          Text: =""
+                                          Tooltip: ="Advance the wizard"
+                                          Visible: =false
+                                          Width: =1
+                              - conNrqFooter:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: =nfSize.Row
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =nfSpace.Md
+                                    LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - btnNrqBack:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="Go back one step"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          Appearance: =ButtonAppearance.Secondary
+                                          Color: =nfColor.TextBody
+                                          Height: =nfSize.Row
+                                          Layout: =ButtonLayout.TextOnly
+                                          OnSelect: |-
+                                            =If(
+                                                locNrqStep > 1,
+                                                UpdateContext({ locNrqStep: locNrqStep - 1, locNrqTried: false }),
+                                                Back()
+                                            )
+                                            // Back() RATHER THAN A NAMED SCREEN. The mockup labels this
+                                            // control "Back to Requests" and returns to Home,
+                                            // which is a mockup bug CLAUDE.md says not to reproduce. On
+                                            // step 1 this returns to whichever screen opened the wizard.
+                                          RadiusBottomLeft: =nfRadius.Md
+                                          RadiusBottomRight: =nfRadius.Md
+                                          RadiusTopLeft: =nfRadius.Md
+                                          RadiusTopRight: =nfRadius.Md
+                                          Size: =nfType.Small
+                                          Text: =If(locNrqStep = 1, "Cancel", "Back")
+                                          Tooltip: |-
+                                            =If(
+                                                locNrqStep = 1,
+                                                "Leave without creating anything",
+                                                "Return to step " & (locNrqStep - 1)
+                                            )
+                                          Width: =104
+                                    - lblNrqFooterHint:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          AlignInContainer: =AlignInContainer.Center
+                                          AutoHeight: =true
+                                          Color: |-
+                                            =If(
+                                                lblNrqGate.Text <> "1" && locNrqTried,
+                                                nfColor.WarnText,
+                                                nfColor.TextMuted
+                                            )
+                                          FillPortions: =1
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =nfType.Small
+                                          Text: |-
+                                            =If(
+                                                lblNrqGate.Text <> "1" && locNrqTried,
+                                                "Step " & locNrqStep & " of 5, something above is still needed",
+                                                "Step " & locNrqStep & " of 5"
+                                            )
+                                          Wrap: =false
+                                    - btnNrqNext:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="Continue to the next step"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          Color: =nfColor.TextOnPrimary
+                                          Height: =nfSize.Row
+                                          Icon: =If(locNrqStep < 5, "ArrowRight", "Checkmark")
+                                          Layout: =ButtonLayout.IconAfter
+                                          OnSelect: |-
+                                            =If(
+                                                lblNrqGate.Text = "1",
+                                                Select(btnNrqAdvance),
+                                                UpdateContext({ locNrqTried: true })
+                                            )
+                                          RadiusBottomLeft: =nfRadius.Md
+                                          RadiusBottomRight: =nfRadius.Md
+                                          RadiusTopLeft: =nfRadius.Md
+                                          RadiusTopRight: =nfRadius.Md
+                                          Size: =nfType.Small
+                                          Text: =If(locNrqStep < 5, "Next", "Create request")
+                                          Tooltip: |-
+                                            =If(
+                                                lblNrqGate.Text = "1",
+                                                "",
+                                                "Fill in what is still required above"
+                                            )
+                                          Width: =If(locNrqStep < 5, 120, 168)
+                              - conNrqTailSpacer:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: |-
+                                      =nfSpace.Section
+                                      // AN EMPTY CONTAINER RATHER THAN MORE PaddingBottom ON THE
+                                      // GUTTER. The gutter scrolls, and its bottom padding does not
+                                      // extend the SCROLL EXTENT, so on the tall steps the last
+                                      // control sat flush against the end of the range with nothing
+                                      // under it. A real child does extend the extent.
+                                      //
+                                      // Same distinction layout-sizing section 16 draws about the
+                                      // bottom bar: padding moves content, it does not move the
+                                      // range the content scrolls through.
+                                      //
+                                      // IT IS THE LAST CHILD OF THE GUTTER, AND THAT IS THE POINT.
+                                      // Placed before conNrqFooter it padded the gap ABOVE the
+                                      // buttons, which already had a LayoutGap, and left the bottom
+                                      // of the range exactly as flush as before. A tail spacer that
+                                      // is not last is not a tail spacer.
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                        - conNrqBottomBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Surface
+                              FillPortions: =0
+                              Height: =nfHeights.bottomNav + nfSpace.Lg
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutMinHeight: =nfHeights.bottomNav
+                              LayoutMinWidth: =0
+                              PaddingBottom: =nfSpace.Md
+                              PaddingTop: =nfSpace.Xs
+                              Visible: =!nfIsDesktop
+                            Children:
+                              - cmpNrqBottomNav:
+                                  Control: CanvasComponent
+                                  ComponentName: cmpBottomNavigation
+                                  Properties:
+                                    ActiveColor: =nfColor.Primary
+                                    ActiveColorHex: =If(nfIsDark, "3B82F6", "2563EB")
+                                    ActiveIndicator: ="bar"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    BadgeColor: =nfColor.DangerSolid
+                                    FillPortions: =1
+                                    InactiveColorHex: =If(nfIsDark, "94A3B8", "64748B")
+                                    Items: |-
+                                      =ForAll(
+                                          nfNavMobile As m,
+                                          {
+                                              Icon: m.Icon,
+                                              Label: m.Label,
+                                              Badge: If(
+                                                  m.ID = 2,
+                                                  nfMyOpenCount,
+                                                  0
+                                              )
+                                          }
+                                      )
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =Set(
+                                          _cmpNavSelID,
+                                          LookUp(nfNavMobile, Idx = Self.SelectedItemIndex).ID
+                                      );
+                                      nfRoute(_cmpNavSelID)
+                                    SelectedIndex: =Coalesce(LookUp(nfNavMobile, ID = _cmpNavSelID).Idx, 3)
+                                    ShowLabels: ="always"
+                                    Theme: =nfThemeName
+      - conNrqNavHost:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Sidebar
+            Height: =Parent.Height
+            Visible: =nfIsDesktop
+            Width: =cmpNrqSidebar.Width
+          Children:
+            - cmpNrqSidebar:
+                Control: CanvasComponent
+                ComponentName: cmpSidebar
+                Properties:
+                  AccentColor: =nfColor.Primary
+                  AppLogo: =Blank()
+                  AppName: ="DocRouter"
+                  AppNameAccent: =""
+                  Expanded: =true
+                  Height: =Parent.Height
+                  Icons: =nfSidebarIcons
+                  Items: |-
+                    =Table(
+                        { ID: 1,  Title: "Home",         Icon: "Home",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 2,  Title: "My Tasks",     Icon: "CheckSquare",     Letter: "",
+                          Badge: nfMyOpenCount,
+                          BadgeColor: nfColor.DangerSolid, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 3,  Title: "All Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 7,  Title: "My Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: 3, Visible: true },
+                        { ID: 4,  Title: "Reports",      Icon: "Chart",    Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 90, Title: "",             Icon: "",         Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: true,  ParentID: -1, Visible: true },
+                        { ID: 5,  Title: "Settings",     Icon: "Settings", Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 6,  Title: "Help",         Icon: "Help",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true }
+                    )
+                  OnFooterSettings: =false
+                  OnHelp: =false
+                  OnNavSelect: =nfRoute(Self.SelectedID)
+                  OnThemeToggle: |-
+                    =Patch(
+                        colUserPrefs,
+                        First(colUserPrefs),
+                        { ThemeName: If(nfIsDark, "Light", "Dark") }
+                    );
+                    ClearCollect(
+                        colUserPrefs,
+                        Filter(colUserPrefs, UserEmail = Lower(nfUserEmail))
+                    )
+                  OnToggle: =false
+                  ShowFooterMenu: =true
+                  ShowHeader: =true
+                  ShowSearch: =false
+                  ShowToggle: =true
+                  ShowUser: =true
+                  Theme: =If(nfIsDark, "Light", "Dark")
+                  Width: =If(_cmpNavIsExpanded, 260, 64)
+      - cmpNrqEditWorkflow:
+          Control: CanvasComponent
+          ComponentName: cmpDetEditWorkflow
+          Properties:
+            Height: =App.Height
+            OnCancel: |-
+              =ClearCollect(colWfDraftPhases, colNrqWfSnapPhases);
+              ClearCollect(colWfDraftWorkers, colNrqWfSnapWorkers);
+              Self.Rebuild();
+              UpdateContext({ locNrqWfOpen: false })
+              // PUTS BACK WHAT WAS THERE WHEN THE DIALOG OPENED, rather than
+              // leaving the Clear that btnWfCancel already performed. Cancel now
+              // means "discard what I just did in there", which is what a user
+              // expects, instead of "discard the entire workflow".
+              //
+              // Rebuild IS REQUIRED and is not belt and braces. The dialog renders
+              // from a flat projection, colWfRows, not from the draft collections
+              // directly, so writing the drafts back leaves the visible list stale
+              // until it is reprojected. The component exposes Rebuild for exactly
+              // this case: its own description says it is for a host that mutates
+              // the draft collections directly.
+            OnSave: |-
+              =UpdateContext({ locNrqWfOpen: false })
+              // NOTHING IS PERSISTED HERE, and that is correct. The component's
+              // DraftPhases and DraftWorkers outputs hold the edit, and they are
+              // read by the create call site on btnNrqNext. A new request has no
+              // phases or assignments to patch yet.
+            RequestKey: |-
+              =""
+              // EMPTY DELIBERATELY, not an oversight. LoadDraft filters
+              // colPhases and colAssignments on this key, so an empty one
+              // Clears both draft collections and yields an empty workflow.
+              // That is exactly what a new request starts from, and it is why
+              // this component can be reused here at all rather than the whole
+              // Add Worker panel being rebuilt.
+              //
+              // LoadDraft IS CALLED ON ENTERING STEP 4, once, guarded by
+              // locNrqWfLoaded on btnNrqNext.OnSelect. That call is not
+              // optional and it is not cosmetic: the draft collections are APP
+              // scope and shared with the other instance of this same
+              // component over on Details, so without it a workflow edited
+              // there would still be sitting here.
+              //
+              // THIS INSTANCE IS LAST IN Children ON PURPOSE. Render order is
+              // tree order and last is on top, so it covers the root, the nav
+              // host and the FAB. Placed before conNrqNavHost it would render
+              // under the sidebar.
+              //
+              // LoadDraft ALONE IS NOT THE SEQUENCE. With an empty RequestKey it
+              // clears the draft and leaves it empty, which is the correct start
+              // for a new request but is not a workflow. LoadTemplate then fills
+              // it from the category. The PAIR is the sequence, and the order is
+              // fixed: LoadDraft resets _cmpWfNextId, _cmpWfDirty and the
+              // expanded phase, so running it second would wipe the template.
+            RequireResolved: |-
+              =false
+              // A NEW REQUEST IS STILL LOCAL. Nothing is written until Create, the
+              // key does not exist yet, and the template's role names are the point
+              // of starting from a template. Requiring every row to name a person
+              // before Save would light up meant Save never lit up at all, because
+              // a template assignment arrives unresolved by design.
+              //
+              // scrDetails leaves this at its default true, where an unresolved row
+              // really would reach a flow that cannot action it.
+            SeedTemplateKey: |-
+              =LookUp(nfCategories, ConfigKey = locNrqCategoryKey).DefaultTemplateKey
+              // BLANK UNTIL A CATEGORY IS PICKED, and blank makes LoadTemplate a
+              // no op, so the action is safe to call unconditionally.
+              //
+              // A CATEGORY WHOSE DefaultTemplateKey NAMES NO TEMPLATE also lands
+              // here as a no op. That is a config defect and step 4 will show
+              // zero phases, which the gate now blocks.
+            Visible: =locNrqWfOpen
+            Width: =App.Width

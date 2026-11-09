@@ -1,0 +1,1740 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrSettings:
+    Properties:
+      Fill: =nfColor.Canvas
+      OnVisible: |-
+        =Set(_cmpNavSelID, 5);
+        UpdateContext({
+            locSetSection: Coalesce(locSetSection, "notifications"),
+            locSetWfOpen: false,
+            locSetWfSaved: false
+        })
+        // BOTH WORKFLOW FLAGS ARE DECLARED HERE, and the declaration is the reason
+        // as much as the reset. A context variable is only recognised on a screen
+        // that SETS it; reading one that no UpdateContext names fails with "Name
+        // isn't valid", which reads like a typo rather than a missing declaration.
+        //
+        // locSetSection keeps its Coalesce so the chosen tab survives a round trip
+        // to another screen. The two workflow flags deliberately do NOT: an editor
+        // left open, or a stale saved confirmation, should not come back with you.
+    Children:
+      - conSetRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Canvas
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            PaddingLeft: =If(nfIsDesktop, conSetNavHost.Width, 0)
+            Width: =Parent.Width
+          Children:
+            - conSetMiddle:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                Children:
+                  - conSetRight:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - conSetTopBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderStyle: =If(nfIsMobile, BorderStyle.None, BorderStyle.Solid)
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =If(nfIsMobile, nfColor.Transparent, nfColor.Surface)
+                              FillPortions: =0
+                              Height: =nfHeights.topBar
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =If(nfIsMobile, nfSpace.Sm, nfSpace.Md)
+                              LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                              LayoutMaxHeight: =nfHeights.topBar
+                              LayoutMinHeight: =nfHeights.topBar
+                              LayoutMinWidth: =0
+                              PaddingRight: =If(nfIsMobile, nfSpace.Md, nfSpace.Xxl)
+                            Children:
+                              - conSetTitleGroup:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =2.5
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                  Children:
+                                    - cmpSetCrumbs:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpBreadcrumbs
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          CharWidths: =nfCharWidths
+                                          Config: |-
+                                            ={
+                                                Theme: If(nfIsDark, "dark", "light"),
+                                                SeparatorIcon: "chevron",
+                                                Gap: 4,
+                                                Size: nfType.ChromeTitle,
+                                                MaxItems: 4,
+                                                ItemsBeforeCollapse: 1,
+                                                ItemsAfterCollapse: 2,
+                                                ActiveLastItem: false,
+                                                BackButton: false
+                                            }
+                                          CurrentColor: |-
+                                            =If(
+                                                nfIsDark,
+                                                "#F1F5F9",
+                                                "#1E293B"
+                                            )
+                                          Height: =nfHeights.breadcrumb
+                                          Icons: =nfBreadcrumbIcons
+                                          Items: |-
+                                            =Table(
+                                                { id: "home", label: "Home" },
+                                                { id: "settings", label: "Settings" }
+                                            )
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          LinkColor: |-
+                                            =If(
+                                                nfIsDark,
+                                                "#94A3B8",
+                                                "#64748B"
+                                            )
+                                          OnBack: =false
+                                          OnSelect: |-
+                                            =If(
+                                                Self.SelectedItem.id = "home",
+                                                Navigate(scrHome, ScreenTransition.None)
+                                            )
+                                          Width: =Parent.Width
+                              - cmpSetBell:
+                                  Control: CanvasComponent
+                                  ComponentName: Badge
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BadgeColor: =nfColor.DangerSolid
+                                    BadgeCount: =0
+                                    HasNotifications: =false
+                                    Height: =Self.Size
+                                    HoverText: ="Notifications"
+                                    IconColor: =""
+                                    IconSvg: =""
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =false
+                                      // INERT ON PURPOSE. Same reason as scrHome: CLAUDE.md
+                                      // open question 2 is unresolved and colAudit is the wrong
+                                      // shape. Do NOT bind this to colAudit.
+                                    Size: =If(nfIsMobile, 32, 35)
+                                    Theme: =nfThemeName
+                                    Width: =Self.Size
+                              - conSetAvatar:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Primary
+                                    FillPortions: =0
+                                    Height: =nfHeights.avatar
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    RadiusBottomLeft: =nfHeights.avatar / 2
+                                    RadiusBottomRight: =nfHeights.avatar / 2
+                                    RadiusTopLeft: =nfHeights.avatar / 2
+                                    RadiusTopRight: =nfHeights.avatar / 2
+                                    Width: =nfHeights.avatar
+                                  Children:
+                                    - lblSetInitials:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          Color: =nfColor.TextOnPrimary
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =Parent.Height
+                                          Size: =nfType.Initials
+                                          Text: =nfInitials
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                        - conSetGutter:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Canvas
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =nfSpace.Lg
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              LayoutOverflowY: =LayoutOverflow.Scroll
+                              PaddingBottom: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingLeft: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingRight: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingTop: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              Width: =Parent.Width
+                            Children:
+                              - conSetHead:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =0
+                                    Height: |-
+                                      =lblSetTitle.Height + lblSetSubtitle.Height + Self.LayoutGap
+                                      // SUMS ITS CHILDREN NOW THAT THEY AutoHeight. It was
+                                      // nfType.PageTitle + nfType.Body + 3 * nfSpace.Sm, which is a
+                                      // guess at what two labels would render as, and a font size
+                                      // guess is wrong the moment a token moves. With AutoHeight on
+                                      // both, .Height reports the box that actually rendered.
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutGap: =nfSpace.Xxs
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblSetTitle:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Start
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextStrong
+                                          FontWeight: =FontWeight.Bold
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingTop: =0
+                                          Size: =If(nfIsDesktop, nfType.PageTitle, nfType.SectionHead)
+                                          Text: ="Settings"
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                                    - lblSetSubtitle:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Start
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextMuted
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =0
+                                          PaddingTop: =0
+                                          Size: =nfType.Body
+                                          Text: ="Manage your account and preferences"
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                              - conSetBody:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    Height: |-
+                                      =With(
+                                          {
+                                              _panel:
+                                                  2 * nfSpace.Xl
+                                                  + If(
+                                                      Coalesce(locSetSection, "notifications") = "appearance",
+                                                      nfSize.RowSm + 4 * nfSpace.Md + 2 * nfType.SectionHead + 2 * nfSize.Row,
+                                                      nfSize.RowSm + 9 * nfSpace.Md + 5 * nfSize.RowLg + 4 * nfSize.Border
+                                                  ),
+                                              _nav: 2 * nfSize.Row + nfSpace.Sm
+                                          },
+                                          If(nfIsDesktop, Max(_panel, _nav), _nav + nfSpace.Lg + _panel)
+                                      )
+                                    LayoutDirection: =If(nfIsDesktop, LayoutDirection.Horizontal, LayoutDirection.Vertical)
+                                    LayoutGap: =nfSpace.Lg
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - conSetNav:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Start
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Transparent
+                                          FillPortions: =0
+                                          Height: |-
+                                            =If(
+                                                CountRows(nfMyTemplateCategories) > 0,
+                                                3 * nfSize.Row + 2 * Self.LayoutGap,
+                                                2 * nfSize.Row + Self.LayoutGap
+                                            )
+                                            // COUNTED AND CONDITIONAL, NOT HARDCODED. This was
+                                            // 2 * nfSize.Row for the two original buttons, so adding
+                                            // Workflows put the third one outside its container,
+                                            // where it rendered as nothing at all.
+                                            //
+                                            // BOTH ARMS EXIST because the Workflows item is hidden
+                                            // for a non admin. A flat three row height would leave a
+                                            // row of dead space under the nav for everybody else.
+                                            //
+                                            // THE GATE IS THE SAME EXPRESSION btnSetNavWorkflow.Visible
+                                            // uses, so the height cannot disagree with what is on
+                                            // screen. Self.LayoutGap rather than a repeated token, so
+                                            // the gap and the height cannot drift apart either.
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Sm
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Width: =If(nfIsDesktop, 240, Parent.Width)
+                                        Children:
+                                          - btnSetNavNotif:
+                                              Control: ModernButton@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                Align: =Align.Left
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                Appearance: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "notifications",
+                                                      ButtonAppearance.Secondary,
+                                                      ButtonAppearance.Subtle
+                                                  )
+                                                Color: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "notifications",
+                                                      nfColor.Primary,
+                                                      nfColor.TextBody
+                                                  )
+                                                FontWeight: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "notifications",
+                                                      FontWeight.Semibold,
+                                                      FontWeight.Normal
+                                                  )
+                                                Height: =nfSize.Row
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                OnSelect: |-
+                                                  =UpdateContext({ locSetSection: "notifications" })
+                                                RadiusBottomLeft: =nfRadius.Md
+                                                RadiusBottomRight: =nfRadius.Md
+                                                RadiusTopLeft: =nfRadius.Md
+                                                RadiusTopRight: =nfRadius.Md
+                                                Size: =nfType.Body
+                                                Text: ="Notifications"
+                                          - btnSetNavAppear:
+                                              Control: ModernButton@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                Align: =Align.Left
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                Appearance: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "appearance",
+                                                      ButtonAppearance.Secondary,
+                                                      ButtonAppearance.Subtle
+                                                  )
+                                                Color: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "appearance",
+                                                      nfColor.Primary,
+                                                      nfColor.TextBody
+                                                  )
+                                                FontWeight: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "appearance",
+                                                      FontWeight.Semibold,
+                                                      FontWeight.Normal
+                                                  )
+                                                Height: =nfSize.Row
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                OnSelect: |-
+                                                  =UpdateContext({ locSetSection: "appearance" })
+                                                RadiusBottomLeft: =nfRadius.Md
+                                                RadiusBottomRight: =nfRadius.Md
+                                                RadiusTopLeft: =nfRadius.Md
+                                                RadiusTopRight: =nfRadius.Md
+                                                Size: =nfType.Body
+                                                Text: ="Appearance"
+                                          - btnSetNavWorkflow:
+                                              Control: ModernButton@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                Align: =Align.Left
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                Appearance: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "workflow",
+                                                      ButtonAppearance.Secondary,
+                                                      ButtonAppearance.Subtle
+                                                  )
+                                                Color: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "workflow",
+                                                      nfColor.Primary,
+                                                      nfColor.TextBody
+                                                  )
+                                                FontWeight: |-
+                                                  =If(
+                                                      Coalesce(locSetSection, "notifications") = "workflow",
+                                                      FontWeight.Semibold,
+                                                      FontWeight.Normal
+                                                  )
+                                                Height: =nfSize.Row
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                OnSelect: |-
+                                                  =UpdateContext({ locSetSection: "workflow" })
+                                                RadiusBottomLeft: =nfRadius.Md
+                                                RadiusBottomRight: =nfRadius.Md
+                                                RadiusTopLeft: =nfRadius.Md
+                                                RadiusTopRight: =nfRadius.Md
+                                                Size: =nfType.Body
+                                                Text: ="Workflows"
+                                                Visible: |-
+                                                  =CountRows(nfMyTemplateCategories) > 0
+                                                  // THE WHOLE SECTION IS HIDDEN FROM NON ADMINS rather than shown
+                                                  // disabled. A disabled tab invites someone to ask why they cannot
+                                                  // use it; an absent one asks nothing. Everybody sees the other two.
+                                    - conSetPanel:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          BorderColor: =nfColor.Border
+                                          BorderThickness: =nfSize.Border
+                                          DropShadow: =DropShadow.None
+                                          Fill: =nfColor.Surface
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Md
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          PaddingBottom: =nfSpace.Xl
+                                          PaddingLeft: =nfSpace.Xl
+                                          PaddingRight: =nfSpace.Xl
+                                          PaddingTop: =nfSpace.Xl
+                                          RadiusBottomLeft: =nfRadius.Lg
+                                          RadiusBottomRight: =nfRadius.Lg
+                                          RadiusTopLeft: =nfRadius.Lg
+                                          RadiusTopRight: =nfRadius.Lg
+                                        Children:
+                                          - conSetNotif:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                FillPortions: =0
+                                                Height: |-
+                                                  =lblSetNotifHead.Height
+                                                  + conSetRowTaskAssigned.Height
+                                                  + conSetRowTaskCompleted.Height
+                                                  + conSetRowComments.Height
+                                                  + conSetRowDueReminders.Height
+                                                  + conSetRowWeeklySummary.Height
+                                                  + 4 * nfSize.Border
+                                                  + 9 * Self.LayoutGap
+                                                  // SUMS THE ROWS RATHER THAN ASSUMING THEY ARE ALL
+                                                  // nfSize.RowLg. They are not any more: each row now
+                                                  // grows with its own description, so a hardcoded
+                                                  // 5 * RowLg clipped the panel by however much the
+                                                  // longest description overran.
+                                                  //
+                                                  // The four borders are the dividers between the five
+                                                  // rows, and the nine gaps are the head plus five rows
+                                                  // plus four dividers, which is ten children.
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutGap: =nfSpace.Md
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Visible: =Coalesce(locSetSection, "notifications") = "notifications"
+                                              Children:
+                                                - lblSetNotifHead:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextStrong
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingTop: =0
+                                                      Size: =nfType.SectionHead
+                                                      Text: ="Notification Preferences"
+                                                      Width: =Parent.Width
+                                                      Wrap: =false
+                                                - conSetRowTaskAssigned:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =Max(conSetTextTaskAssigned.Height, nfSize.Row)
+                                                        // GROWS WITH ITS TEXT rather than pinning nfSize.RowLg. A
+                                                        // two line description plus a label is about 59px against a
+                                                        // 56px row, so the fixed height clipped the descender of the
+                                                        // second line. The floor keeps a one line row from collapsing
+                                                        // under the toggle beside it.
+                                                      LayoutAlignItems: =LayoutAlignItems.Center
+                                                      LayoutDirection: =LayoutDirection.Horizontal
+                                                      LayoutGap: =nfSpace.Md
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - conSetTextTaskAssigned:
+                                                          Control: GroupContainer@1.5.0
+                                                          Variant: AutoLayout
+                                                          Properties:
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            DropShadow: =DropShadow.None
+                                                            Fill: =nfColor.Transparent
+                                                            Height: |-
+                                                              =lblSetLblTaskAssigned.Height
+                                                              + lblSetDscTaskAssigned.Height
+                                                              + Self.LayoutGap
+                                                              // WITHOUT AN EXPLICIT Height THIS RENDERS AT 200px.
+                                                              // A container that states no height gets the silent
+                                                              // platform default, and 200 is nothing anybody chose.
+                                                              // Studio had already materialised exactly that.
+                                                              //
+                                                              // Summing the children is only correct because both
+                                                              // labels now carry AutoHeight, so .Height reports the
+                                                              // box that actually rendered rather than a number
+                                                              // somebody assigned and the text then overflowed.
+                                                            LayoutDirection: =LayoutDirection.Vertical
+                                                            LayoutGap: =nfSpace.Xxs
+                                                            LayoutJustifyContent: =LayoutJustifyContent.Center
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                          Children:
+                                                            - lblSetLblTaskAssigned:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextStrong
+                                                                  FontWeight: =FontWeight.Semibold
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Body
+                                                                  Text: ="Task Assignments"
+                                                                  Width: =Parent.Width
+                                                                  Wrap: =false
+                                                            - lblSetDscTaskAssigned:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextMuted
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Small
+                                                                  Text: ="When a task is assigned to you"
+                                                                  Width: =Parent.Width
+                                                      - tglSetTaskAssigned:
+                                                          Control: ModernToggle@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: ="Task Assignments"
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            BasePaletteColor: =nfColor.Primary
+                                                            Color: =nfColor.TextBody
+                                                            Default: =Coalesce(First(colUserPrefs).taskAssigned, false)
+                                                            FontWeight: =""
+                                                            Height: =nfSize.RowSm
+                                                            LabelPosition: ="After"
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            OnCheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { taskAssigned: true });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            OnUncheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { taskAssigned: false });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            Size: =nfType.Body
+                                                            Width: =nfSize.RowLg
+                                                - conSetDivTaskAssigned:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Divider
+                                                      FillPortions: =0
+                                                      Height: =nfSize.Border
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                - conSetRowTaskCompleted:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =Max(conSetTextTaskCompleted.Height, nfSize.Row)
+                                                        // GROWS WITH ITS TEXT rather than pinning nfSize.RowLg. A
+                                                        // two line description plus a label is about 59px against a
+                                                        // 56px row, so the fixed height clipped the descender of the
+                                                        // second line. The floor keeps a one line row from collapsing
+                                                        // under the toggle beside it.
+                                                      LayoutAlignItems: =LayoutAlignItems.Center
+                                                      LayoutDirection: =LayoutDirection.Horizontal
+                                                      LayoutGap: =nfSpace.Md
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - conSetTextTaskCompleted:
+                                                          Control: GroupContainer@1.5.0
+                                                          Variant: AutoLayout
+                                                          Properties:
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            DropShadow: =DropShadow.None
+                                                            Fill: =nfColor.Transparent
+                                                            Height: |-
+                                                              =lblSetLblTaskCompleted.Height
+                                                              + lblSetDscTaskCompleted.Height
+                                                              + Self.LayoutGap
+                                                              // WITHOUT AN EXPLICIT Height THIS RENDERS AT 200px.
+                                                              // A container that states no height gets the silent
+                                                              // platform default, and 200 is nothing anybody chose.
+                                                              // Studio had already materialised exactly that.
+                                                              //
+                                                              // Summing the children is only correct because both
+                                                              // labels now carry AutoHeight, so .Height reports the
+                                                              // box that actually rendered rather than a number
+                                                              // somebody assigned and the text then overflowed.
+                                                            LayoutDirection: =LayoutDirection.Vertical
+                                                            LayoutGap: =nfSpace.Xxs
+                                                            LayoutJustifyContent: =LayoutJustifyContent.Center
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                          Children:
+                                                            - lblSetLblTaskCompleted:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextStrong
+                                                                  FontWeight: =FontWeight.Semibold
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Body
+                                                                  Text: ="Task Completions"
+                                                                  Width: =Parent.Width
+                                                                  Wrap: =false
+                                                            - lblSetDscTaskCompleted:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextMuted
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Small
+                                                                  Text: ="When tasks in your requests are completed"
+                                                                  Width: =Parent.Width
+                                                      - tglSetTaskCompleted:
+                                                          Control: ModernToggle@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: ="Task Completions"
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            BasePaletteColor: =nfColor.Primary
+                                                            Color: =nfColor.TextBody
+                                                            Default: =Coalesce(First(colUserPrefs).taskCompleted, false)
+                                                            FontWeight: =""
+                                                            Height: =nfSize.RowSm
+                                                            LabelPosition: ="After"
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            OnCheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { taskCompleted: true });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            OnUncheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { taskCompleted: false });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            Size: =nfType.Body
+                                                            Width: =nfSize.RowLg
+                                                - conSetDivTaskCompleted:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Divider
+                                                      FillPortions: =0
+                                                      Height: =nfSize.Border
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                - conSetRowComments:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =Max(conSetTextComments.Height, nfSize.Row)
+                                                        // GROWS WITH ITS TEXT rather than pinning nfSize.RowLg. A
+                                                        // two line description plus a label is about 59px against a
+                                                        // 56px row, so the fixed height clipped the descender of the
+                                                        // second line. The floor keeps a one line row from collapsing
+                                                        // under the toggle beside it.
+                                                      LayoutAlignItems: =LayoutAlignItems.Center
+                                                      LayoutDirection: =LayoutDirection.Horizontal
+                                                      LayoutGap: =nfSpace.Md
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - conSetTextComments:
+                                                          Control: GroupContainer@1.5.0
+                                                          Variant: AutoLayout
+                                                          Properties:
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            DropShadow: =DropShadow.None
+                                                            Fill: =nfColor.Transparent
+                                                            Height: |-
+                                                              =lblSetLblComments.Height
+                                                              + lblSetDscComments.Height
+                                                              + Self.LayoutGap
+                                                              // WITHOUT AN EXPLICIT Height THIS RENDERS AT 200px.
+                                                              // A container that states no height gets the silent
+                                                              // platform default, and 200 is nothing anybody chose.
+                                                              // Studio had already materialised exactly that.
+                                                              //
+                                                              // Summing the children is only correct because both
+                                                              // labels now carry AutoHeight, so .Height reports the
+                                                              // box that actually rendered rather than a number
+                                                              // somebody assigned and the text then overflowed.
+                                                            LayoutDirection: =LayoutDirection.Vertical
+                                                            LayoutGap: =nfSpace.Xxs
+                                                            LayoutJustifyContent: =LayoutJustifyContent.Center
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                          Children:
+                                                            - lblSetLblComments:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextStrong
+                                                                  FontWeight: =FontWeight.Semibold
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Body
+                                                                  Text: ="Comments and Mentions"
+                                                                  Width: =Parent.Width
+                                                                  Wrap: =false
+                                                            - lblSetDscComments:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextMuted
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Small
+                                                                  Text: ="When someone comments or mentions you"
+                                                                  Width: =Parent.Width
+                                                      - tglSetComments:
+                                                          Control: ModernToggle@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: ="Comments and Mentions"
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            BasePaletteColor: =nfColor.Primary
+                                                            Color: =nfColor.TextBody
+                                                            Default: =Coalesce(First(colUserPrefs).comments, false)
+                                                            FontWeight: =""
+                                                            Height: =nfSize.RowSm
+                                                            LabelPosition: ="After"
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            OnCheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { comments: true });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            OnUncheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { comments: false });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            Size: =nfType.Body
+                                                            Width: =nfSize.RowLg
+                                                - conSetDivComments:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Divider
+                                                      FillPortions: =0
+                                                      Height: =nfSize.Border
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                - conSetRowDueReminders:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =Max(conSetTextDueReminders.Height, nfSize.Row)
+                                                        // GROWS WITH ITS TEXT rather than pinning nfSize.RowLg. A
+                                                        // two line description plus a label is about 59px against a
+                                                        // 56px row, so the fixed height clipped the descender of the
+                                                        // second line. The floor keeps a one line row from collapsing
+                                                        // under the toggle beside it.
+                                                      LayoutAlignItems: =LayoutAlignItems.Center
+                                                      LayoutDirection: =LayoutDirection.Horizontal
+                                                      LayoutGap: =nfSpace.Md
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - conSetTextDueReminders:
+                                                          Control: GroupContainer@1.5.0
+                                                          Variant: AutoLayout
+                                                          Properties:
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            DropShadow: =DropShadow.None
+                                                            Fill: =nfColor.Transparent
+                                                            Height: |-
+                                                              =lblSetLblDueReminders.Height
+                                                              + lblSetDscDueReminders.Height
+                                                              + Self.LayoutGap
+                                                              // WITHOUT AN EXPLICIT Height THIS RENDERS AT 200px.
+                                                              // A container that states no height gets the silent
+                                                              // platform default, and 200 is nothing anybody chose.
+                                                              // Studio had already materialised exactly that.
+                                                              //
+                                                              // Summing the children is only correct because both
+                                                              // labels now carry AutoHeight, so .Height reports the
+                                                              // box that actually rendered rather than a number
+                                                              // somebody assigned and the text then overflowed.
+                                                            LayoutDirection: =LayoutDirection.Vertical
+                                                            LayoutGap: =nfSpace.Xxs
+                                                            LayoutJustifyContent: =LayoutJustifyContent.Center
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                          Children:
+                                                            - lblSetLblDueReminders:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextStrong
+                                                                  FontWeight: =FontWeight.Semibold
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Body
+                                                                  Text: ="Due Date Reminders"
+                                                                  Width: =Parent.Width
+                                                                  Wrap: =false
+                                                            - lblSetDscDueReminders:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextMuted
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Small
+                                                                  Text: ="Upcoming due date reminders"
+                                                                  Width: =Parent.Width
+                                                      - tglSetDueReminders:
+                                                          Control: ModernToggle@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: ="Due Date Reminders"
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            BasePaletteColor: =nfColor.Primary
+                                                            Color: =nfColor.TextBody
+                                                            Default: =Coalesce(First(colUserPrefs).dueReminders, false)
+                                                            FontWeight: =""
+                                                            Height: =nfSize.RowSm
+                                                            LabelPosition: ="After"
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            OnCheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { dueReminders: true });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            OnUncheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { dueReminders: false });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            Size: =nfType.Body
+                                                            Width: =nfSize.RowLg
+                                                - conSetDivDueReminders:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Divider
+                                                      FillPortions: =0
+                                                      Height: =nfSize.Border
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                - conSetRowWeeklySummary:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: |-
+                                                        =Max(conSetTextWeeklySummary.Height, nfSize.Row)
+                                                        // GROWS WITH ITS TEXT rather than pinning nfSize.RowLg. A
+                                                        // two line description plus a label is about 59px against a
+                                                        // 56px row, so the fixed height clipped the descender of the
+                                                        // second line. The floor keeps a one line row from collapsing
+                                                        // under the toggle beside it.
+                                                      LayoutAlignItems: =LayoutAlignItems.Center
+                                                      LayoutDirection: =LayoutDirection.Horizontal
+                                                      LayoutGap: =nfSpace.Md
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - conSetTextWeeklySummary:
+                                                          Control: GroupContainer@1.5.0
+                                                          Variant: AutoLayout
+                                                          Properties:
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            DropShadow: =DropShadow.None
+                                                            Fill: =nfColor.Transparent
+                                                            Height: |-
+                                                              =lblSetLblWeeklySummary.Height
+                                                              + lblSetDscWeeklySummary.Height
+                                                              + Self.LayoutGap
+                                                              // WITHOUT AN EXPLICIT Height THIS RENDERS AT 200px.
+                                                              // A container that states no height gets the silent
+                                                              // platform default, and 200 is nothing anybody chose.
+                                                              // Studio had already materialised exactly that.
+                                                              //
+                                                              // Summing the children is only correct because both
+                                                              // labels now carry AutoHeight, so .Height reports the
+                                                              // box that actually rendered rather than a number
+                                                              // somebody assigned and the text then overflowed.
+                                                            LayoutDirection: =LayoutDirection.Vertical
+                                                            LayoutGap: =nfSpace.Xxs
+                                                            LayoutJustifyContent: =LayoutJustifyContent.Center
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                          Children:
+                                                            - lblSetLblWeeklySummary:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextStrong
+                                                                  FontWeight: =FontWeight.Semibold
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Body
+                                                                  Text: ="Weekly Summary"
+                                                                  Width: =Parent.Width
+                                                                  Wrap: =false
+                                                            - lblSetDscWeeklySummary:
+                                                                Control: ModernText@1.0.0
+                                                                Properties:
+                                                                  AccessibleLabel: =Self.Text
+                                                                  AlignInContainer: =AlignInContainer.Start
+                                                                  AutoHeight: =true
+                                                                  Color: =nfColor.TextMuted
+                                                                  LayoutMinHeight: =0
+                                                                  LayoutMinWidth: =0
+                                                                  PaddingBottom: =0
+                                                                  PaddingTop: =0
+                                                                  Size: =nfType.Small
+                                                                  Text: ="Weekly summary of your requests"
+                                                                  Width: =Parent.Width
+                                                      - tglSetWeeklySummary:
+                                                          Control: ModernToggle@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: ="Weekly Summary"
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            BasePaletteColor: =nfColor.Primary
+                                                            Color: =nfColor.TextBody
+                                                            Default: =Coalesce(First(colUserPrefs).weeklySummary, false)
+                                                            FontWeight: =""
+                                                            Height: =nfSize.RowSm
+                                                            LabelPosition: ="After"
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            OnCheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { weeklySummary: true });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            OnUncheck: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { weeklySummary: false });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            Size: =nfType.Body
+                                                            Width: =nfSize.RowLg
+                                          - conSetAppear:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                FillPortions: =0
+                                                Height: |-
+                                                  =lblSetAppearHead.Height
+                                                  + lblSetThemeLabel.Height
+                                                  + conSetThemeRow.Height
+                                                  + lblSetViewLabel.Height
+                                                  + drpSetDefaultView.Height
+                                                  + lblSetAbout.Height
+                                                  + btnSetReset.Height
+                                                  + 6 * Self.LayoutGap
+                                                  // SUMS ITS CHILDREN for the same reason. The two
+                                                  // labels are AutoHeight now, so 2 * nfType.SectionHead
+                                                  // was measuring a font size rather than a line box.
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutGap: =nfSpace.Md
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Visible: =Coalesce(locSetSection, "notifications") = "appearance"
+                                              Children:
+                                                - lblSetAppearHead:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextStrong
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingTop: =0
+                                                      Size: =nfType.SectionHead
+                                                      Text: ="Appearance"
+                                                      Width: =Parent.Width
+                                                      Wrap: =false
+                                                - lblSetThemeLabel:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextBody
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingTop: =0
+                                                      Size: =nfType.Small
+                                                      Text: ="Theme"
+                                                      Width: =Parent.Width
+                                                      Wrap: =false
+                                                - conSetThemeRow:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =nfSize.Row
+                                                      LayoutAlignItems: =LayoutAlignItems.Center
+                                                      LayoutDirection: =LayoutDirection.Horizontal
+                                                      LayoutGap: =nfSpace.Md
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Width: =Parent.Width
+                                                    Children:
+                                                      - btnSetThemeLight:
+                                                          Control: ModernButton@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            Appearance: |-
+                                                              =If(
+                                                                  nfThemeName = "Light",
+                                                                  ButtonAppearance.Primary,
+                                                                  ButtonAppearance.Outline
+                                                              )
+                                                            FontWeight: =FontWeight.Semibold
+                                                            Height: =nfSize.Row
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            OnSelect: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { ThemeName: "Light" });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            RadiusBottomLeft: =nfRadius.Md
+                                                            RadiusBottomRight: =nfRadius.Md
+                                                            RadiusTopLeft: =nfRadius.Md
+                                                            RadiusTopRight: =nfRadius.Md
+                                                            Size: =nfType.Body
+                                                            Text: ="Light"
+                                                            Width: =120
+                                                      - btnSetThemeDark:
+                                                          Control: ModernButton@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Center
+                                                            Appearance: |-
+                                                              =If(
+                                                                  nfThemeName = "Dark",
+                                                                  ButtonAppearance.Primary,
+                                                                  ButtonAppearance.Outline
+                                                              )
+                                                            FontWeight: =FontWeight.Semibold
+                                                            Height: =nfSize.Row
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            OnSelect: |-
+                                                              =Patch(colUserPrefs, First(colUserPrefs), { ThemeName: "Dark" });
+                                                              ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                            RadiusBottomLeft: =nfRadius.Md
+                                                            RadiusBottomRight: =nfRadius.Md
+                                                            RadiusTopLeft: =nfRadius.Md
+                                                            RadiusTopRight: =nfRadius.Md
+                                                            Size: =nfType.Body
+                                                            Text: ="Dark"
+                                                            Width: =120
+                                                - lblSetViewLabel:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextBody
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingTop: =0
+                                                      Size: =nfType.Small
+                                                      Text: ="Default view"
+                                                      Width: =Parent.Width
+                                                      Wrap: =false
+                                                - lblSetAbout:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextMuted
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =0
+                                                      PaddingTop: =0
+                                                      Size: =nfType.Small
+                                                      Text: |-
+                                                        =nfAppName & " " & nfAppVersion & " by " & nfCompanyName & ". Demo data is held in memory and resets when the app is reopened. The full version adds Power Automate routing and SharePoint storage: " & nfUpgradeUrl
+                                                      Width: =Parent.Width
+                                                - drpSetDefaultView:
+                                                    Control: ModernDropdown@1.0.2
+                                                    Properties:
+                                                      AccessibleLabel: ="Default view"
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      Appearance: =Appearance.Outline
+                                                      BorderColor: =nfColor.Border
+                                                      Color: =nfColor.TextBody
+                                                      Default: |-
+                                                        ={ Value: Coalesce(First(colUserPrefs).DefaultView, "Home") }
+                                                      Fill: =nfColor.Surface
+                                                      Height: =nfSize.Row
+                                                      ItemDisplayText: =ThisItem.Value
+                                                      Items: |-
+                                                        =Table({ Value: "Home" }, { Value: "My Tasks" }, { Value: "All Requests" })
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      OnChange: |-
+                                                        =Patch(colUserPrefs, First(colUserPrefs), { DefaultView: Self.Selected.Value });
+                                                        ClearCollect(colUserPrefs, Filter(colUserPrefs, UserEmail = Lower(nfUserEmail)))
+                                                      RadiusBottomLeft: =nfRadius.Md
+                                                      RadiusBottomRight: =nfRadius.Md
+                                                      RadiusTopLeft: =nfRadius.Md
+                                                      RadiusTopRight: =nfRadius.Md
+                                                      Size: =nfType.Body
+                                                      Width: =If(nfIsDesktop, 320, Parent.Width)
+                                                - btnSetReset:
+                                                    Control: ModernButton@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: ="Edit this request type's workflow"
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      Appearance: =ButtonAppearance.Secondary
+                                                      Color: =nfColor.TextBody
+                                                      Height: =nfSize.Row
+                                                      Layout: =ButtonLayout.TextOnly
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      OnSelect: |-
+                                                        =If(
+                                                            locSetResetArmed,
+                                                            ClearCollect(colRequests,    colReqPristine);
+                                                            ClearCollect(colPhases,      colPhasePristine);
+                                                            ClearCollect(colAssignments, colAsgPristine);
+                                                            ClearCollect(colAudit,       colAuditPristine);
+                                                            ClearCollect(colTemplates,   colTplPristine);
+                                                            UpdateContext({ locSetResetArmed: false });
+                                                            Notify("Demo data reset.", NotificationType.Success, 3000);
+                                                            Navigate(scrHome, ScreenTransition.None),
+                                                            UpdateContext({ locSetResetArmed: true })
+                                                        )
+                                                      RadiusBottomLeft: =nfRadius.Md
+                                                      RadiusBottomRight: =nfRadius.Md
+                                                      RadiusTopLeft: =nfRadius.Md
+                                                      RadiusTopRight: =nfRadius.Md
+                                                      Size: =nfType.Small
+                                                      Text: |-
+                                                        =If(locSetResetArmed, "Tap again to confirm: this discards this session", "Reset demo data")
+                                                      Tooltip: ="Restore the seeded demo data so an approval can be run through again"
+                                                      Width: =If(locSetResetArmed, 320, 180)
+                                          - conSetWorkflow:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                FillPortions: =0
+                                                Height: |-
+                                                  =lblSetWfHead.Height
+                                                  + lblSetWfSub.Height
+                                                  + lblSetWfPick.Height
+                                                  + nfSize.Row
+                                                  + lblSetWfCurrent.Height
+                                                  + nfSize.Row
+                                                  + lblSetWfSaved.Height
+                                                  + 6 * Self.LayoutGap
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutGap: =nfSpace.Md
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Visible: |-
+                                                  =Coalesce(locSetSection, "notifications") = "workflow"
+                                                  && CountRows(nfMyTemplateCategories) > 0
+                                              Children:
+                                                - lblSetWfHead:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextStrong
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.SectionHead
+                                                      Text: ="Request type workflows"
+                                                      Wrap: =false
+                                                - lblSetWfSub:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextMuted
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Small
+                                                      Text: |-
+                                                        ="Editing a blueprint changes what NEW requests of this type start from. Requests already running are untouched, because their phases were copied when they were created."
+                                                        // SAID OUT LOUD BECAUSE IT IS THE FIRST THING ANYONE ASKS.
+                                                        // Phases and assignments are cloned into RequestPhases and
+                                                        // RequestAssignments when a template is applied, so a
+                                                        // blueprint edit is not retroactive. Without this line an
+                                                        // admin has to guess whether they are about to disturb live
+                                                        // work, and the safe guess is to not touch it.
+                                                      VerticalAlign: =VerticalAlign.Top
+                                                - lblSetWfPick:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextBody
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Caption
+                                                      Text: ="Request type"
+                                                      Wrap: =false
+                                                - drpSetWfCategory:
+                                                    Control: ModernDropdown@1.0.2
+                                                    Properties:
+                                                      AccessibleLabel: ="Request type to edit the workflow for"
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      Appearance: =Appearance.Outline
+                                                      Color: =nfColor.TextStrong
+                                                      Default: =First(nfMyTemplateCategories)
+                                                      Height: =nfSize.Row
+                                                      ItemDisplayText: =ThisItem.Title
+                                                      Items: =nfMyTemplateCategories
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      OnChange: |-
+                                                        =UpdateContext({ locSetWfSaved: false })
+                                                        // THE SAVED CONFIRMATION IS PER TEMPLATE. Leaving it up after
+                                                        // switching type would report a save against the wrong one.
+                                                      Size: =nfType.Body
+                                                - lblSetWfCurrent:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextMuted
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Small
+                                                      Text: |-
+                                                        =With(
+                                                            { _t: LookUp(colTemplates, TemplateKey = drpSetWfCategory.Selected.DefaultTemplateKey) },
+                                                            If(
+                                                                IsBlank(_t.TemplateKey),
+                                                                "This type points at a template that does not exist. Nothing to edit until that is fixed in the Config list.",
+                                                                _t.Title
+                                                                & "   -   "
+                                                                & CountRows(Table(ParseJSON(_t.DefinitionJson).phases))
+                                                                & " phases"
+                                                            )
+                                                        )
+                                                        // TESTED ON TemplateKey, NOT ON Title, for the same reason the
+                                                        // category tiles are: a template that exists with a blank name
+                                                        // is a different defect from one that does not exist, and
+                                                        // Coalesce on Title reports the first as the second.
+                                                      VerticalAlign: =VerticalAlign.Top
+                                                - btnSetWfEdit:
+                                                    Control: ModernButton@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: ="Edit this request type's workflow"
+                                                      AlignInContainer: =AlignInContainer.Start
+                                                      Color: =nfColor.TextOnPrimary
+                                                      DisplayMode: |-
+                                                        =If(
+                                                            IsBlank(LookUp(colTemplates, TemplateKey = drpSetWfCategory.Selected.DefaultTemplateKey).TemplateKey),
+                                                            DisplayMode.Disabled,
+                                                            DisplayMode.Edit
+                                                        )
+                                                      Height: =nfSize.Row
+                                                      Layout: =ButtonLayout.TextOnly
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      OnSelect: |-
+                                                        =UpdateContext({ locSetWfSaved: false });
+                                                        Set(_cmpWfSeedKey, "");
+                                                        cmpSetEditWorkflow.LoadDraft();
+                                                        cmpSetEditWorkflow.LoadTemplate();
+                                                        UpdateContext({ locSetWfOpen: true })
+                                                        // LoadDraft THEN LoadTemplate, the same pair and the same
+                                                        // order the New Request wizard uses. RequestKey is "" on this
+                                                        // instance too, so LoadDraft clears the draft and
+                                                        // LoadTemplate fills it from SeedTemplateKey.
+                                                        //
+                                                        // NO SNAPSHOT NEEDED HERE, unlike the wizard. Cancel clears
+                                                        // the draft and that is CORRECT on this screen: the blueprint
+                                                        // still exists in SharePoint untouched, and the next open
+                                                        // reloads it. The wizard needed a snapshot precisely because
+                                                        // it had nothing to reload from.
+                                                      RadiusBottomLeft: =nfRadius.Md
+                                                      RadiusBottomRight: =nfRadius.Md
+                                                      RadiusTopLeft: =nfRadius.Md
+                                                      RadiusTopRight: =nfRadius.Md
+                                                      Size: =nfType.Small
+                                                      Text: ="Edit workflow"
+                                                      Tooltip: |-
+                                                        =If(
+                                                            IsBlank(LookUp(colTemplates, TemplateKey = drpSetWfCategory.Selected.DefaultTemplateKey).TemplateKey),
+                                                            "This request type points at no template",
+                                                            "Edit the phases and roles new requests of this type start from"
+                                                        )
+                                                      Width: =168
+                                                - lblSetWfSaved:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.SuccessText
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Small
+                                                      Text: ="Saved. New requests of this type will use the updated workflow."
+                                                      VerticalAlign: =VerticalAlign.Top
+                                                      Visible: =Coalesce(locSetWfSaved, false)
+                                          - conSetWfNone:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                FillPortions: =0
+                                                Height: =lblSetWfNone.Height
+                                                LayoutDirection: =LayoutDirection.Vertical
+                                                LayoutGap: =nfSpace.Md
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Visible: |-
+                                                  =Coalesce(locSetSection, "notifications") = "workflow"
+                                                  && CountRows(nfMyTemplateCategories) = 0
+                                                  // UNREACHABLE BY THE NAV, WHICH IS THE POINT. The Workflows button
+                                                  // is hidden for a non admin, so nobody navigates here. It exists
+                                                  // for the case where somebody's Admins entry is removed while they
+                                                  // are standing on the section, which would otherwise leave a blank
+                                                  // panel with no explanation.
+                                              Children:
+                                                - lblSetWfNone:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Stretch
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextMuted
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Body
+                                                      Text: ="You do not administer any request type, so there is no workflow here to edit."
+                                                      VerticalAlign: =VerticalAlign.Top
+                        - conSetBottomBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Surface
+                              FillPortions: =0
+                              Height: =nfHeights.bottomNav + nfSpace.Lg
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              PaddingBottom: =nfSpace.Sm
+                              PaddingTop: =nfSpace.Sm
+                              Visible: =!nfIsDesktop
+                            Children:
+                              - cmpSetBottomNav:
+                                  Control: CanvasComponent
+                                  ComponentName: cmpBottomNavigation
+                                  Properties:
+                                    ActiveColor: =nfColor.Primary
+                                    ActiveColorHex: =If(nfIsDark, "3B82F6", "2563EB")
+                                    ActiveIndicator: ="bar"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    BadgeColor: =nfColor.DangerSolid
+                                    FillPortions: =1
+                                    InactiveColorHex: =If(nfIsDark, "94A3B8", "64748B")
+                                    Items: |-
+                                      =ForAll(
+                                          nfNavMobile As m,
+                                          {
+                                              Icon: m.Icon,
+                                              Label: m.Label,
+                                              Badge: If(
+                                                  m.ID = 2,
+                                                  nfMyOpenCount,
+                                                  0
+                                              )
+                                          }
+                                      )
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =Set(
+                                          _cmpNavSelID,
+                                          LookUp(nfNavMobile, Idx = Self.SelectedItemIndex).ID
+                                      );
+                                      nfRoute(_cmpNavSelID)
+                                    SelectedIndex: =Coalesce(LookUp(nfNavMobile, ID = _cmpNavSelID).Idx, 3)
+                                    ShowLabels: ="always"
+                                    Theme: =nfThemeName
+      - conSetNavHost:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Sidebar
+            Height: =Parent.Height
+            Visible: =nfIsDesktop
+            Width: =cmpSetSidebar.Width
+          Children:
+            - cmpSetSidebar:
+                Control: CanvasComponent
+                ComponentName: cmpSidebar
+                Properties:
+                  AccentColor: =nfColor.Primary
+                  AppLogo: =Blank()
+                  AppName: ="DocRouter"
+                  AppNameAccent: =""
+                  Expanded: =true
+                  Height: =Parent.Height
+                  Icons: =nfSidebarIcons
+                  Items: |-
+                    =Table(
+                        { ID: 1,  Title: "Home",         Icon: "Home",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 2,  Title: "My Tasks",     Icon: "CheckSquare",     Letter: "",
+                          Badge: nfMyOpenCount,
+                          BadgeColor: nfColor.DangerSolid, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 3,  Title: "All Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 7,  Title: "My Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: 3, Visible: true },
+                        { ID: 4,  Title: "Reports",      Icon: "Chart",    Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 90, Title: "",             Icon: "",         Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: true,  ParentID: -1, Visible: true },
+                        { ID: 5,  Title: "Settings",     Icon: "Settings", Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 6,  Title: "Help",         Icon: "Help",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true }
+                    )
+                  OnFooterSettings: =false
+                  OnHelp: =false
+                  OnNavSelect: =nfRoute(Self.SelectedID)
+                  OnThemeToggle: |-
+                    =Patch(
+                        colUserPrefs,
+                        First(colUserPrefs),
+                        { ThemeName: If(nfIsDark, "Light", "Dark") }
+                    )
+                  OnToggle: =false
+                  ShowFooterMenu: =true
+                  ShowHeader: =true
+                  ShowSearch: =false
+                  ShowToggle: =true
+                  ShowUser: =true
+                  Theme: =If(nfIsDark, "Light", "Dark")
+                  Width: =If(_cmpNavIsExpanded, 260, 64)
+      - cmpSetFab:
+          Control: CanvasComponent
+          ComponentName: cmpFloatingActionButton
+          Properties:
+            Color: =nfColor.Primary
+            Disabled: =false
+            Height: |-
+              =With(
+                  {
+                      _fabSize: Switch(
+                          Self.Size,
+                          "small", 40,
+                          "regular", 56,
+                          "large", 72,
+                          56
+                      )
+                  },
+                  If(
+                      _fabOpen && CountRows(Self.SpeedDialItems) > 0,
+                      _fabSize + 12 + CountRows(Self.SpeedDialItems) * Self.ItemSize,
+                      _fabSize
+                  )
+              )
+            Icon: ="Plus"
+            IconColor: |-
+              ="#FFFFFF"
+              // WITH the hash on this component: it wraps the whole SVG in
+              // EncodeUrl and escapes the hash itself.
+            ItemSize: =52
+            Label: ="New Request"
+            OnSelect: =Navigate(scrNewRequest, ScreenTransition.None)
+            OnSpeedDialSelect: =false
+            Size: ="regular"
+            SpeedDialItems: |-
+              =FirstN(
+                  Table({ Icon: "Plus", Label: "New Request", Color: nfColor.Primary }),
+                  0
+              )
+            Style: ="standard"
+            Theme: =nfThemeName
+            Visible: =!nfIsDesktop
+            Width: |-
+              =With(
+                  {
+                      _fabSize: Switch(
+                          Self.Size,
+                          "small", 40,
+                          "regular", 56,
+                          "large", 72,
+                          56
+                      ),
+                      _iconSize: Switch(
+                          Self.Size,
+                          "small", 20,
+                          "regular", 24,
+                          "large", 36,
+                          24
+                      ),
+                      _labelPad: Switch(
+                          Self.Size,
+                          "small", 20,
+                          "regular", 28,
+                          "large", 36,
+                          28
+                      ),
+                      _maxLabelChars: If(
+                          CountRows(Self.SpeedDialItems) > 0,
+                          Max(Self.SpeedDialItems, Len(Label)),
+                          0
+                      )
+                  },
+                  If(
+                      _fabOpen && CountRows(Self.SpeedDialItems) > 0,
+                      Min(
+                          Min(_maxLabelChars * 8 + 64, 240) + _labelPad + 20,
+                          App.Width
+                      ),
+                      If(
+                          Self.Style = "extended",
+                          16 + _iconSize + 8 + Min(Len(Self.Label) * 8, 220) + 20,
+                          _fabSize
+                      )
+                  )
+              )
+            X: =Parent.Width - Self.Width - nfSpace.Xl
+            Y: =Parent.Height - Self.Height - (nfSpace.Xxl + nfHeights.bottomNav)
+      - cmpSetEditWorkflow:
+          Control: CanvasComponent
+          ComponentName: cmpDetEditWorkflow
+          Properties:
+            Height: =App.Height
+            OnCancel: |-
+              =UpdateContext({ locSetWfOpen: false })
+              // NO RESTORE, UNLIKE THE NEW REQUEST WIZARD. Cancel clears the draft
+              // and that is correct here: the blueprint is still in SharePoint
+              // untouched and the next open reloads it from there. The wizard needs
+              // a snapshot because its draft is the only copy in existence.
+            OnSave: |-
+              =With(
+                  { _key: drpSetWfCategory.Selected.DefaultTemplateKey },
+                  Patch(
+                      colTemplates,
+                      LookUp(colTemplates, TemplateKey = _key),
+                      {
+                          DefinitionJson:
+                              "{""phases"":["
+                              & Concat(
+                                  Sort(Filter(colWfDraftPhases, !IsRemoved), PhaseOrder) As p,
+                                  "{""order"":" & p.PhaseOrder
+                                  & ",""name"":" & JSON(p.Title)
+                                  & ",""goal"":" & JSON(p.PhaseGoal)
+                                  & ",""assignments"":["
+                                  & Concat(
+                                      Sort(Filter(colWfDraftWorkers, PhaseClientId = p.ClientId, !IsRemoved), AssignmentOrder) As a,
+                                      "{""order"":" & a.AssignmentOrder
+                                      & ",""role"":" & JSON(a.AssigneeName)
+                                      & ",""deptCode"":" & JSON(a.DepartmentCode)
+                                      & ",""goal"":" & JSON(a.Goal)
+                                      & ",""required"":" & If(a.Required, "true", "false")
+                                      & ",""durationDays"":" & a.DurationDays
+                                      & ",""isGroup"":" & If(a.IsGroup, "true", "false")
+                                      & "}",
+                                      ","
+                                  )
+                                  & "]}",
+                                  ","
+                              )
+                              & "]}"
+                      }
+                  )
+              );
+              ClearCollect(
+                  colTemplates,
+                  ShowColumns(
+                      Filter(colTemplates, Active = true),
+                      TemplateKey, Title, Description, DefinitionJson
+                  )
+              );
+              UpdateContext({ locSetWfOpen: false, locSetWfSaved: true })
+              // THE DRAFT SERIALISED BACK TO THE BLUEPRINT SHAPE. The reverse of what
+              // btnWfLoadTemplate does on the way in, and the two have to stay in
+              // step: order, name, goal, assignments, and per assignment order, role,
+              // deptCode, goal, required, durationDays, isGroup.
+              //
+              // THE REQUEST ONLY COLUMNS ARE DROPPED, NOT BLANKED. ClientId and
+              // PhaseClientId are local join keys, PhaseKey and AssignmentKey belong
+              // to a real request, StatusKey and IsLocked describe progress a
+              // blueprint has not made. Writing any of them would put request state
+              // into a template and it would be cloned into every future request.
+              //
+              // role COMES FROM AssigneeName. On the way in the loader puts the
+              // template's role into AssigneeName because that is the draft column
+              // the editor renders; this puts it back. A template carries no email
+              // and none is written, which is why this instance sets
+              // RequireResolved false.
+              //
+              // JSON() ON EVERY TEXT VALUE, not manual quoting. It emits the
+              // surrounding quotes AND escapes quotes, backslashes and newlines. A
+              // goal containing an apostrophe or a quote mark is ordinary and would
+              // otherwise produce a payload that ParseJSON cannot read back, which
+              // fails at the NEXT load rather than at save.
+              //
+              // Numbers and booleans are concatenated bare and deliberately: JSON()
+              // on a number is fine but If(a.Required, "true", "false") is explicit
+              // about emitting a JSON literal rather than a quoted string, and
+              // Boolean(a.required) on the way back in expects the literal.
+              //
+              // Refresh BEFORE the re-read is not optional. Power Apps caches the
+              // source, so without it colTemplates comes back with the OLD payload
+              // and the phase count under the picker does not move.
+              //
+              // ShowColumns MIRRORS App.OnStart exactly. colTemplates is read by the
+              // New Request category tiles as well, and a different column set here
+              // would give the same collection two shapes depending on which screen
+              // last wrote it.
+            RequestKey: |-
+              =""
+              // NO REQUEST. This edits the blueprint new requests are cloned FROM,
+              // so LoadDraft starts from empty and LoadTemplate fills it.
+            RequireResolved: |-
+              =false
+              // A BLUEPRINT HAS ROLES, NOT PEOPLE. Every template assignment is
+              // unresolved by definition, so the default true would disable Save
+              // permanently on this screen.
+            SeedTemplateKey: =drpSetWfCategory.Selected.DefaultTemplateKey
+            Visible: =Coalesce(locSetWfOpen, false)
+            Width: =App.Width

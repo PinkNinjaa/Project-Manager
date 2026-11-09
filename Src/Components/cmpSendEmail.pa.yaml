@@ -1,0 +1,1461 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpSendEmail:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      Body:
+        PropertyKind: Output
+        DisplayName: Body
+        Description: The finished HTML body. Read this in OnSend and hand it to your mail action. Note is escaped before it goes in here.
+        DataType: Text
+      Busy:
+        PropertyKind: Input
+        DisplayName: Busy
+        Description: Set this true from the host while your send is running and false when it finishes. The dialog disables every control and shows a sending state. The component never sets it itself, because the component does not know when your send is done.
+        DataType: Boolean
+        Default: =false
+      CcAddresses:
+        PropertyKind: Output
+        DisplayName: CcAddresses
+        Description: Semicolon separated. Blank addresses dropped, duplicates collapsed, and anyone already on the To line removed. Blank when nobody was CCd.
+        DataType: Text
+      Config:
+        PropertyKind: Input
+        DisplayName: Config
+        Description: Look and behaviour. Theme is light or dark. Accent is a hex string, blank falls back to blue. MaxNote caps the note length. ShowPriority and ShowCc hide those sections entirely.
+        DataType: Record
+        Default: |-
+          ={
+              Theme: "light",
+              Accent: "",
+              Radius: 16,
+              Width: 480,
+              MaxNote: 2000,
+              ShowPriority: true,
+              ShowCc: true,
+              LockSubject: false
+          }
+      ContextHtml:
+        PropertyKind: Input
+        DisplayName: ContextHtml
+        Description: HTML placed above the note in the body. Use it for a record summary. Passed through untouched, so escape it yourself if it contains user typed text.
+        DataType: Text
+        Default: =""
+      ContextLine:
+        PropertyKind: Input
+        DisplayName: ContextLine
+        Description: One short line shown under the dialog title, so the sender can see what the mail is about. Not sent.
+        DataType: Text
+        Default: =""
+      DefaultSubject:
+        PropertyKind: Input
+        DisplayName: DefaultSubject
+        Description: Prefills the subject box. With Config.LockSubject true it becomes read only, which is what you want when a reply has to be traceable back to a record.
+        DataType: Text
+        Default: =""
+      Directory:
+        PropertyKind: Input
+        DisplayName: Directory
+        Description: The people the pickers offer. Needs DisplayName and Mail columns; JobTitle is shown when present. Ships with sample rows so the component works on paste with no setup. Swap in your own table or a live directory search.
+        DataType: Table
+        Default: |-
+          =Table(
+              {
+                  DisplayName: "Ava Chen",
+                  Mail: "ava.chen@example.com",
+                  JobTitle: "Operations Lead"
+              },
+              {
+                  DisplayName: "Marcus Hale",
+                  Mail: "marcus.hale@example.com",
+                  JobTitle: "Field Supervisor"
+              },
+              {
+                  DisplayName: "Priya Raman",
+                  Mail: "priya.raman@example.com",
+                  JobTitle: "Compliance Analyst"
+              },
+              {
+                  DisplayName: "Tom Okafor",
+                  Mail: "tom.okafor@example.com",
+                  JobTitle: "Project Manager"
+              },
+              {
+                  DisplayName: "Nina Sorensen",
+                  Mail: "nina.sorensen@example.com",
+                  JobTitle: "Safety Officer"
+              },
+              {
+                  DisplayName: "Luis Ortega",
+                  Mail: "luis.ortega@example.com",
+                  JobTitle: "Scheduler"
+              }
+          )
+      Note:
+        PropertyKind: Output
+        DisplayName: Note
+        Description: The plain text the sender typed, trimmed and unescaped. Log this rather than Body, which is markup.
+        DataType: Text
+      OnCancel:
+        PropertyKind: Event
+        DisplayName: OnCancel
+        Description: Dismissed without sending. Clear your open flag and call Reset() on this instance.
+        ReturnType: None
+        Default: =false
+      OnSend:
+        PropertyKind: Event
+        DisplayName: OnSend
+        Description: The sender pressed Send and every output is populated. Do the actual sending here. Set Busy true first, send, then set Busy false and Reset() this instance. The component deliberately owns no connector.
+        ReturnType: None
+        Default: =false
+      Priority:
+        PropertyKind: Output
+        DisplayName: Priority
+        Description: Urgent, FYI, Reminder, or blank. Only a label; deciding what Urgent means to your mail action is the host's job.
+        DataType: Text
+      RecipientCount:
+        PropertyKind: Output
+        DisplayName: RecipientCount
+        Description: How many usable addresses ended up on the To line, after blanks and duplicates were removed.
+        DataType: Number
+      SearchText:
+        PropertyKind: Output
+        DisplayName: SearchText
+        Description: What the sender has typed into whichever picker they are using, Cc taking precedence when it is not blank. Bind Directory to a formula that reads this to get a live directory search. The caller owns the query, so the caller owns the connector, the minimum character rule and the result cap.
+        DataType: Text
+      Signature:
+        PropertyKind: Input
+        DisplayName: Signature
+        Description: Plain text appended to the bottom of the body. Blank omits the line entirely.
+        DataType: Text
+        Default: =""
+      Subject:
+        PropertyKind: Output
+        DisplayName: Subject
+        Description: The subject as sent, priority prefix included.
+        DataType: Text
+      Title:
+        PropertyKind: Input
+        DisplayName: Title
+        Description: Dialog heading.
+        DataType: Text
+        Default: ="New message"
+      ToAddresses:
+        PropertyKind: Output
+        DisplayName: ToAddresses
+        Description: Semicolon separated. Blank addresses dropped and duplicates collapsed.
+        DataType: Text
+    Properties:
+      Body: =_cmpSeBody
+      CcAddresses: =_cmpSeCc
+      Height: =App.Height
+      Note: =_cmpSeNote
+      OnReset: |-
+        =Set(_cmpSePriority, "");
+        Set(_cmpSeShowCc, false);
+        Set(_cmpSeTouched, false);
+        Set(_cmpSeNote, "");
+        Set(_cmpSeSubject, cmpSendEmail.DefaultSubject);
+        Set(_cmpSeTo, "");
+        Set(_cmpSeCc, "");
+        Set(_cmpSeBody, "");
+        Set(_cmpSeCount, 0);
+        Reset(cmbSeTo);
+        Reset(cmbSeCc);
+        Reset(txtSeSubject);
+        Reset(txtSeNote)
+        // A COMPONENT HAS NO OnHidden, so nothing in here can notice it stopped
+        // being visible. The host calls Reset() on both close paths, and the
+        // usage notes say so in as many words.
+        //
+        // The note is cleared rather than preserved. A surviving draft is a good
+        // idea for a mail composed over several sittings and a bad one for a per
+        // record notification, where the previous record's note reappearing is a
+        // leak between records.
+        //
+        // _cmpSeTouched gates the validation message so a dialog does not open
+        // already showing an error about a field nobody has reached yet.
+      Priority: =_cmpSePriority
+      RecipientCount: =_cmpSeCount
+      SearchText: |-
+        =If(!IsBlank(cmbSeCc.SearchText), cmbSeCc.SearchText, cmbSeTo.SearchText)
+        // ONE OUTPUT FOR TWO PICKERS. Only one of them has focus at a time, so
+        // Cc winning when its box is not empty is enough to tell the host which
+        // search the results are for. Two separate outputs would be tidier and
+        // would double the API for a case nobody hits.
+      Subject: =_cmpSeSubject
+      ToAddresses: =_cmpSeTo
+      Width: =App.Width
+    Children:
+      - conSeScrim:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            Fill: =If(cmpSendEmail.Config.Theme = "dark", RGBA(2, 6, 23, 0.7), RGBA(15, 23, 42, 0.45))
+            Height: =Parent.Height
+            Width: =Parent.Width
+          Children:
+            - btnSeDismiss:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  BorderThickness: =0
+                  Color: =RGBA(0, 0, 0, 0)
+                  DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                  Fill: =RGBA(0, 0, 0, 0)
+                  FocusedBorderThickness: =2
+                  Height: =Parent.Height
+                  HoverColor: =RGBA(0, 0, 0, 0)
+                  HoverFill: =RGBA(0, 0, 0, 0)
+                  OnSelect: |-
+                    =cmpSendEmail.OnCancel()
+                    // CLICK OUTSIDE TO DISMISS. Disabled rather than guarded while
+                    // Busy, so a mis-click during a send cannot tear the dialog down
+                    // underneath an in flight request.
+                    //
+                    // Classic/Button@2.2.0 has NO AccessibleLabel property; Studio
+                    // rejects it with PA2108. TabIndex -1 is therefore the whole
+                    // mitigation: the scrim never takes keyboard focus, so it is
+                    // never the thing announced with nothing to say. Tooltip would
+                    // name it and is supported, but a tooltip on a control covering
+                    // the whole screen fires on every hover over the backdrop.
+                    // btnSeClose and btnSeCancel are the labelled escapes.
+                  PressedColor: =RGBA(0, 0, 0, 0)
+                  PressedFill: =RGBA(0, 0, 0, 0)
+                  Text: =""
+                  Tooltip: ="Dismiss"
+                  Width: =Parent.Width
+      - conSeCard:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =If(cmpSendEmail.Config.Theme = "dark", RGBA(51, 65, 85, 1), RGBA(226, 232, 240, 1))
+            BorderThickness: =1
+            DropShadow: =DropShadow.ExtraBold
+            Fill: =If(cmpSendEmail.Config.Theme = "dark", RGBA(30, 41, 59, 1), RGBA(255, 255, 255, 1))
+            Height: =conSeHeader.Height + conSeBody.Height + conSeFooter.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =cmpSendEmail.Config.Radius
+            RadiusBottomRight: =cmpSendEmail.Config.Radius
+            RadiusTopLeft: =cmpSendEmail.Config.Radius
+            RadiusTopRight: =cmpSendEmail.Config.Radius
+            Width: =Min(Parent.Width - 32, cmpSendEmail.Config.Width)
+            X: =(Parent.Width - Self.Width) / 2
+            Y: =Max(24, (Parent.Height - Self.Height) / 2)
+          Children:
+            - conSeHeader:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: |-
+                    =Max(
+                        48,
+                        lblSeTitle.Height
+                        + If(IsBlank(cmpSendEmail.ContextLine), 0, lblSeContext.Height)
+                        + 32
+                    )
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =16
+                  PaddingLeft: =20
+                  PaddingRight: =12
+                  PaddingTop: =16
+                Children:
+                  - conSeHeaderText:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =2
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblSeTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              Color: |-
+                                =If(
+                                    cmpSendEmail.Config.Theme = "dark",
+                                    RGBA(241, 245, 249, 1),
+                                    RGBA(15, 23, 42, 1)
+                                )
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =16
+                              TabIndex: =0
+                              Text: =If(cmpSendEmail.Busy, "Sending", cmpSendEmail.Title)
+                              Wrap: =false
+                        - lblSeContext:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              Color: |-
+                                =If(
+                                    cmpSendEmail.Config.Theme = "dark",
+                                    RGBA(148, 163, 184, 1),
+                                    RGBA(100, 116, 139, 1)
+                                )
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =11
+                              TabIndex: =0
+                              Text: =cmpSendEmail.ContextLine
+                              Visible: =!IsBlank(cmpSendEmail.ContextLine)
+                              Wrap: =false
+                  - btnSeClose:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        Color: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(148, 163, 184, 1),
+                              RGBA(100, 116, 139, 1)
+                          )
+                        DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                        Fill: =RGBA(0, 0, 0, 0)
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =32
+                        HoverColor: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(148, 163, 184, 1),
+                              RGBA(100, 116, 139, 1)
+                          )
+                        HoverFill: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(51, 65, 85, 1),
+                              RGBA(241, 245, 249, 1)
+                          )
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =cmpSendEmail.OnCancel()
+                        PressedColor: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(148, 163, 184, 1),
+                              RGBA(100, 116, 139, 1)
+                          )
+                        PressedFill: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(71, 85, 105, 1),
+                              RGBA(226, 232, 240, 1)
+                          )
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Size: =13
+                        Text: ="✕"
+                        Tooltip: ="Close without sending"
+                        Width: =32
+            - conSeBody:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: |-
+                    =Min(
+                        conSePriority.Height
+                        + lblSeToLabel.Height + 36 + lblSeToSummary.Height
+                        + conSeCcRow.Height
+                        + lblSeSubjLabel.Height + 36
+                        + lblSeNoteLabel.Height + 96 + lblSeCounter.Height
+                        + 9 * Self.LayoutGap + Self.PaddingTop + Self.PaddingBottom,
+                        App.Height - conSeHeader.Height - conSeFooter.Height - 96
+                    )
+                    // TEN CHILDREN, SO NINE GAPS. Hand counted, and the one thing here
+                    // that silently rots when a field is added. It fails SAFE: an
+                    // undercount only grows the scrollbar LayoutOverflowY already
+                    // provides, it never clips.
+                    //
+                    // App.Height, NOT Parent.Height. Parent is conSeCard, whose height
+                    // is the sum of this container and its siblings, so reading Parent
+                    // here is a circular reference that Studio will not catch for you.
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =6
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =4
+                  PaddingLeft: =20
+                  PaddingRight: =20
+                  PaddingTop: =5
+                Children:
+                  - conSePriority:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        FillPortions: =0
+                        Height: |-
+                          =If(
+                              cmpSendEmail.Config.ShowPriority,
+                              32 + Self.PaddingTop + Self.PaddingBottom,
+                              0
+                          )
+                          // THE PADDING IS ADDED BACK INTO THE HEIGHT rather than left
+                          // as a bare 32. The buttons inside are 32 tall, so a fixed 32
+                          // on a container that now pads 4 top and bottom clips them by
+                          // 8. Reading Self.PaddingTop keeps the two in step if the
+                          // padding is ever retuned.
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutGap: =6
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =4
+                        PaddingLeft: =4
+                        PaddingRight: =4
+                        PaddingTop: =4
+                        Visible: =cmpSendEmail.Config.ShowPriority
+                      Children:
+                        - btnSePriUrgent:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: |-
+                                =If(
+                                    _cmpSePriority = "Urgent",
+                                    RGBA(0, 0, 0, 0),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(51, 65, 85, 1),
+                                        RGBA(226, 232, 240, 1)
+                                    )
+                                )
+                              BorderThickness: =1
+                              Color: |-
+                                =If(
+                                    _cmpSePriority = "Urgent",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: |-
+                                =If(
+                                    _cmpSePriority = "Urgent",
+                                    RGBA(220, 38, 38, 1),
+                                    RGBA(0, 0, 0, 0)
+                                )
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              Height: =32
+                              HoverColor: |-
+                                =If(
+                                    _cmpSePriority = "Urgent",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              HoverFill: |-
+                                =If(
+                                    _cmpSePriority = "Urgent",
+                                    RGBA(185, 28, 28, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(51, 65, 85, 1),
+                                        RGBA(248, 250, 252, 1)
+                                    )
+                                )
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =Set(_cmpSePriority, If(_cmpSePriority = "Urgent", "", "Urgent"))
+                                // TAPPING THE LIT TAG CLEARS IT. There is no none option
+                                // because the three tags are their own toggle group, and
+                                // a fourth button reading none is a fourth thing to read.
+                              PressedColor: |-
+                                =If(
+                                    _cmpSePriority = "Urgent",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              PressedFill: |-
+                                =If(
+                                    _cmpSePriority = "Urgent",
+                                    RGBA(153, 27, 27, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(71, 85, 105, 1),
+                                        RGBA(241, 245, 249, 1)
+                                    )
+                                )
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Size: =11
+                              Text: ="Urgent"
+                              Tooltip: |-
+                                =If(
+                                    _cmpSePriority = "Urgent",
+                                    "Urgent, selected. Select again to clear.",
+                                    "Mark this message urgent"
+                                )
+                                // THE SELECTED STATE IS IN THE TOOLTIP because fill
+                                // colour alone is not a state a screen reader can read,
+                                // and Classic/Button has no AccessibleLabel.
+                        - btnSePriFyi:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: |-
+                                =If(
+                                    _cmpSePriority = "FYI",
+                                    RGBA(0, 0, 0, 0),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(51, 65, 85, 1),
+                                        RGBA(226, 232, 240, 1)
+                                    )
+                                )
+                              BorderThickness: =1
+                              Color: |-
+                                =If(
+                                    _cmpSePriority = "FYI",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: |-
+                                =If(
+                                    _cmpSePriority = "FYI",
+                                    If(
+                                        IsBlank(cmpSendEmail.Config.Accent),
+                                        RGBA(59, 130, 246, 1),
+                                        ColorValue(cmpSendEmail.Config.Accent)
+                                    ),
+                                    RGBA(0, 0, 0, 0)
+                                )
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              Height: =32
+                              HoverColor: |-
+                                =If(
+                                    _cmpSePriority = "FYI",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              HoverFill: |-
+                                =If(
+                                    _cmpSePriority = "FYI",
+                                    If(
+                                        IsBlank(cmpSendEmail.Config.Accent),
+                                        RGBA(37, 99, 235, 1),
+                                        ColorFade(ColorValue(cmpSendEmail.Config.Accent), -0.2)
+                                    ),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(51, 65, 85, 1),
+                                        RGBA(248, 250, 252, 1)
+                                    )
+                                )
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =Set(_cmpSePriority, If(_cmpSePriority = "FYI", "", "FYI"))
+                              PressedColor: |-
+                                =If(
+                                    _cmpSePriority = "FYI",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              PressedFill: |-
+                                =If(
+                                    _cmpSePriority = "FYI",
+                                    If(
+                                        IsBlank(cmpSendEmail.Config.Accent),
+                                        RGBA(29, 78, 216, 1),
+                                        ColorFade(ColorValue(cmpSendEmail.Config.Accent), -0.35)
+                                    ),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(71, 85, 105, 1),
+                                        RGBA(241, 245, 249, 1)
+                                    )
+                                )
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Size: =11
+                              Text: ="FYI"
+                              Tooltip: |-
+                                =If(
+                                    _cmpSePriority = "FYI",
+                                    "FYI, selected. Select again to clear.",
+                                    "Mark this message informational"
+                                )
+                        - btnSePriReminder:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: |-
+                                =If(
+                                    _cmpSePriority = "Reminder",
+                                    RGBA(0, 0, 0, 0),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(51, 65, 85, 1),
+                                        RGBA(226, 232, 240, 1)
+                                    )
+                                )
+                              BorderThickness: =1
+                              Color: |-
+                                =If(
+                                    _cmpSePriority = "Reminder",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: |-
+                                =If(
+                                    _cmpSePriority = "Reminder",
+                                    RGBA(217, 119, 6, 1),
+                                    RGBA(0, 0, 0, 0)
+                                )
+                              FillPortions: =1
+                              Font: =Font.'Segoe UI'
+                              Height: =32
+                              HoverColor: |-
+                                =If(
+                                    _cmpSePriority = "Reminder",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              HoverFill: |-
+                                =If(
+                                    _cmpSePriority = "Reminder",
+                                    RGBA(180, 83, 9, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(51, 65, 85, 1),
+                                        RGBA(248, 250, 252, 1)
+                                    )
+                                )
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: =Set(_cmpSePriority, If(_cmpSePriority = "Reminder", "", "Reminder"))
+                              PressedColor: |-
+                                =If(
+                                    _cmpSePriority = "Reminder",
+                                    RGBA(255, 255, 255, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(203, 213, 225, 1),
+                                        RGBA(71, 85, 105, 1)
+                                    )
+                                )
+                              PressedFill: |-
+                                =If(
+                                    _cmpSePriority = "Reminder",
+                                    RGBA(146, 64, 14, 1),
+                                    If(
+                                        cmpSendEmail.Config.Theme = "dark",
+                                        RGBA(71, 85, 105, 1),
+                                        RGBA(241, 245, 249, 1)
+                                    )
+                                )
+                              RadiusBottomLeft: =8
+                              RadiusBottomRight: =8
+                              RadiusTopLeft: =8
+                              RadiusTopRight: =8
+                              Size: =11
+                              Text: ="Reminder"
+                              Tooltip: |-
+                                =If(
+                                    _cmpSePriority = "Reminder",
+                                    "Reminder, selected. Select again to clear.",
+                                    "Mark this message a reminder"
+                                )
+                  - lblSeToLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        Color: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(148, 163, 184, 1),
+                              RGBA(100, 116, 139, 1)
+                          )
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =10
+                        TabIndex: =0
+                        Text: ="TO   (REQUIRED)"
+                        Wrap: =false
+                  - cmbSeTo:
+                      Control: ModernCombobox@1.1.1
+                      Properties:
+                        AccessibleLabel: ="To, required"
+                        Appearance: =Appearance.Outline
+                        Color: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(241, 245, 249, 1),
+                              RGBA(15, 23, 42, 1)
+                          )
+                        DelayOutput: |-
+                          =true
+                          // SearchText UPDATES ON A PAUSE, NOT PER KEYSTROKE. A host
+                          // wired to a live directory search would otherwise fire one
+                          // connector call per character, and Office365Users throttles
+                          // per user per connection. Typing a five letter name is five
+                          // round trips and the fifth is the only one anybody wanted.
+                        DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                        Font: =Font.'Segoe UI'
+                        Height: =36
+                        InputTextPlaceholder: ="Search people"
+                        ItemDisplayText: |-
+                          =ThisItem.DisplayName & "   -   " & ThisItem.Mail
+                          // THIS ONE FORMULA IS WHY THE CONTROL IS MODERN AND THE REST
+                          // OF THE COMPONENT IS CLASSIC. Classic/ComboBox picks its
+                          // display columns from DisplayFields, and the Single, Double
+                          // or Person TEMPLATE that decides how those columns are laid
+                          // out is not a Property at all. In the pa.yaml v3.0 schema a
+                          // control instance takes Control, Variant, MetadataKey,
+                          // Layout, IsLocked, Group, Properties and Children, and the
+                          // template lives up at Layout, a sibling of Control, NOT under
+                          // Properties. Nothing written under Properties can reach it,
+                          // which is why a pasted classic picker always lands on Single
+                          // and has to be repaired by hand in the Data pane.
+                          //
+                          // Microsoft removed that mechanism outright on the modern
+                          // control: Fields was REPLACED by ItemDisplayText, a Power Fx
+                          // formula. A formula is a Property, so it survives a paste.
+                          // There is no template to lose and no manual step to document.
+                        Items: =cmpSendEmail.Directory
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        MultiValueDelimiter: ="; "
+                        OnChange: =Set(_cmpSeTouched, true)
+                        SelectMultiple: |-
+                          =true
+                          // WRITTEN EXPLICITLY on both pickers even though the modern
+                          // default is already true, because the send loop walks
+                          // SelectedItems and a picker silently capped at one recipient
+                          // is not a failure anyone notices until the mail goes out.
+                        Size: =12
+                        ValidationState: |-
+                          =If(
+                              _cmpSeTouched && IsEmpty(Self.SelectedItems),
+                              ValidationState.Error,
+                              ValidationState.None
+                          )
+                          // Self.SelectedItems, NOT cmbSeTo.SelectedItems. A control
+                          // naming itself inside its own property never resolves and
+                          // comes back blank in silence. The classic version of this
+                          // control had exactly that bug in its BorderColor.
+                          //
+                          // IsEmpty, NOT IsBlank: SelectedItems is a TABLE, and a table
+                          // with no rows is empty and never blank, so IsBlank returns
+                          // false on an untouched picker and the validation never fires.
+                          //
+                          // ValidationState replaces the hand rolled red BorderColor.
+                          // The control draws its own error affordance, which stays
+                          // correct under a theme the component has never seen.
+                  - lblSeToSummary:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        Color: |-
+                          =If(
+                              _cmpSeTouched && IsEmpty(cmbSeTo.SelectedItems),
+                              If(
+                                  cmpSendEmail.Config.Theme = "dark",
+                                  RGBA(252, 165, 165, 1),
+                                  RGBA(185, 28, 28, 1)
+                              ),
+                              If(
+                                  cmpSendEmail.Config.Theme = "dark",
+                                  RGBA(148, 163, 184, 1),
+                                  RGBA(100, 116, 139, 1)
+                              )
+                          )
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =10
+                        TabIndex: =0
+                        Text: |-
+                          =With(
+                              {
+                                  picked: CountRows(cmbSeTo.SelectedItems),
+                                  nomail: CountRows(Filter(cmbSeTo.SelectedItems, IsBlank(Mail)))
+                              },
+                              If(
+                                  picked = 0,
+                                  If(_cmpSeTouched, "Pick at least one recipient.", "Nobody selected yet."),
+                                  picked & If(picked = 1, " recipient", " recipients")
+                                  & If(
+                                      nomail > 0,
+                                      "   |   " & nomail & " with no address, they will be skipped",
+                                      ""
+                                  )
+                              )
+                          )
+                          // THE NO ADDRESS COUNT IS SURFACED BEFORE THE SEND, not after.
+                          // A directory table can carry rows with a blank Mail, and those
+                          // get dropped when the address string is built. Silently
+                          // dropping a recipient the sender watched themselves pick is
+                          // the worst outcome available.
+                  - conSeCcRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =0
+                        Height: |-
+                          =If(
+                              !cmpSendEmail.Config.ShowCc,
+                              0,
+                              If(
+                                  _cmpSeShowCc,
+                                  28 + 36 + Self.LayoutGap,
+                                  28
+                              )
+                          )
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =6
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Visible: =cmpSendEmail.Config.ShowCc
+                      Children:
+                        - btnSeToggleCc:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Start
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              BorderThickness: =0
+                              Color: |-
+                                =If(
+                                    IsBlank(cmpSendEmail.Config.Accent),
+                                    RGBA(59, 130, 246, 1),
+                                    ColorValue(cmpSendEmail.Config.Accent)
+                                )
+                              DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =2
+                              Font: =Font.'Segoe UI'
+                              Height: =28
+                              HoverColor: |-
+                                =If(
+                                    IsBlank(cmpSendEmail.Config.Accent),
+                                    RGBA(59, 130, 246, 1),
+                                    ColorValue(cmpSendEmail.Config.Accent)
+                                )
+                              HoverFill: |-
+                                =If(
+                                    cmpSendEmail.Config.Theme = "dark",
+                                    RGBA(51, 65, 85, 1),
+                                    RGBA(241, 245, 249, 1)
+                                )
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnSelect: |-
+                                =Set(_cmpSeShowCc, !_cmpSeShowCc);
+                                If(!_cmpSeShowCc, Reset(cmbSeCc))
+                                // HIDING CC CLEARS IT. Leaving a hidden picker populated
+                                // means sending to people the sender can no longer see,
+                                // which is the worst way to be surprised by an email.
+                              PressedColor: |-
+                                =If(
+                                    IsBlank(cmpSendEmail.Config.Accent),
+                                    RGBA(59, 130, 246, 1),
+                                    ColorValue(cmpSendEmail.Config.Accent)
+                                )
+                              PressedFill: |-
+                                =If(
+                                    cmpSendEmail.Config.Theme = "dark",
+                                    RGBA(71, 85, 105, 1),
+                                    RGBA(226, 232, 240, 1)
+                                )
+                              RadiusBottomLeft: =6
+                              RadiusBottomRight: =6
+                              RadiusTopLeft: =6
+                              RadiusTopRight: =6
+                              Size: =11
+                              Text: =If(_cmpSeShowCc, "Hide CC", "Add CC")
+                              Tooltip: =If(_cmpSeShowCc, "Hide and clear the CC line", "Show the CC line")
+                              Width: =88
+                        - cmbSeCc:
+                            Control: ModernCombobox@1.1.1
+                            Properties:
+                              AccessibleLabel: ="Cc, optional"
+                              Appearance: =Appearance.Outline
+                              Color: |-
+                                =If(
+                                    cmpSendEmail.Config.Theme = "dark",
+                                    RGBA(241, 245, 249, 1),
+                                    RGBA(15, 23, 42, 1)
+                                )
+                              DelayOutput: =true
+                              DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                              Font: =Font.'Segoe UI'
+                              Height: =36
+                              InputTextPlaceholder: ="Search people to CC"
+                              ItemDisplayText: =ThisItem.DisplayName & "   -   " & ThisItem.Mail
+                              Items: =cmpSendEmail.Directory
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              MultiValueDelimiter: ="; "
+                              Size: =12
+                              Visible: =_cmpSeShowCc
+                  - lblSeSubjLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        Color: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(148, 163, 184, 1),
+                              RGBA(100, 116, 139, 1)
+                          )
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =10
+                        TabIndex: =0
+                        Text: ="SUBJECT" & If(cmpSendEmail.Config.LockSubject, "   (FIXED)", "")
+                        Wrap: =false
+                  - txtSeSubject:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        AccessibleLabel: ="Se Subject"
+                        BorderColor: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(51, 65, 85, 1),
+                              RGBA(203, 213, 225, 1)
+                          )
+                        BorderThickness: =1
+                        Color: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(241, 245, 249, 1),
+                              RGBA(15, 23, 42, 1)
+                          )
+                        Default: =cmpSendEmail.DefaultSubject
+                        DisplayMode: |-
+                          =If(
+                              cmpSendEmail.Busy || cmpSendEmail.Config.LockSubject,
+                              DisplayMode.View,
+                              DisplayMode.Edit
+                          )
+                          // View, NOT Disabled, when the subject is locked. Disabled
+                          // greys the text to the point of being hard to read, and a
+                          // fixed subject is information the sender still needs.
+                        Fill: |-
+                          =If(
+                              cmpSendEmail.Config.LockSubject,
+                              If(
+                                  cmpSendEmail.Config.Theme = "dark",
+                                  RGBA(15, 23, 42, 1),
+                                  RGBA(248, 250, 252, 1)
+                              ),
+                              If(
+                                  cmpSendEmail.Config.Theme = "dark",
+                                  RGBA(15, 23, 42, 1),
+                                  RGBA(255, 255, 255, 1)
+                              )
+                          )
+                        Font: =Font.'Segoe UI'
+                        Height: =36
+                        HintText: ="What is this message about"
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =12
+                  - lblSeNoteLabel:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        Color: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(148, 163, 184, 1),
+                              RGBA(100, 116, 139, 1)
+                          )
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =10
+                        TabIndex: =0
+                        Text: ="MESSAGE"
+                        Wrap: =false
+                  - txtSeNote:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        AccessibleLabel: ="Se Note"
+                        BorderColor: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(51, 65, 85, 1),
+                              RGBA(203, 213, 225, 1)
+                          )
+                        BorderThickness: =1
+                        Color: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(241, 245, 249, 1),
+                              RGBA(15, 23, 42, 1)
+                          )
+                        Default: |-
+                          =""
+                          // WRITTEN OUT rather than left to the control default, which
+                          // is the literal string "Text input". Omitting it ships a
+                          // dialog whose message box arrives pre-filled with placeholder
+                          // text that a hurried sender will mail to somebody.
+                        DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                        Fill: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(15, 23, 42, 1),
+                              RGBA(255, 255, 255, 1)
+                          )
+                        Font: =Font.'Segoe UI'
+                        Height: =96
+                        HintText: ="What do you want them to know"
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        MaxLength: =cmpSendEmail.Config.MaxNote
+                        Mode: =TextMode.MultiLine
+                        Size: =12
+                  - lblSeCounter:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        Color: |-
+                          =If(
+                              Len(txtSeNote.Text) >= cmpSendEmail.Config.MaxNote,
+                              RGBA(220, 38, 38, 1),
+                              If(
+                                  Len(txtSeNote.Text) > cmpSendEmail.Config.MaxNote * 0.9,
+                                  RGBA(217, 119, 6, 1),
+                                  If(
+                                      cmpSendEmail.Config.Theme = "dark",
+                                      RGBA(100, 116, 139, 1),
+                                      RGBA(148, 163, 184, 1)
+                                  )
+                              )
+                          )
+                          // THE COUNTER WARMS UP BEFORE IT MATTERS. Amber at ninety
+                          // percent, red at the cap, which is where MaxLength stops
+                          // accepting keystrokes with no other feedback at all.
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =9
+                        TabIndex: =0
+                        Text: =Len(txtSeNote.Text) & " / " & cmpSendEmail.Config.MaxNote
+                        Wrap: =false
+            - conSeFooter:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Height: =64
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =8
+                  LayoutJustifyContent: =LayoutJustifyContent.End
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =16
+                  PaddingLeft: =20
+                  PaddingRight: =20
+                  PaddingTop: =12
+                Children:
+                  - btnSeCancel:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        BorderColor: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(51, 65, 85, 1),
+                              RGBA(226, 232, 240, 1)
+                          )
+                        BorderThickness: =1
+                        Color: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(203, 213, 225, 1),
+                              RGBA(71, 85, 105, 1)
+                          )
+                        DisplayMode: =If(cmpSendEmail.Busy, DisplayMode.Disabled, DisplayMode.Edit)
+                        Fill: =RGBA(0, 0, 0, 0)
+                        Font: =Font.'Segoe UI'
+                        Height: =36
+                        HoverColor: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(203, 213, 225, 1),
+                              RGBA(71, 85, 105, 1)
+                          )
+                        HoverFill: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(51, 65, 85, 1),
+                              RGBA(248, 250, 252, 1)
+                          )
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =cmpSendEmail.OnCancel()
+                        PressedColor: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(203, 213, 225, 1),
+                              RGBA(71, 85, 105, 1)
+                          )
+                        PressedFill: |-
+                          =If(
+                              cmpSendEmail.Config.Theme = "dark",
+                              RGBA(71, 85, 105, 1),
+                              RGBA(241, 245, 249, 1)
+                          )
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Size: =12
+                        Text: ="Cancel"
+                        Tooltip: ="Discard this message"
+                        Width: =96
+                  - btnSeSend:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        BorderThickness: =0
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisplayMode: |-
+                          =If(
+                              cmpSendEmail.Busy || IsEmpty(cmbSeTo.SelectedItems),
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        Fill: |-
+                          =If(
+                              IsBlank(cmpSendEmail.Config.Accent),
+                              RGBA(59, 130, 246, 1),
+                              ColorValue(cmpSendEmail.Config.Accent)
+                          )
+                        FocusedBorderThickness: =2
+                        Font: =Font.'Segoe UI'
+                        Height: =36
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: |-
+                          =If(
+                              IsBlank(cmpSendEmail.Config.Accent),
+                              RGBA(37, 99, 235, 1),
+                              ColorFade(ColorValue(cmpSendEmail.Config.Accent), -0.2)
+                          )
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =Set(_cmpSeTouched, true);
+                          Clear(colCmpSeTo);
+                          Collect(
+                              colCmpSeTo,
+                              ForAll(
+                              cmbSeTo.SelectedItems As p, { Addr: Lower(Trim(p.Mail)) }
+                              )
+                          );
+                          Clear(colCmpSeCc);
+                          If(
+                              _cmpSeShowCc && cmpSendEmail.Config.ShowCc,
+                              Collect(
+                                  colCmpSeCc,
+                                  ForAll(
+                                  cmbSeCc.SelectedItems As c, { Addr: Lower(Trim(c.Mail)) }
+                                  )
+                              )
+                          );
+                          Set(
+                              _cmpSeTo,
+                              Concat(Distinct(Filter(colCmpSeTo, !IsBlank(Addr)), Addr), Value, ";")
+                          );
+                          Set(
+                              _cmpSeCc,
+                              Concat(
+                                  Distinct(
+                                      Filter(
+                                          colCmpSeCc As x,
+                                          !IsBlank(x.Addr) && IsBlank(LookUp(colCmpSeTo, Addr = x.Addr))
+                                      ),
+                                      Addr
+                                  ),
+                                  Value,
+                                  ";"
+                              )
+                          );
+                          Set(
+                              _cmpSeCount,
+                              CountRows(Distinct(Filter(colCmpSeTo, !IsBlank(Addr)), Addr))
+                          );
+                          Set(_cmpSeNote, Trim(txtSeNote.Text));
+                          Set(
+                              _cmpSeSubject,
+                              If(IsBlank(_cmpSePriority), "", _cmpSePriority & " - ")
+                              & Trim(txtSeSubject.Text)
+                          );
+                          Set(
+                              _cmpSeBody,
+                              With(
+                                  {
+                                      acc: If(
+                                          IsBlank(cmpSendEmail.Config.Accent),
+                                          "#3B82F6",
+                                          cmpSendEmail.Config.Accent
+                                      ),
+                                      head: Trim(txtSeSubject.Text)
+                                  },
+                                  With(
+                                      {
+                                          badge: Switch(
+                                              _cmpSePriority,
+                                              "Urgent", "#DC2626",
+                                              "Reminder", "#D97706",
+                                              acc
+                                          ),
+                                          safeHead: Substitute(
+                                              Substitute(
+                                                  Substitute(head, "&", "&amp;"),
+                                                  "<",
+                                                  "&lt;"
+                                              ),
+                                              ">",
+                                              "&gt;"
+                                          ),
+                                          safeNote: Substitute(
+                                              Substitute(
+                                                  Substitute(
+                                                      Substitute(_cmpSeNote, "&", "&amp;"),
+                                                      "<",
+                                                      "&lt;"
+                                                  ),
+                                                  ">",
+                                                  "&gt;"
+                                              ),
+                                              Char(10),
+                                              "<br>"
+                                          ),
+                                          safeSig: Substitute(
+                                              Substitute(
+                                                  Substitute(cmpSendEmail.Signature, "&", "&amp;"),
+                                                  "<",
+                                                  "&lt;"
+                                              ),
+                                              ">",
+                                              "&gt;"
+                                          )
+                                      },
+                                      "<table role='presentation' width='100%' cellpadding='0' cellspacing='0' border='0' bgcolor='#F1F5F9' style='background-color:#F1F5F9;padding:24px 12px;'><tr><td align='center'>"
+                                      & "<table role='presentation' width='600' cellpadding='0' cellspacing='0' border='0' bgcolor='#FFFFFF' style='width:600px;max-width:600px;background-color:#FFFFFF;border:1px solid #E2E8F0;border-radius:12px;font-family:Segoe UI,Helvetica,Arial,sans-serif;'>"
+                                      & "<tr><td bgcolor='" & acc & "' style='height:4px;line-height:4px;font-size:0;background-color:" & acc & ";'>&nbsp;</td></tr>"
+                                      & "<tr><td style='padding:24px 24px 8px 24px;'>"
+                                      & If(
+                                          IsBlank(_cmpSePriority),
+                                          "",
+                                          "<span style='display:inline-block;padding:4px 11px;border-radius:999px;background-color:"
+                                          & badge
+                                          & ";color:#FFFFFF;font-size:11px;font-weight:600;letter-spacing:0.5px;'>"
+                                          & Upper(_cmpSePriority)
+                                          & "</span><br><br>"
+                                      )
+                                      & "<div style='font-size:20px;font-weight:600;color:#0F172A;line-height:1.3;'>"
+                                      & safeHead
+                                      & "</div></td></tr>"
+                                      & If(
+                                          IsBlank(cmpSendEmail.ContextHtml),
+                                          "",
+                                          "<tr><td style='padding:8px 24px 0 24px;'><table role='presentation' width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td bgcolor='#F8FAFC' style='background-color:#F8FAFC;border-left:3px solid "
+                                          & acc
+                                          & ";border-radius:6px;padding:14px 16px;font-size:13px;color:#334155;line-height:1.6;'>"
+                                          & cmpSendEmail.ContextHtml
+                                          & "</td></tr></table></td></tr>"
+                                      )
+                                      & If(
+                                          IsBlank(safeNote),
+                                          "",
+                                          "<tr><td style='padding:20px 24px 4px 24px;font-size:15px;color:#0F172A;line-height:1.65;'>"
+                                          & safeNote
+                                          & "</td></tr>"
+                                      )
+                                      & If(
+                                          IsBlank(safeSig),
+                                          "",
+                                          "<tr><td style='padding:20px 24px 24px 24px;'><table role='presentation' width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td style='border-top:1px solid #E2E8F0;padding-top:14px;font-size:12px;color:#64748B;line-height:1.5;'>"
+                                          & safeSig
+                                          & "</td></tr></table></td></tr>"
+                                      )
+                                      & "</table></td></tr></table>"
+                                  )
+                              )
+                              // A REAL EMAIL TEMPLATE, AND NO FLOW NEEDED FOR IT.
+                              // Office365Outlook.SendEmailV2 takes an HTML body straight
+                              // from Canvas. The earlier version was already HTML, just
+                              // four bold tags and some line breaks.
+                              //
+                              // TABLES, NOT DIVS, AND INLINE STYLES ONLY. Outlook on
+                              // Windows renders mail through WORD, not a browser engine:
+                              // no flexbox, no grid, no <style> block, no external CSS,
+                              // no web fonts. A div layout that looks perfect in Gmail
+                              // collapses into one unstyled column there, and Outlook is
+                              // the client this audience actually reads mail in. bgcolor
+                              // is written alongside background-color for the same reason.
+                              //
+                              // SINGLE QUOTED HTML ATTRIBUTES. Double quotes would each
+                              // need doubling inside a Power Fx string and a template this
+                              // size becomes unreadable. HTML accepts single quotes and
+                              // every mail client honours them. Same trick the SVG strings
+                              // in cmpChips use.
+                              //
+                              // border-radius and the pill badge DEGRADE to square corners
+                              // in Outlook desktop. That is the intended floor: nothing is
+                              // lost except the corners.
+                              //
+                              // THREE SLOTS, DIFFERENT CONTRACTS. safeNote and safeSig are
+                              // escaped, because the note is typed by a user and Signature
+                              // is documented as plain text. ContextHtml is injected RAW
+                              // because it is documented as the host's own markup, which
+                              // is what makes a record summary table possible at all. That
+                              // asymmetry IS the contract.
+                              //
+                              // 600px is the conventional email width and has nothing to
+                              // do with the 600 that keeps appearing on the instance.
+                          );
+                          If(
+                              IsBlank(_cmpSeTo),
+                              Notify(
+                                  "Nobody you picked has an email address. Nothing was sent.",
+                                  NotificationType.Error
+                              ),
+                              cmpSendEmail.OnSend()
+                          )
+                          // THE COMPONENT DOES NOT SEND. It builds every output and
+                          // raises OnSend, and the host owns the mail action. That is
+                          // what lets this drop into any app with no connector, and it
+                          // means the same dialog works over Outlook, a flow, SMTP or a
+                          // custom connector without touching a line in here.
+                          //
+                          // THE NOTE AND SUBJECT ARE READ FROM THE CONTROLS, not from a
+                          // variable kept in step by OnChange. A classic text input
+                          // raises OnChange on blur, so typing and going straight to Send
+                          // in one motion is a real race that loses the last edit.
+                          //
+                          // THE NOTE IS HTML ESCAPED. The body is markup, so a note
+                          // containing < or > or & would otherwise render as tags in the
+                          // recipient's inbox. Ampersand is substituted FIRST; doing it
+                          // last would re-escape the ampersands that &lt; and &gt; just
+                          // introduced and every bracket would arrive as &amp;lt;. Line
+                          // breaks are converted after escaping so <br> survives.
+                          //
+                          // ContextHtml is NOT escaped, deliberately. It is the host's
+                          // own markup. Anything user-typed inside it is the host's to
+                          // escape, and the property description says so.
+                          //
+                          // BLANK ADDRESSES ARE FILTERED OUT. A directory table can carry
+                          // rows with no Mail, and Concat would turn those into ";;",
+                          // which most mail actions reject for the whole send. If
+                          // filtering leaves nothing, OnSend never fires.
+                          //
+                          // CC IS DEDUPED AGAINST TO, not just against itself, so nobody
+                          // on both lines gets two copies.
+                          //
+                          // PROJECTED WITH ForAll BUILDING A RECORD, not ShowColumns and
+                          // RenameColumns. Those take a column NAME, and whether it is
+                          // written bare or quoted depends on an app level setting, so
+                          // the same formula is valid in one app and rejected in the next.
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: |-
+                          =If(
+                              IsBlank(cmpSendEmail.Config.Accent),
+                              RGBA(29, 78, 216, 1),
+                              ColorFade(ColorValue(cmpSendEmail.Config.Accent), -0.35)
+                          )
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Size: =12
+                        Text: |-
+                          =With(
+                              { n: CountRows(cmbSeTo.SelectedItems) },
+                              If(
+                                  cmpSendEmail.Busy,
+                                  "Sending",
+                                  If(n = 0, "Send", "Send to " & n)
+                              )
+                          )
+                          // THE BUTTON COUNTS THE RECIPIENTS. Reading Send to 7 just
+                          // before committing is the cheapest possible guard against the
+                          // mail going wider than intended.
+                        Tooltip: |-
+                          =If(
+                              IsEmpty(cmbSeTo.SelectedItems),
+                              "Pick at least one recipient first",
+                              "Send this message"
+                          )
+                        Width: =128

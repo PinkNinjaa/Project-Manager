@@ -1,0 +1,59 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "ProjectDesk Server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/server.mjs",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "HOST": "127.0.0.1",
+        "PORT": "4173"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "name": "ProjectDesk Browser",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:4173",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true
+    },
+    {
+      "name": "TigerTurf Database API",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/DataModel/server.js",
+      "cwd": "${workspaceFolder}/DataModel",
+      "console": "integratedTerminal",
+      "env": {
+        "PORT": "4321"
+      },
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "ProjectDesk: Run and Debug",
+      "configurations": [
+        "ProjectDesk Server",
+        "ProjectDesk Browser"
+      ]
+    },
+    {
+      "name": "ProjectDesk with TigerTurf data",
+      "configurations": [
+        "ProjectDesk Server",
+        "TigerTurf Database API",
+        "ProjectDesk Browser"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,523 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpFloatingActionButton:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      Color:
+        PropertyKind: Input
+        DisplayName: Color
+        Description: FAB background color
+        DataType: Color
+        Default: =RGBA(37, 99, 235, 1)
+      Disabled:
+        PropertyKind: Input
+        DisplayName: Disabled
+        Description: Disable the FAB
+        DataType: Boolean
+        Default: =false
+      Icon:
+        PropertyKind: Input
+        DisplayName: Icon
+        Description: SVG string or named icon (Plus, Edit, Share, Camera, Search, Check, X, Heart, Star, Upload, Download, Settings, Menu, Send)
+        DataType: Text
+        Default: ="Plus"
+      IconColor:
+        PropertyKind: Input
+        DisplayName: IconColor
+        Description: Icon and text color as hex string (e.g. "#FFFFFF")
+        DataType: Text
+        Default: ="#FFFFFF"
+      IsOpen:
+        PropertyKind: Output
+        DisplayName: IsOpen
+        Description: Whether the speed dial menu is currently open
+        DataType: Boolean
+      ItemSize:
+        PropertyKind: Input
+        DisplayName: ItemSize
+        Description: Height of each speed dial pill in pixels. Min 44 recommended for touch targets.
+        DataType: Number
+        Default: =52
+      Label:
+        PropertyKind: Input
+        DisplayName: Label
+        Description: Text label shown on the FAB button when Style is "extended"
+        DataType: Text
+        Default: ="New Report"
+      OnSelect:
+        PropertyKind: Event
+        DisplayName: OnSelect
+        Description: Action when FAB is clicked (fires only when no SpeedDialItems)
+        ReturnType: None
+        Default: =false
+      OnSpeedDialSelect:
+        PropertyKind: Event
+        DisplayName: OnSpeedDialSelect
+        Description: Action when a speed dial item is clicked
+        ReturnType: None
+        Default: =false
+      SelectedSpeedDialItem:
+        PropertyKind: Output
+        DisplayName: SelectedSpeedDialItem
+        Description: The last selected speed dial item record
+        DataType: Record
+      Size:
+        PropertyKind: Input
+        DisplayName: Size
+        Description: '"small" (40), "regular" (56), "large" (96)'
+        DataType: Text
+        Default: ="regular"
+      SpeedDialItems:
+        PropertyKind: Input
+        DisplayName: SpeedDialItems
+        Description: Table of speed dial actions with Icon, Label, Color (optional). M3 recommends 3-6 items.
+        DataType: Table
+        Default: |-
+          =Table(
+              {Icon: "Plus",     Label: "New Task",     Color: RGBA(37, 99, 235, 1)},
+              {Icon: "Edit",     Label: "Quick Note",   Color: RGBA(5, 150, 105, 1)},
+              {Icon: "Camera",   Label: "Photo",        Color: RGBA(168, 85, 247, 1)},
+              {Icon: "Upload",   Label: "Upload File",  Color: RGBA(234, 88, 12, 1)},
+              {Icon: "Search",   Label: "Search",       Color: RGBA(20, 184, 166, 1)},
+              {Icon: "Settings", Label: "Settings",     Color: RGBA(100, 116, 139, 1)})
+      Style:
+        PropertyKind: Input
+        DisplayName: Style
+        Description: '"standard" = icon only, "extended" = icon + label on the FAB button itself'
+        DataType: Text
+        Default: ="standard"
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: Light or Dark theme
+        DataType: Text
+        Default: ="Light"
+    Properties:
+      Fill: =Color.Transparent
+      Height: |-
+        =With(
+            {
+                _fabSize: Switch(
+                    cmpFloatingActionButton.Size,
+                    "small", 40,
+                    "regular", 56,
+                    "large", 72,
+                    56
+                )
+            },
+            If(
+                _fabOpen && CountRows(cmpFloatingActionButton.SpeedDialItems) > 0,
+                _fabSize + 12 + CountRows(cmpFloatingActionButton.SpeedDialItems) * cmpFloatingActionButton.ItemSize,
+                _fabSize
+            )
+        )
+      IsOpen: =_fabOpen
+      OnReset: |-
+        =Set(_fabOpen, false);
+         Set(_fabSelectedSD, {Icon: "", Label: "", Color: RGBA(0,0,0,0)})
+      SelectedSpeedDialItem: =_fabSelectedSD
+      Width: |-
+        =With(
+            {
+                _fabSize: Switch(
+                    cmpFloatingActionButton.Size,
+                    "small", 40,
+                    "regular", 56,
+                    "large", 72,
+                    56
+                ),
+                _circleOffset: 20 + Switch(
+                    cmpFloatingActionButton.Size,
+                    "small", 20,
+                    "regular", 28,
+                    "large", 36,
+                    28
+                ),
+                _maxLabelChars: If(
+                    CountRows(cmpFloatingActionButton.SpeedDialItems) > 0,
+                    Max(cmpFloatingActionButton.SpeedDialItems, Len(Label)),
+                    0
+                ),
+                _iconSize: Switch(
+                    cmpFloatingActionButton.Size,
+                    "small", 20,
+                    "regular", 24,
+                    "large", 36,
+                    24
+                )
+            },
+            If(
+                _fabOpen && CountRows(cmpFloatingActionButton.SpeedDialItems) > 0,
+                Min(Min(_maxLabelChars * 8 + 64, 240) + Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28) + 20, App.Width),
+                If(
+                    cmpFloatingActionButton.Style = "extended",
+                    16 + _iconSize + 8 + Min(Len(cmpFloatingActionButton.Label) * 8, 220) + 20,
+                    _fabSize
+                )
+            )
+        )
+    Children:
+      - cntFabRoot:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            BorderColor: =Color.Transparent
+            DropShadow: =DropShadow.None
+            Height: =Parent.Height
+            Width: =Parent.Width
+          Children:
+            - btnBackdrop_2:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 0)
+                  Color: =RGBA(0, 0, 0, 0)
+                  Fill: =RGBA(0, 0, 0, 0)
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height
+                  HoverBorderColor: =RGBA(0, 0, 0, 0)
+                  HoverColor: =RGBA(0, 0, 0, 0)
+                  HoverFill: =RGBA(0, 0, 0, 0)
+                  OnSelect: =Set(_fabOpen, false)
+                  PressedBorderColor: =RGBA(0, 0, 0, 0)
+                  PressedColor: =RGBA(0, 0, 0, 0)
+                  PressedFill: =RGBA(0, 0, 0, 0)
+                  Text: =""
+                  Tooltip: ="Backdrop"
+                  Visible: =_fabOpen
+                  Width: =Parent.Width
+            - galSpeedDial:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  AccessibleLabel: ="Speed Dial list"
+                  BorderStyle: =BorderStyle.None
+                  FocusedBorderThickness: =0.5
+                  Height: =CountRows(cmpFloatingActionButton.SpeedDialItems) * cmpFloatingActionButton.ItemSize - 1
+                  Items: =cmpFloatingActionButton.SpeedDialItems
+                  ShowScrollbar: =false
+                  TabIndex: =0
+                  TemplatePadding: =0
+                  TemplateSize: =cmpFloatingActionButton.ItemSize
+                  Visible: =_fabOpen
+                  Width: =Parent.Width - 8
+                Children:
+                  - cntSDRow:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        BorderColor: =Color.Transparent
+                        DropShadow: =DropShadow.None
+                        Height: =cmpFloatingActionButton.ItemSize - 8
+                        Width: =Parent.TemplateWidth
+                        Y: =(Parent.TemplateHeight - Self.Height) / 2
+                      Children:
+                        - cntSDPill_1:
+                            Control: GroupContainer@1.5.0
+                            Variant: ManualLayout
+                            Properties:
+                              DropShadow: =DropShadow.Semilight
+                              Fill: |-
+                                =If(
+                                    !IsBlank(ThisItem.Color),
+                                    ThisItem.Color,
+                                    cmpFloatingActionButton.Color
+                                )
+                              Height: =cmpFloatingActionButton.ItemSize - 8
+                              RadiusBottomLeft: =(cmpFloatingActionButton.ItemSize - 8) / 2
+                              RadiusBottomRight: =(cmpFloatingActionButton.ItemSize - 8) / 2
+                              RadiusTopLeft: =(cmpFloatingActionButton.ItemSize - 8) / 2
+                              RadiusTopRight: =(cmpFloatingActionButton.ItemSize - 8) / 2
+                              Width: =Min(Len(ThisItem.Label) * 8 + 64, 240)
+                              X: =Parent.Width - Self.Width
+                              Y: =(Parent.Height - Self.Height) / 2
+                            Children:
+                              - lblSDPillLabel_1:
+                                  Control: ModernText@1.0.0
+                                  Properties:
+                                    AccessibleLabel: =Self.Text
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    Font: =Font.'Segoe UI'
+                                    FontWeight: =FontWeight.Semibold
+                                    Height: =Parent.Height
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    RadiusBottomLeft: =0
+                                    RadiusBottomRight: =0
+                                    RadiusTopLeft: =0
+                                    RadiusTopRight: =0
+                                    Size: =13
+                                    Text: =ThisItem.Label
+                                    Width: =Parent.Width - (cmpFloatingActionButton.ItemSize - 16) - 22
+                                    Wrap: =false
+                                    X: =14
+                              - btnSDIconBg_1:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 0)
+                                    BorderStyle: =BorderStyle.None
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    DisabledBorderColor: =RGBA(0, 0, 0, 0)
+                                    Fill: =RGBA(255, 255, 255, 0.25)
+                                    FocusedBorderThickness: =0.5
+                                    Font: =Font.'Segoe UI'
+                                    Height: =cmpFloatingActionButton.ItemSize - 16
+                                    HoverBorderColor: =RGBA(0, 0, 0, 0)
+                                    HoverFill: =RGBA(255, 255, 255, 0.25)
+                                    PressedBorderColor: =RGBA(0, 0, 0, 0)
+                                    PressedFill: =RGBA(255, 255, 255, 0.35)
+                                    RadiusBottomLeft: =(cmpFloatingActionButton.ItemSize - 16) / 2
+                                    RadiusBottomRight: =(cmpFloatingActionButton.ItemSize - 16) / 2
+                                    RadiusTopLeft: =(cmpFloatingActionButton.ItemSize - 16) / 2
+                                    RadiusTopRight: =(cmpFloatingActionButton.ItemSize - 16) / 2
+                                    Text: =""
+                                    Tooltip: ="S D Icon Bg"
+                                    Width: =cmpFloatingActionButton.ItemSize - 16
+                                    X: =Parent.Width - Self.Width - 6
+                                    Y: =(Parent.Height - Self.Height) / 2
+                              - imgSDPillIcon_1:
+                                  Control: Image@2.2.3
+                                  Properties:
+                                    AccessibleLabel: ="S D Pill Icon icon"
+                                    FocusedBorderThickness: =0.5
+                                    Height: =cmpFloatingActionButton.ItemSize - 34
+                                    Image: |-
+                                      =With(
+                                          {_ico: ThisItem.Icon},
+                                          If(
+                                              StartsWith(_ico, "<svg") || StartsWith(_ico, "data:"),
+                                              If(
+                                                  StartsWith(_ico, "data:"), _ico,
+                                                  "data:image/svg+xml;utf8," & EncodeUrl(Substitute(_ico, "currentColor", "#FFFFFF"))
+                                              ),
+                                              "data:image/svg+xml;utf8," & EncodeUrl(
+                                                  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='#FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>" &
+                                                  Switch(
+                                                      _ico,
+                                                      "Plus", "<line x1='12' y1='5' x2='12' y2='19'/><line x1='5' y1='12' x2='19' y2='12'/>",
+                                                      "Edit", "<path d='M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z'/><path d='m15 5 4 4'/>",
+                                                      "Share", "<circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/>",
+                                                      "Camera", "<path d='M14.5 4h-5L7.5 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3.5L14.5 4Z'/><circle cx='12' cy='13' r='3'/>",
+                                                      "Search", "<circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/>",
+                                                      "Check", "<polyline points='20 6 9 17 4 12'/>",
+                                                      "X", "<line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/>",
+                                                      "Heart", "<path d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z'/>",
+                                                      "Star", "<polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/>",
+                                                      "Upload", "<path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='17 8 12 3 7 8'/><line x1='12' y1='3' x2='12' y2='15'/>",
+                                                      "Download", "<path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7 10 12 15 17 10'/><line x1='12' y1='15' x2='12' y2='3'/>",
+                                                      "Settings", "<circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z'/>",
+                                                      "Menu", "<line x1='4' y1='6' x2='20' y2='6'/><line x1='4' y1='12' x2='20' y2='12'/><line x1='4' y1='18' x2='20' y2='18'/>",
+                                                      "Send", "<line x1='22' y1='2' x2='11' y2='13'/><polygon points='22 2 15 22 11 13 2 9 22 2'/>",
+                                                      "<line x1='12' y1='5' x2='12' y2='19'/><line x1='5' y1='12' x2='19' y2='12'/>"
+                                                  ) &
+                                                  "</svg>"
+                                              )
+                                          )
+                                      )
+                                    TabIndex: =0
+                                    Width: =cmpFloatingActionButton.ItemSize - 34
+                                    X: =btnSDIconBg_1.X + (btnSDIconBg_1.Width - Self.Width) / 2
+                                    Y: =btnSDIconBg_1.Y + (btnSDIconBg_1.Height - Self.Height) / 2
+                        - btnSDHit:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =RGBA(0, 0, 0, 0)
+                              Color: =RGBA(0, 0, 0, 0)
+                              Fill: =RGBA(0, 0, 0, 0)
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height
+                              HoverBorderColor: =RGBA(0, 0, 0, 0)
+                              HoverColor: =RGBA(0, 0, 0, 0)
+                              HoverFill: =RGBA(255, 255, 255, 0.12)
+                              OnSelect: |-
+                                =Set(
+                                    _fabSelectedSD,
+                                    {
+                                        Icon: ThisItem.Icon,
+                                        Label: ThisItem.Label,
+                                        Color: ThisItem.Color
+                                    }
+                                );
+                                 Set(_fabOpen, false);
+                                 cmpFloatingActionButton.OnSpeedDialSelect()
+                              PressedBorderColor: =RGBA(0, 0, 0, 0)
+                              PressedColor: =RGBA(0, 0, 0, 0)
+                              PressedFill: =RGBA(255, 255, 255, 0.15)
+                              Text: =""
+                              Tooltip: ="S D Hit"
+                              Width: =cntSDPill_1.Width
+                              X: =cntSDPill_1.X
+            - cntFabBody:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.Semilight
+                  Fill: =cmpFloatingActionButton.Color
+                  Height: |-
+                    =Switch(
+                        cmpFloatingActionButton.Size,
+                        "small", 40,
+                        "regular", 56,
+                        "large", 72,
+                        56
+                    )
+                  RadiusBottomLeft: =Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28)
+                  RadiusBottomRight: =Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28)
+                  RadiusTopLeft: =Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28)
+                  RadiusTopRight: =Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28)
+                  Width: |-
+                    =If(
+                        cmpFloatingActionButton.Style = "extended",
+                        Min(Len(cmpFloatingActionButton.Label) * 8 + 16 + Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 24, "large", 36, 24) + 8 + 20, 280),
+                        Switch(
+                            cmpFloatingActionButton.Size,
+                            "small", 40,
+                            "regular", 56,
+                            "large", 72,
+                            56
+                        )
+                    )
+                  X: =Parent.Width - Self.Width
+                  Y: =Parent.Height - Self.Height
+                Children:
+                  - imgFabMainIcon:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Primary action icon"
+                        FocusedBorderThickness: =0.5
+                        Height: |-
+                          =Switch(
+                              cmpFloatingActionButton.Size,
+                              "small", 20,
+                              "regular", 24,
+                              "large", 36,
+                              24
+                          )
+                        Image: |-
+                          =With(
+                              {
+                                  _ico: cmpFloatingActionButton.Icon,
+                                  _clr: If(
+                                      _fabOpen,
+                                      "#FFFFFF",
+                                      cmpFloatingActionButton.IconColor
+                                  )
+                              },
+                              If(
+                                  StartsWith(_ico, "<svg") || StartsWith(_ico, "data:"),
+                                  If(
+                                      StartsWith(_ico, "data:"), _ico,
+                                      "data:image/svg+xml;utf8," & EncodeUrl(Substitute(_ico, "currentColor", _clr))
+                                  ),
+                                  "data:image/svg+xml;utf8," & EncodeUrl(
+                                      "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='" & _clr & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>" &
+                                      If(
+                                          _fabOpen,
+                                          "<line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/>",
+                                          Switch(
+                                              _ico,
+                                              "Plus", "<line x1='12' y1='5' x2='12' y2='19'/><line x1='5' y1='12' x2='19' y2='12'/>",
+                                              "Edit", "<path d='M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z'/><path d='m15 5 4 4'/>",
+                                              "Share", "<circle cx='18' cy='5' r='3'/><circle cx='6' cy='12' r='3'/><circle cx='18' cy='19' r='3'/><line x1='8.59' y1='13.51' x2='15.42' y2='17.49'/><line x1='15.41' y1='6.51' x2='8.59' y2='10.49'/>",
+                                              "Camera", "<path d='M14.5 4h-5L7.5 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3.5L14.5 4Z'/><circle cx='12' cy='13' r='3'/>",
+                                              "Search", "<circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/>",
+                                              "Check", "<polyline points='20 6 9 17 4 12'/>",
+                                              "X", "<line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/>",
+                                              "Heart", "<path d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z'/>",
+                                              "Star", "<polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/>",
+                                              "Upload", "<path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='17 8 12 3 7 8'/><line x1='12' y1='3' x2='12' y2='15'/>",
+                                              "Download", "<path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/><polyline points='7 10 12 15 17 10'/><line x1='12' y1='15' x2='12' y2='3'/>",
+                                              "Settings", "<circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z'/>",
+                                              "Menu", "<line x1='4' y1='6' x2='20' y2='6'/><line x1='4' y1='12' x2='20' y2='12'/><line x1='4' y1='18' x2='20' y2='18'/>",
+                                              "Send", "<line x1='22' y1='2' x2='11' y2='13'/><polygon points='22 2 15 22 11 13 2 9 22 2'/>",
+                                              "<line x1='12' y1='5' x2='12' y2='19'/><line x1='5' y1='12' x2='19' y2='12'/>"
+                                          )
+                                      ) &
+                                      "</svg>"
+                                  )
+                              )
+                          )
+                        TabIndex: =0
+                        Width: =Self.Height
+                        X: |-
+                          =If(
+                              cmpFloatingActionButton.Style = "extended",
+                              16,
+                              (Parent.Width - Self.Width) / 2
+                          )
+                        Y: =(Parent.Height - Self.Height) / 2
+                  - lblFabExtLabel_1:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        Color: =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =Parent.Height
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                        Size: =Switch(cmpFloatingActionButton.Size, "small", 13, "regular", 15, "large", 18, 15)
+                        Text: =cmpFloatingActionButton.Label
+                        Visible: =cmpFloatingActionButton.Style = "extended"
+                        Width: =Parent.Width - 16 - Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 24, "large", 36, 24) - 8 - 16
+                        Wrap: =false
+                        X: =16 + Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 24, "large", 36, 24) + 8
+                  - rectDisabledOverlay_1:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        AccessibleLabel: ="Open divider"
+                        Fill: =RGBA(255, 255, 255, 0.55)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        TabIndex: =0
+                        Visible: =cmpFloatingActionButton.Disabled
+                        Width: =Parent.Width
+                  - btnFabHit:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 0)
+                        Color: =RGBA(0, 0, 0, 0)
+                        DisplayMode: |-
+                          =If(
+                              cmpFloatingActionButton.Disabled,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        Fill: =RGBA(0, 0, 0, 0)
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Open Sans'
+                        Height: =Parent.Height
+                        HoverBorderColor: =RGBA(0, 0, 0, 0)
+                        HoverColor: =RGBA(0, 0, 0, 0)
+                        HoverFill: =RGBA(255, 255, 255, 0.12)
+                        OnSelect: |-
+                          =If(
+                              CountRows(cmpFloatingActionButton.SpeedDialItems) > 0,
+                              Set(_fabOpen, !_fabOpen),
+                              cmpFloatingActionButton.OnSelect()
+                          )
+                        PressedBorderColor: =RGBA(0, 0, 0, 0)
+                        PressedColor: =RGBA(0, 0, 0, 0)
+                        PressedFill: =RGBA(255, 255, 255, 0.2)
+                        RadiusBottomLeft: =Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28)
+                        RadiusBottomRight: =Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28)
+                        RadiusTopLeft: =Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28)
+                        RadiusTopRight: =Switch(cmpFloatingActionButton.Size, "small", 20, "regular", 28, "large", 36, 28)
+                        Text: =""
+                        Tooltip: ="Primary action"
+                        Width: =Parent.Width

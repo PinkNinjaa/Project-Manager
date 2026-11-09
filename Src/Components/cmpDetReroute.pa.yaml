@@ -1,0 +1,732 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpDetReroute:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      AssigneeEmail:
+        PropertyKind: Output
+        DisplayName: AssigneeEmail
+        Description: Mail of the chosen person. This is the identity the flow acts on; AssigneeName is display only.
+        DataType: Text
+      AssigneeName:
+        PropertyKind: Output
+        DisplayName: AssigneeName
+        Description: Display name of the chosen person, for your toast and audit text.
+        DataType: Text
+      AssignmentKey:
+        PropertyKind: Input
+        DisplayName: AssignmentKey
+        Description: The AssignmentKey of the task being rerouted. The component looks the record up in the RequestAssignments LIST itself, on the indexed AssignmentKey, so nothing else about the task needs passing in. It reads the list rather than a collection because this component has instances on BOTH My Tasks and Details, so it must not depend on any one screen's state.
+        DataType: Text
+        Default: =""
+      Mode:
+        PropertyKind: Output
+        DisplayName: Mode
+        Description: temporary or transfer. A temporary delegation returns to the original assignee afterward; a transfer moves the task permanently. These are keys, never the button labels.
+        DataType: Text
+      OnCancel:
+        PropertyKind: Event
+        DisplayName: OnCancel
+        Description: Fires when the user dismisses the dialog by the scrim, the close button or Cancel. Clear your open flag here AND call Reset() on this instance, or the next open still shows this person and reason.
+        ReturnType: None
+        Default: =false
+      OnSubmit:
+        PropertyKind: Event
+        DisplayName: OnSubmit
+        Description: Fires when the user confirms. Read Mode, AssigneeEmail, AssigneeName and Reason and call your flow from here, then call Reset() on this instance once the dialog closes. The component never calls a flow and never writes to a data source.
+        ReturnType: None
+        Default: =false
+      Reason:
+        PropertyKind: Output
+        DisplayName: Reason
+        Description: Why the task moved. Required, because a reroute is something that happened to someone else's work and the audit trail is the only place it is explained.
+        DataType: Text
+    Properties:
+      AssigneeEmail: =_cmpRerouteAssigneeEmail
+      AssigneeName: =_cmpRerouteAssignee
+      Fill: =nfColor.Transparent
+      Height: |-
+        =App.Height
+        // THE COMPONENT COVERS THE APP, and the instance can still override it.
+        // App.Height is the one height in this file that is not derived from
+        // anything inside the dialog, which is what makes it safe to cap
+        // against.
+      Mode: =_cmpRerouteMode
+      OnReset: |-
+        =Set(_cmpRerouteMode, "temporary");
+        Set(_cmpRerouteAssignee, "");
+        Set(_cmpRerouteAssigneeEmail, "");
+        Set(_cmpRerouteReason, "");
+        Reset(cmbRerPerson_1)
+        // RESET ON CLOSE, NOT ON OPEN. A canvas component has no lifecycle
+        // events at all: no OnVisible, no OnHidden, no OnStart. Reset() is the
+        // only hook and something outside has to call it. The screen calls it
+        // on both close paths, which it is already writing.
+        //
+        // Mode defaults to temporary rather than blank, so one of the two
+        // buttons is always lit and the help text underneath always says
+        // something true. A blank mode with both buttons grey reads as broken.
+        //
+        // Reset on the combo box clears BOTH its typed text and its selection.
+        // The modern control does not reliably fire OnChange on Reset, so the
+        // globals above are cleared here as well; clearing one without the
+        // other leaves the dialog claiming a person it will not actually send.
+      Reason: =_cmpRerouteReason
+      Width: =App.Width
+    Children:
+      - conRerScrim_1:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Overlay
+            Height: =Parent.Height
+            Width: =Parent.Width
+          Children:
+            - btnRerDismiss_1:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =nfColor.Transparent
+                  BorderThickness: =0
+                  Color: =nfColor.Transparent
+                  Fill: =nfColor.Transparent
+                  FocusedBorderThickness: =2
+                  Height: =Parent.Height
+                  HoverBorderColor: =nfColor.Transparent
+                  HoverColor: =nfColor.Transparent
+                  HoverFill: =nfColor.Transparent
+                  OnSelect: =cmpDetReroute.OnCancel()
+                  PressedBorderColor: =nfColor.Transparent
+                  PressedColor: =nfColor.Transparent
+                  PressedFill: =nfColor.Transparent
+                  TabIndex: =-1
+                  Text: =""
+                  Tooltip: ="Dismiss"
+                  Width: =Parent.Width
+      - conRerPanel_1:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            BorderColor: =nfColor.Border
+            BorderThickness: =nfSize.Border
+            DropShadow: =DropShadow.ExtraBold
+            Fill: =nfColor.Surface
+            Height: |-
+              =conRerHeader_1.Height
+              + conRerBody_1.Height
+              + conRerFooter_1.Height
+              // A PLAIN SUM OF THE THREE BANDS, and not one of them reads back
+              // up to this control. An earlier version capped this with
+              // Min(sum, Parent.Height - ...) while the body capped itself
+              // against this panel, which is a straight cycle and Studio
+              // rejects it: "a property cannot reference itself or other
+              // properties affected by its value".
+              //
+              // The cap belongs on the body, against App.Height, which nothing
+              // in this dialog can influence.
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            RadiusBottomLeft: =nfRadius.Xl
+            RadiusBottomRight: =nfRadius.Xl
+            RadiusTopLeft: =nfRadius.Xl
+            RadiusTopRight: =nfRadius.Xl
+            Width: =Min(Parent.Width - 2 * nfSpace.Lg, 420)
+            X: =(Parent.Width - Self.Width) / 2
+            Y: |-
+              =Max(nfSpace.Xl, (Parent.Height - Self.Height) / 2)
+              // Max, SO CENTRING CANNOT GO NEGATIVE. Once the panel is taller
+              // than the space it has, it pins to the top with a margin
+              // instead of hanging off it. Unbounded centring is what put the
+              // footer buttons below the bottom edge.
+          Children:
+            - conRerHeader_1:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =nfColor.Border
+                  BorderThickness: =nfSize.Border
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Transparent
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Md
+                Children:
+                  - conRerIcon_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.PrimarySoft
+                        FillPortions: =0
+                        Height: =nfSize.Row
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        RadiusBottomLeft: =nfRadius.Md
+                        RadiusBottomRight: =nfRadius.Md
+                        RadiusTopLeft: =nfRadius.Md
+                        RadiusTopRight: =nfRadius.Md
+                        Width: =nfSize.Row
+                      Children:
+                        - imgRerIcon_1:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Rer Icon icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =nfSize.IconSm
+                              Image: |-
+                                ="data:image/svg+xml;utf8,"
+                                & EncodeUrl(
+                                    Substitute(
+                                        "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='23 4 23 10 17 10'/><polyline points='1 20 1 14 7 14'/><path d='M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15'/></svg>",
+                                        "SWAPCOLOR",
+                                        If(nfIsDark, "#60A5FA", "#2563EB")
+                                    )
+                                )
+                              TabIndex: =0
+                              Width: =nfSize.IconSm
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
+                  - lblRerTitle_1:
+                      Control: ModernText@1.0.0
+                      Properties:
+                        AccessibleLabel: =Self.Text
+                        AlignInContainer: =AlignInContainer.Center
+                        AutoHeight: =true
+                        Color: =nfColor.TextStrong
+                        FillPortions: =1
+                        FontWeight: =FontWeight.Semibold
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Size: =nfType.Body
+                        Text: ="Reroute Task"
+                        Wrap: =false
+                  - conRerClose_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: ManualLayout
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Center
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Width: =nfSize.RowSm
+                      Children:
+                        - imgRerClose_1:
+                            Control: Image@2.2.3
+                            Properties:
+                              AccessibleLabel: ="Remove icon"
+                              FocusedBorderThickness: =0.5
+                              Height: =nfSize.IconSm
+                              Image: |-
+                                ="data:image/svg+xml;utf8,"
+                                & EncodeUrl(
+                                    Substitute(
+                                        "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='SWAPCOLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg>",
+                                        "SWAPCOLOR",
+                                        If(nfIsDark, "#94A3B8", "#64748B")
+                                    )
+                                )
+                              TabIndex: =0
+                              Width: =nfSize.IconSm
+                              X: =(Parent.Width - Self.Width) / 2
+                              Y: =(Parent.Height - Self.Height) / 2
+                        - btnRerClose_1:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =nfColor.Transparent
+                              BorderThickness: =0
+                              Color: =nfColor.Transparent
+                              Fill: =nfColor.Transparent
+                              FocusedBorderThickness: =0.5
+                              Height: =Parent.Height - 2 * nfSize.FocusRing
+                              HoverBorderColor: =nfColor.Transparent
+                              HoverColor: =nfColor.Transparent
+                              HoverFill: =nfColor.Transparent
+                              OnSelect: =cmpDetReroute.OnCancel()
+                              PressedBorderColor: =nfColor.Transparent
+                              PressedColor: =nfColor.Transparent
+                              PressedFill: =nfColor.Transparent
+                              Text: =""
+                              Tooltip: ="Close without rerouting the task"
+                              Width: =Parent.Width - 2 * nfSize.FocusRing
+                              X: =nfSize.FocusRing
+                              Y: =nfSize.FocusRing
+            - conRerBody_1:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.Transparent
+                  FillPortions: =0
+                  Height: |-
+                    =Min(
+                        conRerTask_1.Height + conRerType_1.Height + conRerAssign_1.Height + conRerReason_1.Height + 3 * Self.LayoutGap + Self.PaddingTop + Self.PaddingBottom,
+                        App.Height - conRerHeader_1.Height - conRerFooter_1.Height - 4 * nfSpace.Xl
+                    )
+                    // THE BODY IS THE PART THAT SCROLLS. Header and footer are
+                    // fixed bands, so the confirm button is always reachable no
+                    // matter how tall the content gets or how short the viewport
+                    // is. This is the behaviour every dialog should have had from
+                    // the start; without it a phone user cannot reach Cancel.
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =nfSpace.Lg
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  LayoutOverflowY: =LayoutOverflow.Scroll
+                  PaddingBottom: =nfSpace.Lg
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Lg
+                Children:
+                  - conRerTask_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        BorderColor: =nfColor.PrimaryBorder
+                        BorderThickness: =nfSize.Border
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.PrimarySoft
+                        FillPortions: =0
+                        Height: |-
+                          =lblRerTaskWho_1.Height
+                          + lblRerTaskGoal_1.Height
+                          + Self.LayoutGap
+                          + Self.PaddingTop
+                          + Self.PaddingBottom
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =nfSpace.Xxs
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        PaddingBottom: =nfSpace.Sm
+                        PaddingLeft: =nfSpace.Md
+                        PaddingRight: =nfSpace.Md
+                        PaddingTop: =nfSpace.Sm
+                        RadiusBottomLeft: =nfRadius.Md
+                        RadiusBottomRight: =nfRadius.Md
+                        RadiusTopLeft: =nfRadius.Md
+                        RadiusTopRight: =nfRadius.Md
+                      Children:
+                        - lblRerTaskWho_1:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextStrong
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Small
+                              Text: |-
+                                =With(
+                                    { a: LookUp(colAssignments, AssignmentKey = cmpDetReroute.AssignmentKey) },
+                                    a.AssigneeName
+                                    & "   •   "
+                                    & LookUp(nfDepartments, ConfigKey = a.DepartmentCode).Title
+                                )
+                                // AssignmentKey is qualified with the component name
+                                // because the record scope of LookUp also has a column
+                                // called AssignmentKey. Unqualified, the input property is
+                                // shadowed and the LookUp compares the column to itself,
+                                // matching every row.
+                              Wrap: =false
+                        - lblRerTaskGoal_1:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =LookUp(
+                                    colAssignments,
+                                    AssignmentKey = cmpDetReroute.AssignmentKey
+                                ).Goal
+                  - conRerType_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: |-
+                          =lblRerTypeLabel_1.Height
+                          + nfSize.Row
+                          + lblRerTypeHelp_1.Height
+                          + 2 * Self.LayoutGap
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =nfSpace.Sm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblRerTypeLabel_1:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: ="REROUTE TYPE"
+                              Wrap: =false
+                        - conRerTypeOptions_1:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Transparent
+                              FillPortions: =0
+                              Height: =nfSize.Row
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =nfSpace.Sm
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                            Children:
+                              - btnRerTemporary_1:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Temporary Delegation"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: |-
+                                      =If(
+                                          _cmpRerouteMode = "temporary",
+                                          ButtonAppearance.Primary,
+                                          ButtonAppearance.Secondary
+                                      )
+                                    FillPortions: =1
+                                    FontWeight: =FontWeight.Semibold
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =Set(_cmpRerouteMode, "temporary")
+                                      // Set, NOT UpdateContext. A component has no context
+                                      // variables at all, so every loc in the original
+                                      // overlay became an underscore prefixed global.
+                                      //
+                                      // "temporary" is the key the flow reads. The button
+                                      // text can be reworded freely; this string cannot.
+                                    Size: =nfType.Small
+                                    Text: ="Temporary Delegation"
+                              - btnRerPermanent_1:
+                                  Control: ModernButton@1.0.0
+                                  Properties:
+                                    AccessibleLabel: ="Permanent Transfer"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    Appearance: |-
+                                      =If(
+                                          _cmpRerouteMode = "transfer",
+                                          ButtonAppearance.Primary,
+                                          ButtonAppearance.Secondary
+                                      )
+                                    FillPortions: =1
+                                    FontWeight: =FontWeight.Semibold
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: =Set(_cmpRerouteMode, "transfer")
+                                    Size: =nfType.Small
+                                    Text: ="Permanent Transfer"
+                        - lblRerTypeHelp_1:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextFaint
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =If(
+                                    _cmpRerouteMode = "temporary",
+                                    "The task returns to the original assignee afterward.",
+                                    "The task moves permanently to the new assignee."
+                                )
+                                & If(
+                                    nfIsFullVersion,
+                                    "",
+                                    Char(10)
+                                    & If(
+                                        IsBlank(_cmpRerouteAssignee),
+                                        "Committing this reroute would reassign the task and log the change to the audit trail. ",
+                                        "Reroute to " & _cmpRerouteAssignee & " would reassign this task and log the change to the audit trail. "
+                                    )
+                                    & nfGateSuffix
+                                )
+                              VerticalAlign: =VerticalAlign.Top
+                  - conRerAssign_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: |-
+                          =lblRerAssignLabel_1.Height
+                          + nfSize.Row
+                          + lblRerChosen_1.Height
+                          + 2 * Self.LayoutGap
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =nfSpace.Sm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblRerAssignLabel_1:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: ="REASSIGN TO"
+                              Wrap: =false
+                        - cmbRerPerson_1:
+                            Control: ModernCombobox@1.1.1
+                            Properties:
+                              AccessibleLabel: ="Reassign to, required"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =Appearance.Outline
+                              Color: =nfColor.TextStrong
+                              DelayOutput: |-
+                                =true
+                                // SearchText UPDATES ON A PAUSE, NOT PER KEYSTROKE. Same
+                                // reason as cmpSendEmail: nfDirectory hits Office365Users,
+                                // which throttles per user per connection, and only the
+                                // last of five keystroke queries was ever wanted.
+                              Height: =nfSize.Row
+                              InputTextPlaceholder: ="Select a person, or type to filter"
+                              ItemDisplayText: |-
+                                =ThisItem.DisplayName & "   -   " & ThisItem.Mail
+                                // A FORMULA, SO IT SURVIVES A PASTE. The classic picker
+                                // took DisplayFields plus a Layout template that lives
+                                // outside Properties, and always landed on Single.
+                              Items: =nfDirectory
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnChange: |-
+                                =With(
+                                    { p: First(Self.SelectedItems) },
+                                    If(
+                                        IsBlank(p.Mail),
+                                        Set(_cmpRerouteAssignee, "");
+                                        Set(_cmpRerouteAssigneeEmail, ""),
+                                        Set(_cmpRerouteAssignee, p.DisplayName);
+                                        Set(_cmpRerouteAssigneeEmail, Lower(Trim(p.Mail)))
+                                    )
+                                )
+                                // DESELECTING CLEARS THE PERSON. The modern control fires
+                                // OnChange on deselection too, so the globals now follow
+                                // the picker both ways. The classic version only ever
+                                // set them, so clearing the box left the old person
+                                // queued to be sent.
+                                //
+                                // A picked row with no Mail also clears, because the flow
+                                // acts on the email and a name alone is not an identity.
+                              SelectMultiple: |-
+                                =false
+                                // WRITTEN EXPLICITLY. The modern default is true, and a
+                                // reroute goes to exactly one person.
+                              Size: =nfType.Small
+                              ValidationState: |-
+                                =If(
+                                    !IsBlank(_cmpRerouteAssigneeEmail)
+                                        && _cmpRerouteAssigneeEmail
+                                           = Lower(LookUp(colAssignments, AssignmentKey = cmpDetReroute.AssignmentKey).AssigneeEmail),
+                                    ValidationState.Error,
+                                    ValidationState.None
+                                )
+                                // THE CURRENT OWNER IS AN ERROR ON THE PICKER, not just a
+                                // silently disabled Reroute button. Same test as the
+                                // third guard on btnRerSubmit, so the two cannot disagree.
+                        - lblRerChosen_1:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: |-
+                                =If(
+                                    !IsBlank(_cmpRerouteAssigneeEmail)
+                                        && _cmpRerouteAssigneeEmail
+                                           = Lower(LookUp(colAssignments, AssignmentKey = cmpDetReroute.AssignmentKey).AssigneeEmail),
+                                    nfColor.DangerSolid,
+                                    nfColor.TextBody
+                                )
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: |-
+                                =If(
+                                    IsBlank(_cmpRerouteAssigneeEmail),
+                                    "No one chosen yet.",
+                                    _cmpRerouteAssigneeEmail
+                                        = Lower(LookUp(colAssignments, AssignmentKey = cmpDetReroute.AssignmentKey).AssigneeEmail),
+                                    _cmpRerouteAssignee & " already has this task. Pick someone else.",
+                                    "Reassigning to " & _cmpRerouteAssignee
+                                    & "   •   " & _cmpRerouteAssigneeEmail
+                                )
+                                // THE CHOICE STATED IN WORDS, and the reason the picker is
+                                // red when it is. Error state is never carried by colour
+                                // alone.
+                              VerticalAlign: =VerticalAlign.Top
+                  - conRerReason_1:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        Fill: =nfColor.Transparent
+                        FillPortions: =0
+                        Height: |-
+                          =lblRerReasonLabel_1.Height
+                          + nfSize.RowLg
+                          + Self.LayoutGap
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutGap: =nfSpace.Sm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - lblRerReasonLabel_1:
+                            Control: ModernText@1.0.0
+                            Properties:
+                              AccessibleLabel: =Self.Text
+                              AlignInContainer: =AlignInContainer.Stretch
+                              AutoHeight: =true
+                              Color: =nfColor.TextMuted
+                              FontWeight: =FontWeight.Semibold
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              Size: =nfType.Micro
+                              Text: ="REASON   (REQUIRED)"
+                              Wrap: =false
+                        - txtRerReason_1:
+                            Control: ModernTextInput@1.1.1
+                            Properties:
+                              AccessibleLabel: ="Reason"
+                              AlignInContainer: =AlignInContainer.Stretch
+                              Appearance: =Appearance.Outline
+                              Default: =_cmpRerouteReason
+                              Height: =nfSize.RowLg
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              OnChange: =Set(_cmpRerouteReason, Self.Text)
+                              Placeholder: ="Why is this task moving?"
+                              Size: =nfType.Small
+                              Type: =TextInputType.Multiline
+            - conRerFooter_1:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  BorderColor: =nfColor.Border
+                  BorderThickness: =nfSize.Border
+                  DropShadow: =DropShadow.None
+                  Fill: =nfColor.SurfaceAlt
+                  FillPortions: =0
+                  Height: =nfSize.Row + 2 * nfSpace.Md
+                  LayoutAlignItems: =LayoutAlignItems.Center
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutGap: =nfSpace.Sm
+                  LayoutJustifyContent: =LayoutJustifyContent.End
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                  PaddingBottom: =nfSpace.Md
+                  PaddingLeft: =nfSpace.Md
+                  PaddingRight: =nfSpace.Md
+                  PaddingTop: =nfSpace.Md
+                  RadiusBottomLeft: =nfRadius.Xl
+                  RadiusBottomRight: =nfRadius.Xl
+                Children:
+                  - btnRerCancel_1:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Cancel"
+                        AlignInContainer: =AlignInContainer.Center
+                        Appearance: =ButtonAppearance.Secondary
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =cmpDetReroute.OnCancel()
+                        Size: =nfType.Small
+                        Text: ="Cancel"
+                        Width: =104
+                  - btnRerSubmit_1:
+                      Control: ModernButton@1.0.0
+                      Properties:
+                        AccessibleLabel: ="Reroute"
+                        AlignInContainer: =AlignInContainer.Center
+                        DisplayMode: |-
+                          =If(
+                              !nfIsFullVersion
+                                  || IsBlank(_cmpRerouteAssigneeEmail)
+                                  || IsBlank(Trim(_cmpRerouteReason))
+                                  || Lower(_cmpRerouteAssigneeEmail)
+                                     = Lower(LookUp(colAssignments, AssignmentKey = cmpDetReroute.AssignmentKey).AssigneeEmail),
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                          // THREE GUARDS. A person, a reason, and not the person who
+                          // already has it. Rerouting a task to its current owner is a
+                          // no-op that still writes an audit row and still sends a
+                          // notification, which is worse than doing nothing.
+                          //
+                          // A reason is required here where it is optional on an
+                          // approval, because a reroute is something that happened to
+                          // someone else's work and this is the only place it is
+                          // explained. The flow validates all three again: a disabled
+                          // button is a courtesy, not a control.
+                        FontWeight: =FontWeight.Semibold
+                        Height: =nfSize.RowSm
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: |-
+                          =cmpDetReroute.OnSubmit()
+                          // RAISES THE EVENT AND NOTHING ELSE. No Patch, no flow call, no
+                          // Navigate. The screen reads Mode, AssigneeEmail, AssigneeName
+                          // and Reason off the instance and calls RerouteAssignment.
+                        Size: =nfType.Small
+                        Text: ="Reroute"
+                        Tooltip: |-
+                          =If(
+                              nfIsFullVersion,
+                              "",
+                              If(
+                                  IsBlank(_cmpRerouteAssignee),
+                                  "Committing this reroute would reassign the task and log the change to the audit trail. ",
+                                  "Reroute to " & _cmpRerouteAssignee & " would reassign this task and log the change to the audit trail. "
+                              ) & nfGateSuffix
+                          )
+                        Width: =104

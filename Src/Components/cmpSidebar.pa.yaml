@@ -1,0 +1,1233 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpSidebar:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      AccentColor:
+        PropertyKind: Input
+        DisplayName: AccentColor
+        Description: Primary accent color for selected items, badges, and highlights.
+        DataType: Color
+        Default: =RGBA(79, 142, 247, 1)
+      AppLogo:
+        PropertyKind: Input
+        DisplayName: AppLogo
+        Description: Logo image for the header mark. When blank, shows the first letter of AppName.
+        DataType: Image
+        Default: =Blank()
+      AppName:
+        PropertyKind: Input
+        DisplayName: AppName
+        Description: First word of the app name shown in the header when expanded.
+        DataType: Text
+        Default: ="PowerApps"
+      AppNameAccent:
+        PropertyKind: Input
+        DisplayName: AppNameAccent
+        Description: Second word of the app name rendered in AccentColor. e.g. "UI".
+        DataType: Text
+        Default: ="UI"
+      Expanded:
+        PropertyKind: Input
+        DisplayName: Expanded
+        Description: Initial expanded state on load. On screen OnVisible run Set(_cmpNavIsExpanded true); Set(_cmpNavSelID 11); ClearCollect(colNavExpanded {ID:1})
+        DataType: Boolean
+        Default: =true
+      Icons:
+        PropertyKind: Input
+        DisplayName: Icons
+        Description: SVG icon library as a table of {Name, SVG} pairs. Reference icons in Items by name string e.g. Icon:"Grid". SVGs use stroke='white' so they work on both dark and light icon backgrounds. Extend with your own icons — any Heroicons or Lucide SVG with stroke='white' works.
+        DataType: Table
+        Default: |-
+          =Table(
+            {Name:"Grid", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='7' height='7' rx='1'/><rect x='14' y='3' width='7' height='7' rx='1'/><rect x='3' y='14' width='7' height='7' rx='1'/><rect x='14' y='14' width='7' height='7' rx='1'/></svg>"},
+            {Name:"Layers", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2L2 7l10 5 10-5-10-5z'/><path d='M2 17l10 5 10-5'/><path d='M2 12l10 5 10-5'/></svg>"},
+            {Name:"File", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/><line x1='16' y1='13' x2='8' y2='13'/><line x1='16' y1='17' x2='8' y2='17'/></svg>"},
+            {Name:"User", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/><circle cx='12' cy='7' r='4'/></svg>"},
+            {Name:"Settings", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg>"},
+            {Name:"Home", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><polyline points='9 22 9 12 15 12 15 22'/></svg>"},
+            {Name:"Tiles", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='3' y='3' width='7' height='7'/><rect x='14' y='3' width='7' height='7'/><rect x='14' y='14' width='7' height='7'/><rect x='3' y='14' width='7' height='7'/></svg>"},
+            {Name:"Bell", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9'/><path d='M13.73 21a2 2 0 0 1-3.46 0'/></svg>"},
+            {Name:"Chart", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='20' x2='18' y2='10'/><line x1='12' y1='20' x2='12' y2='4'/><line x1='6' y1='20' x2='6' y2='14'/></svg>"},
+            {Name:"Users", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 0 0-3-3.87'/><path d='M16 3.13a4 4 0 0 1 0 7.75'/></svg>"},
+            {Name:"Database", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><ellipse cx='12' cy='5' rx='9' ry='3'/><path d='M21 12c0 1.66-4 3-9 3s-9-1.34-9-3'/><path d='M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5'/></svg>"},
+            {Name:"Box", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/><polyline points='3.29 7 12 12 20.71 7'/><line x1='12' y1='22' x2='12' y2='12'/></svg>"},
+            {Name:"Shield", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>"},
+            {Name:"Code", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='16 18 22 12 16 6'/><polyline points='8 6 2 12 8 18'/></svg>"},
+            {Name:"Help", SVG:"<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg>"}
+          )
+      IsExpanded:
+        PropertyKind: Output
+        DisplayName: IsExpanded
+        Description: Mirrors Expanded. Use to offset your screen content — e.g. X = cmpSidebar.Width.
+        DataType: Boolean
+      Items:
+        PropertyKind: Input
+        DisplayName: Items
+        Description: >
+          Table driving the nav. Schema: {ID:Number, Title:Text, Icon:Image, Letter:Text, Badge:Number, BadgeColor:Color, BadgeDot:Boolean, IsSection:Boolean, ParentID:Number, Visible:Boolean} Icon accepts an Image value or a base64 SVG data URI string cast to Image. Letter overrides the auto-initial fallback when Icon is blank — e.g. Letter:"DB" shows "DB". Set IsSection=true for divider/label rows. Set Badge=0 to hide badge. BadgeColor overrides the badge fill per item — defaults to AccentColor. BadgeDot=true shows a small dot instead of the number (good for unread indicators). Set ParentID to the parent item's ID for child items, or -1 for root level. Set Visible=false to hide an item — useful for role-based access. Sections are automatically hidden when all of their child items are hidden.
+        DataType: Table
+        Default: |-
+          =Table(
+            {ID:0,  Title:"Library",      Icon:"",          Letter:"", Badge:0, BadgeColor:RGBA(0,0,0,0),     BadgeDot:false, IsSection:true,  ParentID:-1, Visible:true},
+            {ID:1,  Title:"Components",   Icon:"Grid",      Letter:"", Badge:0, BadgeColor:RGBA(0,0,0,0),     BadgeDot:false, IsSection:false, ParentID:-1, Visible:true},
+            {ID:11, Title:"Canvas",       Icon:"",          Letter:"", Badge:0, BadgeColor:RGBA(0,0,0,0),     BadgeDot:false, IsSection:false, ParentID:1,  Visible:true},
+            {ID:12, Title:"PCF",          Icon:"",          Letter:"", Badge:2, BadgeColor:RGBA(0,0,0,0),     BadgeDot:false, IsSection:false, ParentID:1,  Visible:true},
+            {ID:2,  Title:"Starter Kits", Icon:"Layers",    Letter:"", Badge:3, BadgeColor:RGBA(0,0,0,0),     BadgeDot:false, IsSection:false, ParentID:-1, Visible:true},
+            {ID:3,  Title:"Changelog",    Icon:"File",      Letter:"", Badge:1, BadgeColor:RGBA(34,197,94,1), BadgeDot:true,  IsSection:false, ParentID:-1, Visible:true},
+            {ID:10, Title:"Account",      Icon:"",          Letter:"", Badge:0, BadgeColor:RGBA(0,0,0,0),     BadgeDot:false, IsSection:true,  ParentID:-1, Visible:true},
+            {ID:4,  Title:"Profile",      Icon:"User",      Letter:"", Badge:1, BadgeColor:RGBA(239,68,68,1), BadgeDot:true,  IsSection:false, ParentID:-1, Visible:true},
+            {ID:5,  Title:"Settings",     Icon:"Settings",  Letter:"", Badge:0, BadgeColor:RGBA(0,0,0,0),     BadgeDot:false, IsSection:false, ParentID:-1, Visible:true}
+          )
+      OnFooterSettings:
+        PropertyKind: Event
+        DisplayName: OnFooterSettings
+        Description: Fires when the user taps Settings in the footer menu.
+        ReturnType: None
+        Default: =""
+      OnHelp:
+        PropertyKind: Event
+        DisplayName: OnHelp
+        Description: Fires when the user taps Help in the footer menu.
+        ReturnType: None
+        Default: =""
+      OnNavSelect:
+        PropertyKind: Event
+        DisplayName: OnNavSelect
+        Description: Fires when a nav item is tapped. Read SelectedID output to identify the item.
+        ReturnType: None
+        Default: =""
+      OnThemeToggle:
+        PropertyKind: Event
+        DisplayName: OnThemeToggle
+        Description: Fires when the user taps the Theme button in the footer menu. Toggle your Theme variable here — e.g. Set(gTheme, If(gTheme="Dark","Light","Dark")).
+        ReturnType: None
+        Default: =""
+      OnToggle:
+        PropertyKind: Event
+        DisplayName: OnToggle
+        Description: Fires when the expand/collapse button is pressed. Flip your Expanded variable here — e.g. Set(gNavExpanded, !gNavExpanded).
+        ReturnType: None
+        Default: =""
+      SelectedID:
+        PropertyKind: Output
+        DisplayName: SelectedID
+        Description: ID of the most recently selected nav item. Initialize _cmpNavSelID on your screen's OnVisible to set the default.
+        DataType: Number
+      ShowFooterMenu:
+        PropertyKind: Input
+        DisplayName: ShowFooterMenu
+        Description: Show a context menu on the footer with Settings, Help, and Theme toggle.
+        DataType: Boolean
+        Default: =true
+      ShowHeader:
+        PropertyKind: Input
+        DisplayName: ShowHeader
+        Description: Show the logo + app name header at the top of the nav.
+        DataType: Boolean
+        Default: =true
+      ShowSearch:
+        PropertyKind: Input
+        DisplayName: ShowSearch
+        Description: Show a search bar below the header (only visible when expanded).
+        DataType: Boolean
+        Default: =false
+      ShowToggle:
+        PropertyKind: Input
+        DisplayName: ShowToggle
+        Description: Show the expand/collapse toggle pill on the right edge of the nav.
+        DataType: Boolean
+        Default: =true
+      ShowUser:
+        PropertyKind: Input
+        DisplayName: ShowUser
+        Description: Show the current user's initials and name at the bottom of the nav.
+        DataType: Boolean
+        Default: =true
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: '"Dark" or "Light". Controls all background, text, border, and hover colors.'
+        DataType: Text
+        Default: ="Dark"
+    Properties:
+      Height: =App.Height
+      IsExpanded: =_cmpNavIsExpanded
+      SelectedID: =_cmpNavSelID
+      Width: =If(_cmpNavIsExpanded, 260, 64)
+    Children:
+      - rctNavBg:
+          Control: Rectangle@2.3.0
+          Properties:
+            AccessibleLabel: ="Navigate divider"
+            Fill: |-
+              =If(cmpSidebar.Theme = "Dark",
+                RGBA(13, 17, 28, 1),
+                RGBA(248, 249, 252, 1))
+            FocusedBorderThickness: =0.5
+            Height: =Parent.Height
+            TabIndex: =0
+            Width: =Parent.Width
+      - rctNavRightBorder:
+          Control: Rectangle@2.3.0
+          Properties:
+            AccessibleLabel: ="Navigate divider"
+            Fill: |-
+              =If(cmpSidebar.Theme = "Dark",
+                RGBA(79, 142, 247, 0.12),
+                RGBA(37, 99, 235, 0.10))
+            FocusedBorderThickness: =0.5
+            Height: =Parent.Height
+            TabIndex: =0
+            Width: =1
+            X: =Parent.Width - 1
+      - rctHeaderDivider:
+          Control: Rectangle@2.3.0
+          Properties:
+            AccessibleLabel: ="Header Divider divider"
+            Fill: |-
+              =If(cmpSidebar.Theme = "Dark",
+                RGBA(79, 142, 247, 0.12),
+                RGBA(37, 99, 235, 0.12))
+            FocusedBorderThickness: =0.5
+            Height: =1
+            TabIndex: =0
+            Visible: =cmpSidebar.ShowHeader
+            Width: =Parent.Width - 24
+            X: =12
+            Y: =64
+      - cntNavSearch:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =Color.Transparent
+            Height: =If(cmpSidebar.ShowSearch && _cmpNavIsExpanded, 52, 0)
+            Visible: =cmpSidebar.ShowSearch && _cmpNavIsExpanded
+            Width: =Parent.Width
+            Y: =66
+          Children:
+            - cntSearchBox:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  BorderColor: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(255, 255, 255, 0.10),
+                      RGBA(0, 0, 0, 0.11))
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(255, 255, 255, 0.05),
+                      RGBA(37, 99, 235, 0.06))
+                  Height: =36
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  Width: =Parent.Width - 24
+                  X: =12
+                  Y: =8
+                Children:
+                  - txtNavSearch:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        AccessibleLabel: ="Search"
+                        BorderStyle: =BorderStyle.None
+                        Color: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(210, 210, 230, 1),
+                            RGBA(30, 30, 55, 1))
+                        DisabledColor: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(210, 210, 230, 1),
+                            RGBA(30, 30, 55, 1))
+                        Fill: =RGBA(0, 0, 0, 0)
+                        FocusedBorderColor: =RGBA(0, 0, 0, 0)
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        Height: =Parent.Height
+                        HintText: ="Search..."
+                        HoverColor: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(210, 210, 230, 1),
+                            RGBA(30, 30, 55, 1))
+                        HoverFill: =RGBA(0, 0, 0, 0)
+                        PressedColor: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(210, 210, 230, 1),
+                            RGBA(30, 30, 55, 1))
+                        PressedFill: =RGBA(0, 0, 0, 0)
+                        Size: =12
+                        Width: =Parent.Width - 8
+                        X: =8
+      - galNavItems_1:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            AccessibleLabel: ="Items list"
+            Height: |-
+              =Parent.Height
+               - cntNavHeader.Height
+               - 1
+               - If(cmpSidebar.ShowSearch && _cmpNavIsExpanded, 52, 0)
+               - If(cmpSidebar.ShowUser, 72, 0)
+               - 8
+            Items: |-
+              =Filter(
+                cmpSidebar.Items,
+                Visible &&
+                (
+                  // section rows
+                  (IsSection && CountRows(Filter(cmpSidebar.Items, !IsSection && Visible)) > 0) ||
+                  // root-level items
+                  (!IsSection && ParentID = -1) ||
+                  // child items — only when parent expanded AND nav expanded
+                  (!IsSection && ParentID > -1 && ParentID in colNavExpanded.ID && _cmpNavIsExpanded)
+                )
+              )
+            LoadingSpinner: =LoadingSpinner.None
+            ShowScrollbar: =false
+            TabIndex: =0
+            TemplatePadding: =0
+            TemplateSize: =42
+            Width: =Parent.Width
+            Y: |-
+              =cntNavHeader.Height + 1
+               + If(cmpSidebar.ShowSearch && _cmpNavIsExpanded, 52, 0)
+               + 4
+          Children:
+            - lblNavSection:
+                Control: Label@2.5.1
+                Properties:
+                  Color: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(80, 110, 160, 1),
+                      RGBA(90, 110, 160, 1))
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =42
+                  PaddingLeft: =If(_cmpNavIsExpanded, 20, 0)
+                  Size: =9
+                  TabIndex: =0
+                  Text: =If(_cmpNavIsExpanded, Upper(ThisItem.Title), "·")
+                  Visible: =ThisItem.IsSection
+                  Width: =Parent.TemplateWidth
+            - rctNavSectionLine:
+                Control: Rectangle@2.3.0
+                Properties:
+                  AccessibleLabel: ="Navigate divider"
+                  Fill: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(79, 142, 247, 0.12),
+                      RGBA(37, 99, 235, 0.12))
+                  FocusedBorderThickness: =0.5
+                  Height: =1
+                  TabIndex: =0
+                  Visible: =ThisItem.IsSection
+                  Width: =Parent.TemplateWidth - 24
+                  X: =12
+                  Y: =20
+            - rctNavItemBg:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(ThisItem.ParentID > -1,
+                      If(cmpSidebar.Theme = "Dark",
+                        RGBA(79, 142, 247, 0.06),
+                        RGBA(79, 142, 247, 0.06)),
+                      If(cmpSidebar.Theme = "Dark",
+                        ColorFade(cmpSidebar.AccentColor, 0.82),
+                        RGBA(219, 234, 254, 1)))
+                  Height: =36
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  Visible: =!Coalesce(ThisItem.IsSection, false) && ThisItem.ID = _cmpNavSelID
+                  Width: =If(ThisItem.ParentID > -1, Parent.TemplateWidth - 32, Parent.TemplateWidth - 16)
+                  X: =If(ThisItem.ParentID > -1, 28, 8)
+                  Y: =3
+            - rctNavAccentBar:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =cmpSidebar.AccentColor
+                  Height: =20
+                  RadiusBottomLeft: =2
+                  RadiusBottomRight: =2
+                  RadiusTopLeft: =2
+                  RadiusTopRight: =2
+                  Visible: =!Coalesce(ThisItem.IsSection, false) && ThisItem.ParentID = -1 && ThisItem.ID = _cmpNavSelID
+                  Width: =3
+                  X: =8
+                  Y: =11
+            - rctTreeLine:
+                Control: Rectangle@2.3.0
+                Properties:
+                  AccessibleLabel: ="Tree Line divider"
+                  Fill: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(79, 142, 247, 0.30),
+                      RGBA(37, 99, 235, 0.35))
+                  FocusedBorderThickness: =0.5
+                  Height: |-
+                    =If(
+                      ThisItem.ParentID > -1 &&
+                      !IsBlank(LookUp(
+                        Filter(cmpSidebar.Items, ParentID = ThisItem.ParentID),
+                        ID > ThisItem.ID
+                      )),
+                      42,
+                      21
+                    )
+                  TabIndex: =0
+                  Visible: =ThisItem.ParentID > -1 && _cmpNavIsExpanded
+                  Width: =2
+                  X: =44
+            - cntTreeDot:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  BorderColor: |-
+                    =If(ThisItem.ID = _cmpNavSelID,
+                      cmpSidebar.AccentColor,
+                      If(cmpSidebar.Theme = "Dark",
+                        RGBA(79, 142, 247, 0.45),
+                        RGBA(37, 99, 235, 0.50)))
+                  BorderThickness: =2
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(ThisItem.ID = _cmpNavSelID,
+                      cmpSidebar.AccentColor,
+                      If(cmpSidebar.Theme = "Dark",
+                        RGBA(13, 17, 28, 1),
+                        RGBA(248, 249, 252, 1)))
+                  Height: =8
+                  Visible: =ThisItem.ParentID > -1 && _cmpNavIsExpanded
+                  Width: =8
+                  X: =40
+                  Y: =17
+            - cntNavIconGlow:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =ColorFade(cmpSidebar.AccentColor, 0.72)
+                  Height: =32
+                  RadiusBottomLeft: =16
+                  RadiusBottomRight: =16
+                  RadiusTopLeft: =16
+                  RadiusTopRight: =16
+                  Visible: =!Coalesce(ThisItem.IsSection, false) && ThisItem.ParentID = -1 && ThisItem.ID = _cmpNavSelID
+                  Width: =32
+                  X: |-
+                    =If(_cmpNavIsExpanded,
+                      If(ThisItem.ParentID > -1, 42, 18),
+                      (Parent.TemplateWidth - 32) / 2)
+                  Y: =6
+            - cntNavIcon:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =If(ThisItem.ID = _cmpNavSelID, DropShadow.Light, DropShadow.None)
+                  Fill: |-
+                    =If(
+                      ThisItem.ID = _cmpNavSelID,
+                      cmpSidebar.AccentColor,
+                      If(cmpSidebar.Theme = "Dark",
+                        RGBA(255, 255, 255, 0.08),
+                        RGBA(79, 142, 247, 0.75))
+                    )
+                  Height: =28
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  Visible: =!Coalesce(ThisItem.IsSection, false) && ThisItem.ParentID = -1
+                  Width: =28
+                  X: |-
+                    =If(_cmpNavIsExpanded,
+                      If(ThisItem.ParentID > -1, 44, 18),
+                      (Parent.TemplateWidth - 28) / 2)
+                  Y: =7
+                Children:
+                  - imgNavItemIcon:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Navigate icon"
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        Image: |-
+                          =If(
+                            IsBlank(ThisItem.Icon) || ThisItem.Icon = "",
+                            Blank(),
+                            "data:image/svg+xml," & EncodeUrl(
+                              LookUp(cmpSidebar.Icons, Name = ThisItem.Icon, SVG)
+                            )
+                          )
+                        PaddingBottom: =4
+                        PaddingLeft: =4
+                        PaddingRight: =4
+                        PaddingTop: =4
+                        TabIndex: =0
+                        Visible: =!IsBlank(ThisItem.Icon) && ThisItem.Icon <> "" && !IsBlank(LookUp(cmpSidebar.Icons, Name = ThisItem.Icon))
+                        Width: =Parent.Width
+                  - lblNavIconFallback:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        Color: |-
+                          =If(ThisItem.ID = _cmpNavSelID,
+                            RGBA(255, 255, 255, 1),
+                            If(cmpSidebar.Theme = "Dark",
+                              RGBA(200, 200, 220, 1),
+                              RGBA(37, 99, 235, 0.8)))
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =28
+                        Size: =9
+                        TabIndex: =0
+                        Text: |-
+                          =If(
+                            !IsBlank(ThisItem.Letter),
+                            Upper(ThisItem.Letter),
+                            Upper(Left(ThisItem.Title, 1))
+                          )
+                        Visible: =(IsBlank(ThisItem.Icon) || ThisItem.Icon = Blank()) && Not(IsBlank(ThisItem.Letter))
+                        Width: =28
+            - lblNavItemTitle:
+                Control: Label@2.5.1
+                Properties:
+                  Color: |-
+                    =If(
+                      ThisItem.ID = _cmpNavSelID,
+                      cmpSidebar.AccentColor,
+                      If(cmpSidebar.Theme = "Dark",
+                        RGBA(185, 185, 210, 1),
+                        RGBA(30, 40, 75, 1))
+                    )
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =If(ThisItem.ID = _cmpNavSelID, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =42
+                  Size: =If(ThisItem.ParentID > -1, 11, 12)
+                  TabIndex: =0
+                  Text: =ThisItem.Title
+                  Visible: =!Coalesce(ThisItem.IsSection, false) && _cmpNavIsExpanded
+                  Width: =Parent.TemplateWidth - If(ThisItem.ParentID > -1, 84, 56) - If(ThisItem.Badge > 0 && !ThisItem.BadgeDot, 38, If(ThisItem.Badge > 0 && ThisItem.BadgeDot, 20, 0))
+                  X: =If(ThisItem.ParentID > -1, 62, 52)
+            - icoNavParentChevron:
+                Control: Classic/Icon@2.5.0
+                Properties:
+                  AccessibleLabel: ="Navigate"
+                  Color: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(79, 142, 247, 0.7),
+                      RGBA(37, 99, 235, 0.6))
+                  FocusedBorderThickness: =0.5
+                  Height: =24
+                  Icon: |-
+                    =If(ThisItem.ID in colNavExpanded.ID,
+                      Icon.ChevronDown,
+                      Icon.ChevronRight)
+                  PaddingBottom: =6
+                  PaddingLeft: =6
+                  PaddingRight: =6
+                  PaddingTop: =6
+                  TabIndex: =0
+                  Visible: |-
+                    =!Coalesce(ThisItem.IsSection, false) &&
+                     ThisItem.ParentID = -1 &&
+                     _cmpNavIsExpanded &&
+                     CountRows(Filter(cmpSidebar.Items, ParentID = ThisItem.ID)) > 0
+                  Width: =24
+                  X: =Parent.TemplateWidth - 40
+                  Y: =9
+            - cntNavBadgeDot:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(
+                      IsBlank(ThisItem.BadgeColor) || ThisItem.BadgeColor = RGBA(0,0,0,0),
+                      cmpSidebar.AccentColor,
+                      ThisItem.BadgeColor
+                    )
+                  Height: =8
+                  Visible: =!Coalesce(ThisItem.IsSection, false) && ThisItem.Badge > 0 && ThisItem.BadgeDot && _cmpNavIsExpanded
+                  Width: =8
+                  X: =Parent.TemplateWidth - Self.Width - 18
+                  Y: =18
+            - cntNavBadge:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(
+                      IsBlank(ThisItem.BadgeColor) || ThisItem.BadgeColor = RGBA(0,0,0,0),
+                      cmpSidebar.AccentColor,
+                      ThisItem.BadgeColor
+                    )
+                  Height: =18
+                  RadiusBottomLeft: =9
+                  RadiusBottomRight: =9
+                  RadiusTopLeft: =9
+                  RadiusTopRight: =9
+                  Visible: =!Coalesce(ThisItem.IsSection, false) && ThisItem.Badge > 0 && !ThisItem.BadgeDot && _cmpNavIsExpanded
+                  Width: =If(ThisItem.Badge > 99, 32, If(ThisItem.Badge > 9, 26, 18))
+                  X: =Parent.TemplateWidth - Self.Width - 16
+                  Y: =13
+                Children:
+                  - lblNavBadge:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =18
+                        Size: =9
+                        TabIndex: =0
+                        Text: =If(ThisItem.Badge > 99, "99+", Text(ThisItem.Badge))
+                        Width: =Parent.Width
+            - btnNavItem_1:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderStyle: =BorderStyle.None
+                  DisplayMode: =If(ThisItem.IsSection, DisplayMode.View, DisplayMode.Edit)
+                  Fill: =RGBA(0, 0, 0, 0)
+                  FocusedBorderColor: =RGBA(0, 0, 0, 0)
+                  FocusedBorderThickness: =0.5
+                  Height: =42
+                  HoverFill: |-
+                    =If(ThisItem.IsSection,
+                      RGBA(0, 0, 0, 0),
+                      If(cmpSidebar.Theme = "Dark",
+                        RGBA(255, 255, 255, 0.05),
+                        RGBA(37, 99, 235, 0.06)))
+                  OnSelect: |-
+                    =If(
+                      !Coalesce(ThisItem.IsSection, false),
+                      If(
+                        CountRows(Filter(cmpSidebar.Items, ParentID = ThisItem.ID)) > 0,
+                        // parent item — toggle expand
+                        If(
+                          ThisItem.ID in colNavExpanded.ID,
+                          RemoveIf(colNavExpanded, ID = ThisItem.ID),
+                          Collect(colNavExpanded, {ID: ThisItem.ID})
+                        ),
+                        // leaf item — select and fire event
+                        Set(_cmpNavSelID, ThisItem.ID);
+                        cmpSidebar.OnNavSelect()
+                      )
+                    )
+                  PressedFill: |-
+                    =If(ThisItem.IsSection,
+                      RGBA(0, 0, 0, 0),
+                      If(cmpSidebar.Theme = "Dark",
+                        RGBA(255, 255, 255, 0.10),
+                        RGBA(0, 0, 0, 0.08)))
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  Text: =""
+                  Tooltip: =If(!Coalesce(ThisItem.IsSection, false), ThisItem.Title, "")
+                  Width: =Parent.TemplateWidth
+      - rctUserDivider:
+          Control: Rectangle@2.3.0
+          Properties:
+            AccessibleLabel: ="User Divider divider"
+            Fill: |-
+              =If(cmpSidebar.Theme = "Dark",
+                RGBA(79, 142, 247, 0.12),
+                RGBA(37, 99, 235, 0.12))
+            FocusedBorderThickness: =0.5
+            Height: =1
+            TabIndex: =0
+            Visible: =cmpSidebar.ShowUser
+            Width: =Parent.Width - 24
+            X: =12
+            Y: =Parent.Height - 73
+      - cntFooterMenu:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            BorderColor: |-
+              =If(cmpSidebar.Theme = "Dark",
+                RGBA(79, 142, 247, 0.15),
+                RGBA(37, 99, 235, 0.12))
+            BorderThickness: =1
+            DropShadow: =DropShadow.Regular
+            Fill: |-
+              =If(cmpSidebar.Theme = "Dark",
+                RGBA(20, 26, 46, 1),
+                RGBA(255, 255, 255, 1))
+            Height: =156
+            RadiusBottomLeft: =12
+            RadiusBottomRight: =12
+            RadiusTopLeft: =12
+            RadiusTopRight: =12
+            Visible: =_cmpNavFooterMenu = true && cmpSidebar.ShowUser && cmpSidebar.ShowFooterMenu
+            Width: =If(_cmpNavIsExpanded, Parent.Width - 24, Parent.Width - 12)
+            X: =If(_cmpNavIsExpanded, 12, 6)
+            Y: =Parent.Height - 73 - Self.Height - 8
+          Children:
+            - btnFooterMenuCatchall:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderStyle: =BorderStyle.None
+                  Fill: =RGBA(0, 0, 0, 0)
+                  FocusedBorderColor: =RGBA(0, 0, 0, 0)
+                  FocusedBorderThickness: =0.5
+                  Height: =Parent.Height
+                  HoverFill: =RGBA(0, 0, 0, 0)
+                  PressedFill: =RGBA(0, 0, 0, 0)
+                  Text: =""
+                  Tooltip: ="Footer Menu Catchall"
+                  Width: =Parent.Width
+            - cntFooterSettings:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =Color.Transparent
+                  Height: =48
+                  Width: =Parent.Width
+                Children:
+                  - imgFooterSettings:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Footer Settings icon"
+                        FocusedBorderThickness: =0.5
+                        Height: =20
+                        Image: ="data:image/svg+xml," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='" & If(cmpSidebar.Theme = "Dark", "#96afd8", "#3c5082") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg>")
+                        PaddingBottom: =1
+                        PaddingLeft: =1
+                        PaddingRight: =1
+                        PaddingTop: =1
+                        TabIndex: =0
+                        Width: =20
+                        X: =If(_cmpNavIsExpanded, 16, (Parent.Width - 20) / 2)
+                        Y: =14
+                  - lblFooterSettings:
+                      Control: Label@2.5.1
+                      Properties:
+                        Color: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(200, 215, 245, 1),
+                            RGBA(30, 45, 90, 1))
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        Size: =12
+                        TabIndex: =0
+                        Text: ="Settings"
+                        Visible: =_cmpNavIsExpanded
+                        Width: =Parent.Width - 48
+                        X: =44
+                  - btnFooterSettings:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Fill: =RGBA(0, 0, 0, 0)
+                        FocusedBorderColor: =RGBA(0, 0, 0, 0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(255, 255, 255, 0.06),
+                            RGBA(37, 99, 235, 0.06))
+                        OnSelect: |-
+                          =Set(_cmpNavFooterMenu, false);
+                           cmpSidebar.OnFooterSettings()
+                        PressedFill: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(255, 255, 255, 0.10),
+                            RGBA(0, 0, 0, 0.07))
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =12
+                        RadiusTopRight: =12
+                        Text: =""
+                        Tooltip: ="Footer Settings"
+                        Width: =Parent.Width
+            - rctFooterMenuDiv1:
+                Control: Rectangle@2.3.0
+                Properties:
+                  AccessibleLabel: ="Footer Menu Div 1 divider"
+                  Fill: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(79, 142, 247, 0.10),
+                      RGBA(37, 99, 235, 0.10))
+                  FocusedBorderThickness: =0.5
+                  Height: =1
+                  TabIndex: =0
+                  Width: =Parent.Width - 24
+                  X: =12
+                  Y: =48
+            - cntFooterHelp:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =Color.Transparent
+                  Height: =48
+                  Width: =Parent.Width
+                  Y: =49
+                Children:
+                  - imgFooterHelp:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Footer Help icon"
+                        FocusedBorderThickness: =0.5
+                        Height: =20
+                        Image: ="data:image/svg+xml," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='" & If(cmpSidebar.Theme = "Dark", "#96afd8", "#3c5082") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><line x1='12' y1='17' x2='12.01' y2='17'/><path d='M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01'/></svg>")
+                        PaddingBottom: =1
+                        PaddingLeft: =1
+                        PaddingRight: =1
+                        PaddingTop: =1
+                        TabIndex: =0
+                        Width: =20
+                        X: =If(_cmpNavIsExpanded, 16, (Parent.Width - 20) / 2)
+                        Y: =14
+                  - lblFooterHelp:
+                      Control: Label@2.5.1
+                      Properties:
+                        Color: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(200, 215, 245, 1),
+                            RGBA(30, 45, 90, 1))
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        Size: =12
+                        TabIndex: =0
+                        Text: ="Help"
+                        Width: =Parent.Width - 48
+                        X: =44
+                  - btnFooterHelp:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Fill: =RGBA(0, 0, 0, 0)
+                        FocusedBorderColor: =RGBA(0, 0, 0, 0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(255, 255, 255, 0.06),
+                            RGBA(37, 99, 235, 0.06))
+                        OnSelect: |-
+                          =Set(_cmpNavFooterMenu, false);
+                           cmpSidebar.OnHelp()
+                        PressedFill: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(255, 255, 255, 0.10),
+                            RGBA(0, 0, 0, 0.07))
+                        RadiusBottomLeft: =0
+                        RadiusBottomRight: =0
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                        Text: =""
+                        Tooltip: ="Footer Help"
+                        Width: =Parent.Width
+            - rctFooterMenuDiv2:
+                Control: Rectangle@2.3.0
+                Properties:
+                  AccessibleLabel: ="Footer Menu Div 2 divider"
+                  Fill: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(79, 142, 247, 0.10),
+                      RGBA(37, 99, 235, 0.10))
+                  FocusedBorderThickness: =0.5
+                  Height: =1
+                  TabIndex: =0
+                  Width: =Parent.Width - 24
+                  X: =12
+                  Y: =97
+            - cntFooterTheme:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =Color.Transparent
+                  Height: =48
+                  Width: =Parent.Width
+                  Y: =98
+                Children:
+                  - imgFooterTheme:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Footer Theme icon"
+                        FocusedBorderThickness: =0.5
+                        Height: =20
+                        Image: ="data:image/svg+xml," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='" & If(cmpSidebar.Theme = "Dark", "#96afd8", "#3c5082") & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='" & If(cmpSidebar.Theme = "Dark", "M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z", "M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z") & "'/>\</svg>")
+                        PaddingBottom: =1
+                        PaddingLeft: =1
+                        PaddingRight: =1
+                        PaddingTop: =1
+                        TabIndex: =0
+                        Width: =20
+                        X: =If(_cmpNavIsExpanded, 16, (Parent.Width - 20) / 2)
+                        Y: =14
+                  - lblFooterTheme:
+                      Control: Label@2.5.1
+                      Properties:
+                        Color: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(200, 215, 245, 1),
+                            RGBA(30, 45, 90, 1))
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        Height: =48
+                        Size: =12
+                        TabIndex: =0
+                        Text: =If(cmpSidebar.Theme = "Dark", "Light Mode", "Dark Mode")
+                        Width: =Parent.Width - 48
+                        X: =44
+                  - btnFooterTheme:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Fill: =RGBA(0, 0, 0, 0)
+                        FocusedBorderColor: =RGBA(0, 0, 0, 0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(255, 255, 255, 0.06),
+                            RGBA(37, 99, 235, 0.06))
+                        OnSelect: |-
+                          =Set(_cmpNavFooterMenu, false);
+                           cmpSidebar.OnThemeToggle()
+                        PressedFill: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(255, 255, 255, 0.10),
+                            RGBA(0, 0, 0, 0.07))
+                        RadiusBottomLeft: =12
+                        RadiusBottomRight: =12
+                        RadiusTopLeft: =0
+                        RadiusTopRight: =0
+                        Text: =""
+                        Tooltip: ="Footer Theme"
+                        Width: =Parent.Width
+      - cntNavUser:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =Color.Transparent
+            Height: =64
+            Visible: =cmpSidebar.ShowUser
+            Width: =Parent.Width
+            Y: =Parent.Height - 64
+          Children:
+            - cntUserAvatar:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  Fill: =cmpSidebar.AccentColor
+                  Height: =34
+                  RadiusBottomLeft: =17
+                  RadiusBottomRight: =17
+                  RadiusTopLeft: =17
+                  RadiusTopRight: =17
+                  Width: =34
+                  X: =If(_cmpNavIsExpanded, 15, (Parent.Width - 34) / 2)
+                  Y: =15
+                Children:
+                  - lblUserInitials:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =34
+                        Size: =11
+                        TabIndex: =0
+                        Text: |-
+                          =Upper(
+                            Concat(
+                              FirstN(Split(nfUserName, " "), 2),
+                              Left(Value, 1)
+                            )
+                          )
+                        Width: =34
+            - lblUserName:
+                Control: Label@2.5.1
+                Properties:
+                  Color: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(210, 225, 250, 1),
+                      RGBA(15, 25, 60, 1))
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =18
+                  Size: =12
+                  TabIndex: =0
+                  Text: =nfUserName
+                  Visible: =_cmpNavIsExpanded
+                  Width: =Parent.Width - 100
+                  X: =57
+                  Y: =14
+            - lblUserEmail:
+                Control: Label@2.5.1
+                Properties:
+                  Color: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(79, 142, 247, 0.7),
+                      RGBA(37, 99, 235, 0.55))
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Segoe UI'
+                  Height: =16
+                  Size: =10
+                  TabIndex: =0
+                  Text: =nfUserEmail
+                  Visible: =_cmpNavIsExpanded
+                  Width: =Parent.Width - 108
+                  Wrap: =false
+                  X: =57
+                  Y: =34
+            - icoFooterMenuDots:
+                Control: Classic/Icon@2.5.0
+                Properties:
+                  AccessibleLabel: ="Footer Menu Dots"
+                  Color: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(150, 185, 240, 1),
+                      RGBA(60, 80, 130, 0.8))
+                  FocusedBorderThickness: =0.5
+                  Height: =24
+                  HoverColor: =cmpSidebar.AccentColor
+                  Icon: =Icon.More
+                  PaddingBottom: =4
+                  PaddingLeft: =4
+                  PaddingRight: =4
+                  PaddingTop: =4
+                  TabIndex: =0
+                  Visible: =_cmpNavIsExpanded && cmpSidebar.ShowFooterMenu
+                  Width: =24
+                  X: =Parent.Width - 42
+                  Y: =20
+            - btnNavUserMenu:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderStyle: =BorderStyle.None
+                  Fill: =RGBA(0, 0, 0, 0)
+                  FocusedBorderColor: =RGBA(0, 0, 0, 0)
+                  FocusedBorderThickness: =0.5
+                  Height: =icoFooterMenuDots.Height
+                  HoverFill: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(255, 255, 255, 0.08),
+                      RGBA(37, 99, 235, 0.08))
+                  OnSelect: |-
+                    =If(cmpSidebar.ShowFooterMenu,
+                      Set(_cmpNavFooterMenu, !_cmpNavFooterMenu))
+                  PressedFill: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(255, 255, 255, 0.14),
+                      RGBA(37, 99, 235, 0.14))
+                  RadiusBottomLeft: =4
+                  RadiusBottomRight: =4
+                  RadiusTopLeft: =4
+                  RadiusTopRight: =4
+                  Text: =""
+                  Tooltip: ="More options"
+                  Visible: =cmpSidebar.ShowFooterMenu
+                  Width: =If(_cmpNavIsExpanded, icoFooterMenuDots.Width, cntUserAvatar.Width)
+                  X: =If(_cmpNavIsExpanded, icoFooterMenuDots.X, cntUserAvatar.X)
+                  Y: =If(_cmpNavIsExpanded, icoFooterMenuDots.Y, cntUserAvatar.Y)
+      - cntNavHeader:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =If(cmpSidebar.ShowHeader, 64, 0)
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutGap: =10
+            PaddingLeft: =16
+            PaddingRight: =16
+            RadiusBottomLeft: =0
+            RadiusBottomRight: =0
+            RadiusTopLeft: =0
+            RadiusTopRight: =0
+            Visible: =cmpSidebar.ShowHeader
+            Width: =Parent.Width
+          Children:
+            - cntLogoMark:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  DropShadow: =DropShadow.None
+                  Fill: =If(IsBlank(cmpSidebar.AppLogo), cmpSidebar.AccentColor, Color.Transparent)
+                  FillPortions: =0
+                  Height: =36
+                  RadiusBottomLeft: =10
+                  RadiusBottomRight: =10
+                  RadiusTopLeft: =10
+                  RadiusTopRight: =10
+                  Visible: =_cmpNavIsExpanded
+                  Width: =36
+                  X: =16
+                  Y: =14
+                Children:
+                  - imgNavLogo_4:
+                      Control: Image@2.2.3
+                      Properties:
+                        AccessibleLabel: ="Navigate icon"
+                        FocusedBorderThickness: =0.5
+                        Height: =36
+                        Image: =cmpSidebar.AppLogo
+                        TabIndex: =0
+                        Visible: =!IsBlank(cmpSidebar.AppLogo)
+                        Width: =36
+                  - lblLogoInitial_4:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        Color: =RGBA(255, 255, 255, 1)
+                        FocusedBorderThickness: =0.5
+                        Font: =Font.'Segoe UI'
+                        FontWeight: =FontWeight.Bold
+                        Height: =36
+                        Size: =15
+                        TabIndex: =0
+                        Text: =Upper(Left(cmpSidebar.AppName, 1))
+                        Visible: =IsBlank(cmpSidebar.AppLogo)
+                        Width: =36
+            - lblNavAppName:
+                Control: Label@2.5.1
+                Properties:
+                  Color: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(240, 240, 250, 1),
+                      RGBA(15, 15, 30, 1))
+                  FillPortions: =1
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Bold
+                  Height: =36
+                  LayoutMinWidth: =0
+                  PaddingLeft: =2
+                  Size: =14
+                  TabIndex: =0
+                  Text: =cmpSidebar.AppName
+                  Tooltip: =Self.Text
+                  Visible: =_cmpNavIsExpanded
+                  Width: |-
+                    =If(IsBlank(cmpSidebar.AppNameAccent),
+                      Parent.Width - 106,
+                      120)
+                  Wrap: =false
+                  X: =40
+                  Y: =14
+            - lblNavAppNameAccent:
+                Control: Label@2.5.1
+                Properties:
+                  Color: =cmpSidebar.AccentColor
+                  FocusedBorderThickness: =0.5
+                  Font: =Font.'Segoe UI'
+                  FontWeight: =FontWeight.Bold
+                  Height: =36
+                  PaddingLeft: =0
+                  Size: =14
+                  TabIndex: =0
+                  Text: =cmpSidebar.AppNameAccent
+                  Visible: =_cmpNavIsExpanded && !IsBlank(cmpSidebar.AppNameAccent)
+                  Width: =Len(cmpSidebar.AppNameAccent) * (Self.Size * 0.9)
+                  Wrap: =false
+            - cntNavToggle:
+                Control: GroupContainer@1.5.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  BorderColor: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(79, 142, 247, 0.45),
+                      RGBA(37, 99, 235, 0.18))
+                  BorderThickness: =1
+                  DropShadow: =DropShadow.None
+                  Fill: |-
+                    =If(cmpSidebar.Theme = "Dark",
+                      RGBA(79, 142, 247, 0.14),
+                      RGBA(37, 99, 235, 0.08))
+                  FillPortions: =0
+                  Height: =28
+                  RadiusBottomLeft: =8
+                  RadiusBottomRight: =8
+                  RadiusTopLeft: =8
+                  RadiusTopRight: =8
+                  Visible: =cmpSidebar.ShowToggle
+                  Width: =28
+                  Y: =4
+                Children:
+                  - icoNavChevron_4:
+                      Control: Classic/Icon@2.5.0
+                      Properties:
+                        AccessibleLabel: ="Navigate"
+                        Color: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(79, 142, 247, 1),
+                            RGBA(37, 99, 235, 0.75))
+                        FocusedBorderThickness: =0.5
+                        Height: =28
+                        HoverColor: =cmpSidebar.AccentColor
+                        Icon: =If(_cmpNavIsExpanded, Icon.ChevronLeft, Icon.ChevronRight)
+                        PaddingBottom: =7
+                        PaddingLeft: =7
+                        PaddingRight: =7
+                        PaddingTop: =7
+                        TabIndex: =0
+                        Width: =28
+                  - btnNavToggle:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderStyle: =BorderStyle.None
+                        Fill: =RGBA(0, 0, 0, 0)
+                        FocusedBorderColor: =RGBA(0, 0, 0, 0)
+                        FocusedBorderThickness: =0.5
+                        Height: =Parent.Height
+                        HoverFill: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(255, 255, 255, 0.10),
+                            RGBA(37, 99, 235, 0.10))
+                        OnSelect: |-
+                          =Set(_cmpNavIsExpanded, !_cmpNavIsExpanded);
+                           cmpSidebar.OnToggle()
+                        PressedFill: |-
+                          =If(cmpSidebar.Theme = "Dark",
+                            RGBA(255, 255, 255, 0.16),
+                            RGBA(37, 99, 235, 0.16))
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Text: =""
+                        Tooltip: =If(_cmpNavIsExpanded, "Collapse", "Expand")
+                        Width: =Parent.Width

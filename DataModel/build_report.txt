@@ -1,0 +1,55 @@
+TigerTurf Data Model - Build Report
+===================================
+Generated: 2026-11-09T19:57:20.332Z
+Source: C:\Users\SalesTTNZ\OneDrive - TenCate\Documents\Not Salesforce\DataModel\TigerTurf_Data_Model.xlsx
+Database: C:\Users\SalesTTNZ\OneDrive - TenCate\Documents\Not Salesforce\DataModel\data_model.sqlite
+
+Entities (tables): 32
+Total data rows: 451
+
+Table row counts:
+  department                   4
+  user                         7
+  account                      8
+  contact                      12
+  site_address                 10
+  lead                         8
+  opportunity                  8
+  quote                        12
+  quote_line                   30
+  product                      12
+  sale                         4
+  project                      4
+  project_product              8
+  cost_estimate                4
+  scope_variation              3
+  schedule_entry               8
+  site_visit                   6
+  site_visit_photo             4
+  task                         8
+  document                     8
+  document_link                8
+  meeting                      4
+  meeting_attendee             8
+  invoice                      8
+  invoice_line                 8
+  payment                      4
+  activity                     10
+  activity_link                10
+  stage_definition             7
+  stage_requirement            10
+  stage_instance               14
+  audit_log                    10
+  choice_value         182
+
+
+Errors:
+  None
+
+Warnings:
+  None
+
+Next steps:
+  1. Double-click "Open Database" to browse and edit.
+  2. Edit TigerTurf_Data_Model.xlsx to change the design.
+  3. Double-click "Rebuild Database" to regenerate from Excel.

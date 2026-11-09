@@ -1,0 +1,1116 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrHome:
+    Properties:
+      Fill: =nfColor.Canvas
+    Children:
+      - conDashRoot:
+          Control: GroupContainer@1.5.0
+          Variant: AutoLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Canvas
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            PaddingLeft: =If(nfIsDesktop, conDashNavHost.Width, 0)
+            Width: =Parent.Width
+          Children:
+            - conDashMiddle:
+                Control: GroupContainer@1.5.0
+                Variant: AutoLayout
+                Properties:
+                  DropShadow: =DropShadow.None
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                Children:
+                  - conDashRight:
+                      Control: GroupContainer@1.5.0
+                      Variant: AutoLayout
+                      Properties:
+                        DropShadow: =DropShadow.None
+                        LayoutAlignItems: =LayoutAlignItems.Stretch
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                      Children:
+                        - conDashTopBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderStyle: =If(nfIsMobile, BorderStyle.None, BorderStyle.Solid)
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =If(nfIsMobile, nfColor.Transparent, nfColor.Surface)
+                              FillPortions: =0
+                              Height: =nfHeights.topBar
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutGap: =If(nfIsMobile, nfSpace.Sm, nfSpace.Md)
+                              LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                              LayoutMaxHeight: =nfHeights.topBar
+                              LayoutMinHeight: =nfHeights.topBar
+                              LayoutMinWidth: =0
+                              PaddingRight: =If(nfIsMobile, nfSpace.Md, nfSpace.Xxl)
+                            Children:
+                              - conDashTitleGroup:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Transparent
+                                    FillPortions: =2.5
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutJustifyContent: =LayoutJustifyContent.Center
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                  Children:
+                                    - cmpDashCrumbs:
+                                        Control: CanvasComponent
+                                        ComponentName: cmpBreadcrumbs
+                                        Properties:
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          CharWidths: =nfCharWidths
+                                          Config: |-
+                                            ={
+                                                Theme: If(nfIsDark, "dark", "light"),
+                                                SeparatorIcon: "chevron",
+                                                Gap: 4,
+                                                Size: nfType.ChromeTitle,
+                                                MaxItems: 4,
+                                                ItemsBeforeCollapse: 1,
+                                                ItemsAfterCollapse: 2,
+                                                ActiveLastItem: false,
+                                                BackButton: false
+                                            }
+                                          CurrentColor: =If(nfIsDark, "#F1F5F9", "#1E293B")
+                                          Height: =nfHeights.breadcrumb
+                                          Icons: =nfBreadcrumbIcons
+                                          Items: |-
+                                            =Table({ id: "home", label: "Home" })
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          LinkColor: =If(nfIsDark, "#94A3B8", "#64748B")
+                                          OnBack: =
+                                          OnSelect: =
+                                          Width: =Parent.Width
+                              - cmpDashBell:
+                                  Control: CanvasComponent
+                                  ComponentName: Badge
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BadgeColor: =nfColor.DangerSolid
+                                    BadgeCount: =0
+                                    HasNotifications: =false
+                                    Height: =Self.Size
+                                    HoverText: ="Notifications"
+                                    IconColor: =
+                                    IconSvg: =
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =false
+                                      // INERT ON PURPOSE. BadgeCount and HasNotifications have no
+                                      // source. CLAUDE.md open question 2 is unresolved: colAudit
+                                      // carries neither per-item typing nor per-user unread state,
+                                      // so it is the wrong shape. Do NOT bind this to colAudit to
+                                      // make the chrome look finished. Wire it when a notifications
+                                      // collection exists, then set BadgeCount and
+                                      // HasNotifications from it and give OnSelect a real action.
+                                    Size: =If(nfIsMobile, 32, 35)
+                                    Theme: =nfThemeName
+                                    Width: =Self.Size
+                              - conDashAvatar:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: ManualLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Primary
+                                    FillPortions: =0
+                                    Height: =nfHeights.avatar
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    RadiusBottomLeft: =nfHeights.avatar / 2
+                                    RadiusBottomRight: =nfHeights.avatar / 2
+                                    RadiusTopLeft: =nfHeights.avatar / 2
+                                    RadiusTopRight: =nfHeights.avatar / 2
+                                    Width: =nfHeights.avatar
+                                  Children:
+                                    - lblDashInitials:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          Align: =Align.Center
+                                          Color: =nfColor.TextOnPrimary
+                                          FontWeight: =FontWeight.Bold
+                                          Height: =Parent.Height
+                                          Size: =nfType.Initials
+                                          Text: =nfInitials
+                                          Width: =Parent.Width
+                                          Wrap: =false
+                        - conDashGutter:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Canvas
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutGap: =nfSpace.Xxl
+                              LayoutMinHeight: =0
+                              LayoutMinWidth: =0
+                              LayoutOverflowY: =LayoutOverflow.Scroll
+                              PaddingBottom: =nfSpace.Xxl
+                              PaddingLeft: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingRight: =If(nfIsDesktop, nfSpace.Xxl, nfSpace.Lg)
+                              PaddingTop: =nfSpace.Xxl
+                              Width: =Parent.Width
+                            Children:
+                              - conDashHeader:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: |-
+                                      =Max(
+                                          lblDashGreeting.Height + lblDashGreetingSub.Height + conDashGreet.LayoutGap,
+                                          btnDashNewRequest.Height
+                                      )
+                                      + Self.PaddingTop
+                                      + Self.PaddingBottom
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =nfSpace.Lg
+                                    LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - conDashGreet:
+                                        Control: GroupContainer@1.5.0
+                                        Variant: AutoLayout
+                                        Properties:
+                                          DropShadow: =DropShadow.None
+                                          LayoutAlignItems: =LayoutAlignItems.Stretch
+                                          LayoutDirection: =LayoutDirection.Vertical
+                                          LayoutGap: =nfSpace.Xxs
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                        Children:
+                                          - lblDashGreeting:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextStrong
+                                                FontWeight: =FontWeight.Semibold
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =If(nfIsDesktop, nfType.PageTitle, 20)
+                                                Text: |-
+                                                  =With(
+                                                      { h: Hour(nfNow) },
+                                                      If(h < 12, "Good morning", If(h < 17, "Good afternoon", "Good evening"))
+                                                  ) & ", " & First(Split(nfUserName, " ")).Value
+                                                Wrap: =false
+                                          - lblDashGreetingSub:
+                                              Control: ModernText@1.0.0
+                                              Properties:
+                                                AccessibleLabel: =Self.Text
+                                                AlignInContainer: =AlignInContainer.Stretch
+                                                AutoHeight: =true
+                                                Color: =nfColor.TextMuted
+                                                LayoutMinHeight: =0
+                                                LayoutMinWidth: =0
+                                                Size: =nfType.Body
+                                                Text: ="Here is what needs your attention. Demo data is held in memory and resets when this app is reopened; Settings, Appearance has a Reset demo data action."
+                                    - btnDashNewRequest:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="New Request"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =nfSize.Row
+                                          Icon: ="Add"
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          OnSelect: =Navigate(scrNewRequest, ScreenTransition.None)
+                                          Size: =nfType.Body
+                                          Text: ="New Request"
+                                          Visible: =nfIsDesktop
+                                          Width: =150
+                              - conDashHero:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderColor: =nfColor.WarnBorder
+                                    BorderThickness: =nfSize.Border
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.WarnFill
+                                    FillPortions: =0
+                                    Height: |-
+                                      =lblDashHeroTitle.Height + galDashUrgent.Height
+                                      + btnDashViewAllTasks.Height
+                                      + (2 * Self.LayoutGap) + Self.PaddingTop + Self.PaddingBottom
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutGap: =nfSpace.Md
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =nfSpace.Lg
+                                    PaddingLeft: =nfSpace.Xl
+                                    PaddingRight: =nfSpace.Xl
+                                    PaddingTop: =nfSpace.Lg
+                                    RadiusBottomLeft: =nfRadius.Xl
+                                    RadiusBottomRight: =nfRadius.Xl
+                                    RadiusTopLeft: =nfRadius.Xl
+                                    RadiusTopRight: =nfRadius.Xl
+                                    Visible: =nfDashUrgentCount > 0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblDashHeroTitle:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          AutoHeight: =true
+                                          Color: =nfColor.WarnText
+                                          FontWeight: =FontWeight.Semibold
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =nfType.Subhead
+                                          Text: |-
+                                            =With(
+                                                { n: nfDashUrgentCount },
+                                                n & " task" & If(n = 1, "", "s") & " need" & If(n = 1, "s", "") & " your attention"
+                                            )
+                                          Wrap: =false
+                                    - galDashUrgent:
+                                        Control: Gallery@2.15.0
+                                        Variant: Vertical
+                                        Properties:
+                                          AccessibleLabel: ="Urgent list"
+                                          FillPortions: =0
+                                          Height: =Self.AllItemsCount * Self.TemplateHeight
+                                          Items: =nfDashUrgent
+                                          LayoutMinHeight: =0
+                                          ShowScrollbar: =false
+                                          TabIndex: =0
+                                          TemplatePadding: =0
+                                          TemplateSize: =64
+                                        Children:
+                                          - conDashUrgentRow:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Surface
+                                                Height: =Parent.TemplateHeight - 6
+                                                LayoutAlignItems: =LayoutAlignItems.Center
+                                                LayoutDirection: =LayoutDirection.Horizontal
+                                                LayoutGap: =nfSpace.Md
+                                                LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                                                PaddingLeft: =nfSpace.Lg
+                                                PaddingRight: =nfSpace.Lg
+                                                RadiusBottomLeft: =nfRadius.Lg
+                                                RadiusBottomRight: =nfRadius.Lg
+                                                RadiusTopLeft: =nfRadius.Lg
+                                                RadiusTopRight: =nfRadius.Lg
+                                                Width: =Parent.TemplateWidth - 4
+                                                X: =2
+                                                Y: =3
+                                              Children:
+                                                - conDashUrgentText:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblDashUrgentGoal:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: =ThisItem.Goal
+                                                            Wrap: =false
+                                                      - lblDashUrgentReq:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextMuted
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: =LookUp(colRequests, RequestKey = ThisItem.RequestKey).Title
+                                                            Wrap: =false
+                                                - lblDashUrgentDue:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      Align: =Align.Right
+                                                      AlignInContainer: =AlignInContainer.Center
+                                                      AutoHeight: =true
+                                                      Color: =If(ThisItem.DueDate < nfToday, nfColor.DangerText, nfColor.WarnText)
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Small
+                                                      Text: |-
+                                                        =If(
+                                                            ThisItem.DueDate < nfToday,
+                                                            "Overdue",
+                                                            "Due today"
+                                                        )
+                                                      Width: =88
+                                                      Wrap: =false
+                                                - conDashUrgentOpen:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      AlignInContainer: =AlignInContainer.Center
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =nfSize.RowSm
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Width: =nfSize.HitTarget
+                                                    Children:
+                                                      - imgDashUrgentOpen:
+                                                          Control: Image@2.2.3
+                                                          Properties:
+                                                            AccessibleLabel: ="Dash Urgent Open icon"
+                                                            FocusedBorderThickness: =0.5
+                                                            Height: =nfSize.Icon
+                                                            Image: ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#64748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 18 15 12 9 6'/></svg>")
+                                                            TabIndex: =0
+                                                            Width: =nfSize.Icon
+                                                            X: =(Parent.Width - Self.Width) / 2
+                                                            Y: =(Parent.Height - Self.Height) / 2
+                                                      - btnDashUrgentOpen:
+                                                          Control: Classic/Button@2.2.0
+                                                          Properties:
+                                                            BorderColor: =nfColor.Transparent
+                                                            BorderThickness: =0
+                                                            Color: =nfColor.Transparent
+                                                            Fill: =nfColor.Transparent
+                                                            FocusedBorderThickness: =0.5
+                                                            Height: =Parent.Height
+                                                            HoverBorderColor: =nfColor.Transparent
+                                                            HoverColor: =nfColor.Transparent
+                                                            HoverFill: =nfColor.Transparent
+                                                            OnSelect: |-
+                                                              =Navigate(
+                                                                  scrDetails,
+                                                                  ScreenTransition.None,
+                                                                  {
+                                                                      locRequestKey: ThisItem.RequestKey,
+                                                                      locOriginScreen: "scrHome"
+                                                                  }
+                                                              )
+                                                            PressedBorderColor: =nfColor.Transparent
+                                                            PressedColor: =nfColor.Transparent
+                                                            PressedFill: =nfColor.Transparent
+                                                            Text: =""
+                                                            Tooltip: ="Open task"
+                                                            Width: =Parent.Width
+                                    - btnDashViewAllTasks:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="View all tasks"
+                                          AlignInContainer: =AlignInContainer.Start
+                                          Appearance: =ButtonAppearance.Transparent
+                                          Color: =nfColor.WarnText
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =nfSize.IconLg
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          OnSelect: =Navigate(scrMyTasks, ScreenTransition.None)
+                                          Size: =nfType.Small
+                                          Text: ="View all tasks"
+                                          Width: =120
+                              - conDashCaughtUp:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderColor: =nfColor.SuccessBorder
+                                    BorderThickness: =nfSize.Border
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.SuccessFill
+                                    FillPortions: =0
+                                    Height: |-
+                                      =lblDashCaughtUpTitle.Height + lblDashCaughtUpSub.Height
+                                      + Self.LayoutGap + Self.PaddingTop + Self.PaddingBottom
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutGap: =nfSpace.Xxs
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =nfSpace.Lg
+                                    PaddingLeft: =nfSpace.Xl
+                                    PaddingRight: =nfSpace.Xl
+                                    PaddingTop: =nfSpace.Lg
+                                    RadiusBottomLeft: =nfRadius.Xl
+                                    RadiusBottomRight: =nfRadius.Xl
+                                    RadiusTopLeft: =nfRadius.Xl
+                                    RadiusTopRight: =nfRadius.Xl
+                                    Visible: =nfDashUrgentCount = 0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblDashCaughtUpTitle:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          AutoHeight: =true
+                                          Color: =nfColor.SuccessText
+                                          FontWeight: =FontWeight.Semibold
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =nfType.Subhead
+                                          Text: ="You are all caught up"
+                                          Wrap: =false
+                                    - lblDashCaughtUpSub:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Stretch
+                                          AutoHeight: =true
+                                          Color: =nfColor.SuccessText
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =nfType.Body
+                                          Text: ="Nothing is due today and nothing is overdue."
+                                          Wrap: =false
+                              - cmpDashStats:
+                                  Control: CanvasComponent
+                                  ComponentName: cmpKPI
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    AnimationEffect: ="None"
+                                    ColumnsLayout: |-
+                                      =With(
+                                          {
+                                              _capOffset: If(nfIsDesktop, conDashNavHost.Width, 0) +
+                                                          If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl)
+                                          },
+                                          {
+                                              Mobile: 2,
+                                              Tablet: 2,
+                                              Desktop: 4,
+                                              MobileBreakpoint:  640 + _capOffset,
+                                              TabletBreakpoint:  1024 + _capOffset,
+                                              DesktopBreakpoint: 1366 + _capOffset
+                                          }
+                                      )
+                                    Data: |-
+                                      =Table(
+                                          {
+                                              ID: 1,
+                                              Icon: "Target",
+                                              Value: nfMyOpenCount,
+                                              Label: "My Tasks",
+                                              PercentChange: Blank(),
+                                              PercentLabel: "",
+                                              IconBg: "#DCFCE7",
+                                              IconColor: "#15803D",
+                                              SparklineData: "",
+                                              isHidden: false
+                                          },
+                                          {
+                                              ID: 2,
+                                              Icon: "Users",
+                                              Value: nfMyRequestsCount,
+                                              Label: "My Requests",
+                                              PercentChange: Blank(),
+                                              PercentLabel: "",
+                                              IconBg: "#F3E8FF",
+                                              IconColor: "#9333EA",
+                                              SparklineData: "",
+                                              isHidden: false
+                                          },
+                                          {
+                                              ID: 3,
+                                              Icon: "Clock",
+                                              Value: nfMyDueTodayCount,
+                                              Label: "Due Today",
+                                              PercentChange: Blank(),
+                                              PercentLabel: "",
+                                              IconBg: "#FEF3C7",
+                                              IconColor: "#B45309",
+                                              SparklineData: "",
+                                              isHidden: false
+                                          },
+                                          {
+                                              ID: 4,
+                                              Icon: "Warning",
+                                              Value: nfMyOverdueCount,
+                                              Label: "Overdue",
+                                              PercentChange: Blank(),
+                                              PercentLabel: "",
+                                              IconBg: "#FEE2E2",
+                                              IconColor: "#B91C1C",
+                                              SparklineData: "",
+                                              isHidden: false
+                                          }
+                                      )
+                                    Height: |-
+                                      =With(
+                                          {
+                                              bp: Self.ColumnsLayout,
+                                              w: App.Width,
+                                              cardCount: CountRows(Filter(Self.Data, !IfError(isHidden, false)))
+                                          },
+                                          With(
+                                              {
+                                                  cols: Max(
+                                                      1,
+                                                      If(
+                                                          w < bp.MobileBreakpoint, bp.Mobile,
+                                                          w < bp.TabletBreakpoint, bp.Tablet,
+                                                          bp.Desktop
+                                                      )
+                                                  )
+                                              },
+                                              With(
+                                                  { rows: RoundUp(cardCount / cols, 0) },
+                                                  If(
+                                                      Or(Self.Style = "Compact", Self.Style = "Minimal"),
+                                                      rows * (96 + Self.StyleConfig.space.md) + Self.StyleConfig.space.md,
+                                                      rows * (Self.StyleConfig.heights.statsCardMax + Self.StyleConfig.space.lg) + Self.StyleConfig.space.lg
+                                                  )
+                                              )
+                                          )
+                                      )
+                                    Icons: |-
+                                      =Table(
+                                          { Name: "Target", SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='6'/><circle cx='12' cy='12' r='2'/></svg>" },
+                                          { Name: "Users", SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 0 0-3-3.87'/><path d='M16 3.13a4 4 0 0 1 0 7.75'/></svg>" },
+                                          { Name: "Clock", SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><polyline points='12 6 12 12 16 14'/></svg>" },
+                                          { Name: "Warning", SVG: "<svg viewBox='0 0 24 24' width='24' height='24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='COLOR' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><line x1='12' y1='9' x2='12' y2='13'/><line x1='12' y1='17' x2='12.01' y2='17'/></svg>" }
+                                      )
+                                    IsLoading: =false
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnCardClick: |-
+                                      =Switch(
+                                          ClickedItem.ID,
+                                          1, Navigate(scrMyTasks, ScreenTransition.None),
+                                          2, Navigate(scrAllRequests, ScreenTransition.None, { locMyRequestsOnly: true })
+                                      )
+                                    Style: ="Compact"
+                                    StyleConfig: |-
+                                      ={
+                                          colors: {
+                                              cardBg: nfColor.Surface,
+                                              border: nfColor.Border,
+                                              text: nfColor.TextStrong,
+                                              textMuted: nfColor.TextMuted,
+                                              positive: nfColor.SuccessSolid,
+                                              negative: nfColor.DangerSolid,
+                                              neutral: nfColor.TextFaint,
+                                              skeletonBase: nfColor.Border,
+                                              skeletonShine: nfColor.SurfaceAlt
+                                          },
+                                          space: { xs: nfSpace.Xs, sm: nfSpace.Sm, md: nfSpace.Md, lg: nfSpace.Lg, xl: nfSpace.Xxl },
+                                          radius: { md: nfRadius.Md, lg: nfRadius.Lg },
+                                          type: {
+                                              value: { size: 32, sizeCompact: 20 },
+                                              label: { size: nfType.Caption },
+                                              body:  { size: nfType.Caption }
+                                          },
+                                          heights: { statsCardMax: 190 },
+                                          abbreviateThreshold: 10000
+                                      }
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                              - conDashRecentHead:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    DropShadow: =DropShadow.None
+                                    FillPortions: =0
+                                    Height: =24
+                                    LayoutAlignItems: =LayoutAlignItems.Center
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutGap: =nfSpace.Sm
+                                    LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - lblDashRecentHead:
+                                        Control: ModernText@1.0.0
+                                        Properties:
+                                          AccessibleLabel: =Self.Text
+                                          AlignInContainer: =AlignInContainer.Center
+                                          AutoHeight: =true
+                                          Color: =nfColor.TextMuted
+                                          FillPortions: =1
+                                          FontWeight: =FontWeight.Semibold
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          Size: =nfType.Caption
+                                          Text: ="RECENT REQUESTS"
+                                          Wrap: =false
+                                    - btnDashRecentAll:
+                                        Control: ModernButton@1.0.0
+                                        Properties:
+                                          AccessibleLabel: ="View all"
+                                          AlignInContainer: =AlignInContainer.Center
+                                          Appearance: =ButtonAppearance.Transparent
+                                          Color: =nfColor.Primary
+                                          FontWeight: =FontWeight.Semibold
+                                          Height: =nfSize.IconLg
+                                          LayoutMinHeight: =0
+                                          LayoutMinWidth: =0
+                                          OnSelect: |-
+                                            =Navigate(scrAllRequests, ScreenTransition.None, { locMyRequestsOnly: true })
+                                          Size: =nfType.Small
+                                          Text: ="View all"
+                                          Width: =72
+                              - conDashRecentCard:
+                                  Control: GroupContainer@1.5.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    AlignInContainer: =AlignInContainer.Center
+                                    BorderColor: =nfColor.Border
+                                    BorderThickness: =nfSize.Border
+                                    DropShadow: =DropShadow.None
+                                    Fill: =nfColor.Surface
+                                    FillPortions: =0
+                                    Height: =galDashRecent.Height + Self.PaddingTop + Self.PaddingBottom
+                                    LayoutAlignItems: =LayoutAlignItems.Stretch
+                                    LayoutDirection: =LayoutDirection.Vertical
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    PaddingBottom: =4
+                                    PaddingTop: =4
+                                    RadiusBottomLeft: =nfRadius.Lg
+                                    RadiusBottomRight: =nfRadius.Lg
+                                    RadiusTopLeft: =nfRadius.Lg
+                                    RadiusTopRight: =nfRadius.Lg
+                                    Width: =Min(Parent.Width - If(nfIsMobile, 2 * nfSpace.Lg, 2 * nfSpace.Xxl), nfPageMaxW)
+                                  Children:
+                                    - galDashRecent:
+                                        Control: Gallery@2.15.0
+                                        Variant: Vertical
+                                        Properties:
+                                          AccessibleLabel: ="Recent list"
+                                          FillPortions: =0
+                                          Height: =Self.AllItemsCount * Self.TemplateHeight
+                                          Items: =nfDashRecent
+                                          LayoutMinHeight: =0
+                                          ShowScrollbar: =false
+                                          TabIndex: =0
+                                          TemplatePadding: =0
+                                          TemplateSize: =64
+                                        Children:
+                                          - conDashRecentRow:
+                                              Control: GroupContainer@1.5.0
+                                              Variant: AutoLayout
+                                              Properties:
+                                                DropShadow: =DropShadow.None
+                                                Fill: =nfColor.Transparent
+                                                Height: =Parent.TemplateHeight
+                                                LayoutAlignItems: =LayoutAlignItems.Center
+                                                LayoutDirection: =LayoutDirection.Horizontal
+                                                LayoutGap: =nfSpace.Md
+                                                PaddingLeft: =nfSpace.Lg
+                                                PaddingRight: =nfSpace.Sm
+                                                Width: =Parent.TemplateWidth - 4
+                                                X: =2
+                                              Children:
+                                                - conDashRecentTitle:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: AutoLayout
+                                                    Properties:
+                                                      DropShadow: =DropShadow.None
+                                                      LayoutAlignItems: =LayoutAlignItems.Stretch
+                                                      LayoutDirection: =LayoutDirection.Vertical
+                                                      LayoutGap: =nfSpace.Xxs
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                    Children:
+                                                      - lblDashRecentTitle:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextStrong
+                                                            FontWeight: =FontWeight.Semibold
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Body
+                                                            Text: =ThisItem.Title
+                                                            Wrap: =false
+                                                      - lblDashRecentKey:
+                                                          Control: ModernText@1.0.0
+                                                          Properties:
+                                                            AccessibleLabel: =Self.Text
+                                                            AlignInContainer: =AlignInContainer.Stretch
+                                                            AutoHeight: =true
+                                                            Color: =nfColor.TextFaint
+                                                            LayoutMinHeight: =0
+                                                            LayoutMinWidth: =0
+                                                            Size: =nfType.Caption
+                                                            Text: =ThisItem.RequestKey
+                                                            Wrap: =false
+                                                - lblDashRecentStatus:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      Align: =Align.Center
+                                                      AlignInContainer: =AlignInContainer.Center
+                                                      AutoHeight: =true
+                                                      Color: |-
+                                                        =Switch(
+                                                            LookUp(nfStatusTable, StatusKey = ThisItem.StatusKey).BadgeColor,
+                                                            "green", nfBadgeGreen.Text,
+                                                            "amber", nfBadgeAmber.Text,
+                                                            "red",   nfBadgeRed.Text,
+                                                            nfBadgeSlate.Text
+                                                        )
+                                                      Fill: |-
+                                                        =Switch(
+                                                            LookUp(nfStatusTable, StatusKey = ThisItem.StatusKey).BadgeColor,
+                                                            "green", nfBadgeGreen.Fill,
+                                                            "amber", nfBadgeAmber.Fill,
+                                                            "red",   nfBadgeRed.Fill,
+                                                            nfBadgeSlate.Fill
+                                                        )
+                                                      FontWeight: =FontWeight.Semibold
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      PaddingBottom: =4
+                                                      PaddingLeft: =10
+                                                      PaddingRight: =10
+                                                      PaddingTop: =4
+                                                      RadiusBottomLeft: =nfRadius.Pill
+                                                      RadiusBottomRight: =nfRadius.Pill
+                                                      RadiusTopLeft: =nfRadius.Pill
+                                                      RadiusTopRight: =nfRadius.Pill
+                                                      Size: =nfType.Caption
+                                                      Text: =LookUp(nfStatusTable, StatusKey = ThisItem.StatusKey).Title
+                                                      Visible: =!nfIsMobile
+                                                      Width: =104
+                                                      Wrap: =false
+                                                - lblDashRecentProgress:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Center
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextMuted
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Caption
+                                                      Text: |-
+                                                        =With(
+                                                            {
+                                                                total: Coalesce(ThisItem.PhaseCount, 0)
+                                                            },
+                                                            If(
+                                                                total = 0,
+                                                                "No phases",
+                                                                "Phase " & ThisItem.CurrentPhaseOrder & "/" & total
+                                                            )
+                                                        )
+                                                      Visible: =nfIsDesktop
+                                                      Width: =92
+                                                      Wrap: =false
+                                                - lblDashRecentCreated:
+                                                    Control: ModernText@1.0.0
+                                                    Properties:
+                                                      AccessibleLabel: =Self.Text
+                                                      AlignInContainer: =AlignInContainer.Center
+                                                      AutoHeight: =true
+                                                      Color: =nfColor.TextMuted
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Size: =nfType.Caption
+                                                      Text: =nfDay(ThisItem.Created)
+                                                      Visible: =nfIsDesktop
+                                                      Width: =92
+                                                      Wrap: =false
+                                                - conDashRecentOpen:
+                                                    Control: GroupContainer@1.5.0
+                                                    Variant: ManualLayout
+                                                    Properties:
+                                                      AlignInContainer: =AlignInContainer.Center
+                                                      DropShadow: =DropShadow.None
+                                                      Fill: =nfColor.Transparent
+                                                      FillPortions: =0
+                                                      Height: =nfSize.RowSm
+                                                      LayoutMinHeight: =0
+                                                      LayoutMinWidth: =0
+                                                      Width: =nfSize.HitTarget
+                                                    Children:
+                                                      - imgDashRecentOpen:
+                                                          Control: Image@2.2.3
+                                                          Properties:
+                                                            AccessibleLabel: ="Dash Recent Open icon"
+                                                            FocusedBorderThickness: =0.5
+                                                            Height: =nfSize.Icon
+                                                            Image: ="data:image/svg+xml;utf8," & EncodeUrl("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#64748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 18 15 12 9 6'/></svg>")
+                                                            TabIndex: =0
+                                                            Width: =nfSize.Icon
+                                                            X: =(Parent.Width - Self.Width) / 2
+                                                            Y: =(Parent.Height - Self.Height) / 2
+                                                      - btnDashRecentOpen:
+                                                          Control: Classic/Button@2.2.0
+                                                          Properties:
+                                                            BorderColor: =nfColor.Transparent
+                                                            BorderThickness: =0
+                                                            Color: =nfColor.Transparent
+                                                            Fill: =nfColor.Transparent
+                                                            FocusedBorderThickness: =0.5
+                                                            Height: =Parent.Height
+                                                            HoverBorderColor: =nfColor.Transparent
+                                                            HoverColor: =nfColor.Transparent
+                                                            HoverFill: =nfColor.Transparent
+                                                            OnSelect: |-
+                                                              =Navigate(
+                                                                  scrDetails,
+                                                                  ScreenTransition.None,
+                                                                  {
+                                                                      locRequestKey: ThisItem.RequestKey,
+                                                                      locOriginScreen: "scrHome"
+                                                                  }
+                                                              )
+                                                            PressedBorderColor: =nfColor.Transparent
+                                                            PressedColor: =nfColor.Transparent
+                                                            PressedFill: =nfColor.Transparent
+                                                            Text: =""
+                                                            Tooltip: ="Open request"
+                                                            Width: =Parent.Width
+                        - conDashBottomBar:
+                            Control: GroupContainer@1.5.0
+                            Variant: AutoLayout
+                            Properties:
+                              BorderColor: =nfColor.Border
+                              BorderThickness: =nfSize.Border
+                              DropShadow: =DropShadow.None
+                              Fill: =nfColor.Surface
+                              FillPortions: =0
+                              Height: =nfHeights.bottomNav + nfSpace.Lg
+                              LayoutAlignItems: =LayoutAlignItems.Stretch
+                              LayoutDirection: =LayoutDirection.Vertical
+                              LayoutMinHeight: =nfHeights.bottomNav
+                              LayoutMinWidth: =0
+                              PaddingBottom: =nfSpace.Md
+                              PaddingTop: =nfSpace.Xs
+                              Visible: =!nfIsDesktop
+                            Children:
+                              - cmpDashBottomNav:
+                                  Control: CanvasComponent
+                                  ComponentName: cmpBottomNavigation
+                                  Properties:
+                                    ActiveColor: =nfColor.Primary
+                                    ActiveColorHex: =If(nfIsDark, "3B82F6", "2563EB")
+                                    ActiveIndicator: ="bar"
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    BadgeColor: =nfColor.DangerSolid
+                                    FillPortions: =1
+                                    InactiveColorHex: =If(nfIsDark, "94A3B8", "64748B")
+                                    Items: |-
+                                      =ForAll(
+                                          nfNavMobile As m,
+                                          {
+                                              Icon: m.Icon,
+                                              Label: m.Label,
+                                              Badge: If(
+                                                  m.ID = 2,
+                                                  nfMyOpenCount,
+                                                  0
+                                              )
+                                          }
+                                      )
+                                    LayoutMinHeight: =0
+                                    LayoutMinWidth: =0
+                                    OnSelect: |-
+                                      =Set(
+                                          _cmpNavSelID,
+                                          LookUp(nfNavMobile, Idx = cmpDashBottomNav.SelectedItemIndex).ID
+                                      );
+                                      nfRoute(_cmpNavSelID)
+                                    SelectedIndex: =Coalesce(LookUp(nfNavMobile, ID = _cmpNavSelID).Idx, 1)
+                                    ShowLabels: ="always"
+                                    Theme: =nfThemeName
+      - conDashNavHost:
+          Control: GroupContainer@1.5.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Fill: =nfColor.Sidebar
+            Height: =Parent.Height
+            Visible: =nfIsDesktop
+            Width: =cmpSidebar_1.Width
+          Children:
+            - cmpSidebar_1:
+                Control: CanvasComponent
+                ComponentName: cmpSidebar
+                Properties:
+                  AccentColor: =nfColor.Primary
+                  AppLogo: =
+                  AppName: ="DocRouter"
+                  AppNameAccent: =""
+                  Expanded: =true
+                  Height: =Parent.Height
+                  Icons: =nfSidebarIcons
+                  Items: |-
+                    =Table(
+                        { ID: 1,  Title: "Home",         Icon: "Home",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 2,  Title: "My Tasks",     Icon: "CheckSquare",     Letter: "",
+                          Badge: nfMyOpenCount,
+                          BadgeColor: nfColor.DangerSolid, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 3,  Title: "All Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 7,  Title: "My Requests", Icon: "Folder",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: 3, Visible: true },
+                        { ID: 4,  Title: "Reports",      Icon: "Chart",    Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 90, Title: "",             Icon: "",         Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: true,  ParentID: -1, Visible: true },
+                        { ID: 5,  Title: "Settings",     Icon: "Settings", Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true },
+                        { ID: 6,  Title: "Help",         Icon: "Help",     Letter: "", Badge: 0,
+                          BadgeColor: nfColor.Transparent, BadgeDot: false, IsSection: false, ParentID: -1, Visible: true }
+                    )
+                  OnFooterSettings: =
+                  OnHelp: =
+                  OnNavSelect: =nfRoute(cmpSidebar_1.SelectedID)
+                  OnThemeToggle: |-
+                    =Patch(
+                        colUserPrefs,
+                        First(colUserPrefs),
+                        { ThemeName: If(nfIsDark, "Light", "Dark") }
+                    );
+                    ClearCollect(
+                        colUserPrefs,
+                        Filter(colUserPrefs, UserEmail = Lower(nfUserEmail))
+                    )
+                  OnToggle: =
+                  ShowFooterMenu: =true
+                  ShowHeader: =true
+                  ShowSearch: =false
+                  ShowToggle: =true
+                  ShowUser: =true
+                  Theme: =If(nfIsDark, "Light", "Dark")
+                  Width: =If(_cmpNavIsExpanded, 260, 64)
+      - cmpDashFab:
+          Control: CanvasComponent
+          ComponentName: cmpFloatingActionButton
+          Properties:
+            Color: =nfColor.Primary
+            Disabled: =false
+            Height: |-
+              =With(
+                  {
+                      _fabSize: Switch(
+                          Self.Size,
+                          "small", 40,
+                          "regular", 56,
+                          "large", 72,
+                          56
+                      )
+                  },
+                  If(
+                      _fabOpen && CountRows(Self.SpeedDialItems) > 0,
+                      _fabSize + 12 + CountRows(Self.SpeedDialItems) * Self.ItemSize,
+                      _fabSize
+                  )
+              )
+            Icon: ="Plus"
+            IconColor: ="#FFFFFF"
+            ItemSize: =52
+            Label: ="New Request"
+            OnSelect: =Navigate(scrNewRequest, ScreenTransition.None)
+            OnSpeedDialSelect: =false
+            Size: ="regular"
+            SpeedDialItems: |-
+              =FirstN(
+                  Table({ Icon: "Plus", Label: "New Request", Color: nfColor.Primary }),
+                  0
+              )
+            Style: ="standard"
+            Theme: =nfThemeName
+            Visible: =!nfIsDesktop
+            Width: |-
+              =With(
+                  {
+                      _fabSize: Switch(
+                          Self.Size,
+                          "small", 40,
+                          "regular", 56,
+                          "large", 72,
+                          56
+                      ),
+                      _iconSize: Switch(
+                          Self.Size,
+                          "small", 20,
+                          "regular", 24,
+                          "large", 36,
+                          24
+                      ),
+                      _labelPad: Switch(
+                          Self.Size,
+                          "small", 20,
+                          "regular", 28,
+                          "large", 36,
+                          28
+                      ),
+                      _maxLabelChars: If(
+                          CountRows(Self.SpeedDialItems) > 0,
+                          Max(Self.SpeedDialItems, Len(Label)),
+                          0
+                      )
+                  },
+                  If(
+                      _fabOpen && CountRows(Self.SpeedDialItems) > 0,
+                      Min(
+                          Min(_maxLabelChars * 8 + 64, 240) + _labelPad + 20,
+                          App.Width
+                      ),
+                      If(
+                          Self.Style = "extended",
+                          16 + _iconSize + 8 + Min(Len(Self.Label) * 8, 220) + 20,
+                          _fabSize
+                      )
+                  )
+              )
+            X: =Parent.Width - Self.Width - nfSpace.Xl
+            Y: =Parent.Height - Self.Height - (nfSpace.Xxl + nfHeights.bottomNav)

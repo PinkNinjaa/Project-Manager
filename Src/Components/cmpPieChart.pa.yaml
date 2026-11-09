@@ -1,0 +1,332 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  cmpPieChart:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      Animate:
+        PropertyKind: Input
+        DisplayName: Animate
+        Description: Enable animations
+        DataType: Boolean
+        Default: =true
+      AnimationDuration:
+        PropertyKind: Input
+        DisplayName: AnimationDuration
+        DataType: Number
+        Default: =0.8
+      ChartData:
+        PropertyKind: Input
+        DisplayName: ChartData
+        Description: Table with Label, Value, and optional Color columns
+        DataType: Table
+        Default: |-
+          =Table(
+              {Label: "Marketing", Value: 35, Color: "#3B82F6"},
+              {Label: "Sales", Value: 28, Color: "#10B981"},
+              {Label: "Engineering", Value: 22, Color: "#F59E0B"},
+              {Label: "Operations", Value: 15, Color: "#EF4444"}
+          )
+      ChartTitle:
+        PropertyKind: Input
+        DisplayName: ChartTitle
+        DataType: Text
+        Default: ="Budget Allocation"
+      DefaultColors:
+        PropertyKind: Input
+        DisplayName: DefaultColors
+        Description: Default color palette if Color not in data
+        DataType: Table
+        Default: |-
+          =Table(
+              {Color: "#3B82F6"},
+              {Color: "#10B981"},
+              {Color: "#F59E0B"},
+              {Color: "#EF4444"},
+              {Color: "#8B5CF6"},
+              {Color: "#EC4899"},
+              {Color: "#06B6D4"},
+              {Color: "#84CC16"}
+          )
+      DonutMode:
+        PropertyKind: Input
+        DisplayName: DonutMode
+        Description: Show as donut chart with center hole
+        DataType: Boolean
+        Default: =false
+      DonutThickness:
+        PropertyKind: Input
+        DisplayName: DonutThickness
+        Description: Thickness of donut ring (0.3 to 0.9)
+        DataType: Number
+        Default: =0.6
+      ShowLabels:
+        PropertyKind: Input
+        DisplayName: ShowLabels
+        Description: Show labels on slices
+        DataType: Boolean
+        Default: =true
+      ShowLegend:
+        PropertyKind: Input
+        DisplayName: ShowLegend
+        Description: Show legend
+        DataType: Boolean
+        Default: =true
+      ShowPercentages:
+        PropertyKind: Input
+        DisplayName: ShowPercentages
+        Description: Show percentage values
+        DataType: Boolean
+        Default: =true
+      ShowTitle:
+        PropertyKind: Input
+        DisplayName: ShowTitle
+        Description: Show or hide the chart title
+        DataType: Boolean
+        Default: =true
+      ShowValues:
+        PropertyKind: Input
+        DisplayName: ShowValues
+        Description: Show actual values in legend
+        DataType: Boolean
+        Default: =false
+      Theme:
+        PropertyKind: Input
+        DisplayName: Theme
+        Description: Light or Dark theme
+        DataType: Text
+        Default: ="Light"
+    Properties:
+      Fill: =Color.Transparent
+      Height: =400
+      Width: =App.Width
+    Children:
+      - imgPieChart:
+          Control: Image@2.2.3
+          Properties:
+            AccessibleLabel: ="Requests by status, pie chart"
+            Height: =Parent.Height
+            Image: |-
+              ="data:image/svg+xml," & EncodeUrl(
+                  With(
+                      {
+                          Data: cmpPieChart.ChartData,
+                          Colors: cmpPieChart.DefaultColors,
+                          vbW: 700,
+                          vbH: 350,
+                          BgColor: If(cmpPieChart.Theme = "Dark", "#1F2937", "#FFFFFF"),
+                          TitleColor: If(cmpPieChart.Theme = "Dark", "#F9FAFB", "#0F172A"),
+                          LabelColor: If(cmpPieChart.Theme = "Dark", "#FFFFFF", "#FFFFFF"),
+                          LegendTextColor: If(cmpPieChart.Theme = "Dark", "#E5E7EB", "#374151"),
+                          LegendValueColor: If(cmpPieChart.Theme = "Dark", "#9CA3AF", "#6B7280"),
+                          EmptyTxt: If(cmpPieChart.Theme = "Dark", "#6B7280", "#9CA3AF"),
+                          TitleText: cmpPieChart.ChartTitle,
+                          ShowLabels: cmpPieChart.ShowLabels,
+                          ShowPct: cmpPieChart.ShowPercentages,
+                          ShowVals: cmpPieChart.ShowValues,
+                          ShowLegend: cmpPieChart.ShowLegend,
+                          IsDonut: cmpPieChart.DonutMode,
+                          DonutRatio: cmpPieChart.DonutThickness,
+                          Animate: cmpPieChart.Animate,
+                          AnimDur: cmpPieChart.AnimationDuration,
+                          fnt: "-apple-system,system-ui,Segoe UI,sans-serif"
+                      },
+                      With(
+                          {
+                              cx: If(ShowLegend, 200, vbW / 2),
+                              cy: If(cmpPieChart.ShowTitle, 195, 175),
+                              radius: 120,
+                              total: Sum(Data, Value),
+                              n: CountRows(Data),
+                              innerR: If(IsDonut, 120 * (1 - DonutRatio), 0),
+                              pi: 3.14159265359
+                          },
+                          With(
+                              {
+                                  slices: ForAll(
+                                      Sequence(n),
+                                      With(
+                                          {
+                                              row: Index(Data, Value),
+                                              idx: Value
+                                          },
+                                          With(
+                                              {
+                                                  val: row.Value,
+                                                  lbl: row.Label,
+                                                  clr: If(
+                                                      !IsBlank(row.Color),
+                                                      row.Color,
+                                                      Index(Colors, Mod(idx - 1, CountRows(Colors)) + 1).Color
+                                                  ),
+                                                  pct: If(total > 0, row.Value / total * 100, 0),
+                                                  startAngle: If(
+                                                      total > 0,
+                                                      Sum(
+                                                          Filter(
+                                                              ForAll(
+                                                                  Sequence(n),
+                                                                  {i: Value, v: Index(Data, Value).Value}
+                                                              ),
+                                                              i < idx
+                                                          ),
+                                                          v
+                                                      ) / total * 360 - 90,
+                                                      -90
+                                                  )
+                                              },
+                                              {
+                                                  i: idx,
+                                                  label: lbl,
+                                                  value: val,
+                                                  color: clr,
+                                                  percent: pct,
+                                                  start: startAngle,
+                                                  sweep: If(total > 0, val / total * 360, 0)
+                                              }
+                                          )
+                                      )
+                                  )
+                              },
+                              With(
+                                  {
+                                      slicePaths: Concat(
+                                          slices,
+                                          With(
+                                              {
+                                                  startRad: start * pi / 180,
+                                                  endRad: (start + sweep) * pi / 180,
+                                                  midRad: (start + sweep / 2) * pi / 180,
+                                                  largeArc: If(sweep > 180, 1, 0),
+                                                  delay: (i - 1) * 0.08
+                                              },
+                                              With(
+                                                  {
+                                                      x1: cx + radius * Cos(startRad),
+                                                      y1: cy + radius * Sin(startRad),
+                                                      x2: cx + radius * Cos(endRad),
+                                                      y2: cy + radius * Sin(endRad),
+                                                      ix1: cx + innerR * Cos(startRad),
+                                                      iy1: cy + innerR * Sin(startRad),
+                                                      ix2: cx + innerR * Cos(endRad),
+                                                      iy2: cy + innerR * Sin(endRad),
+                                                      labelR: If(IsDonut, (radius + innerR) / 2, radius * 0.65),
+                                                      lx: cx + If(IsDonut, (radius + innerR) / 2, radius * 0.65) * Cos(midRad),
+                                                      ly: cy + If(IsDonut, (radius + innerR) / 2, radius * 0.65) * Sin(midRad)
+                                                  },
+                                                  If(
+                                                      sweep >= 359.9,
+                                                      "<circle cx='" & cx & "' cy='" & cy & "' r='" & radius & "' fill='" & color & "'" &
+                                                      If(
+                                                          Animate,
+                                                          " style='transform-origin:" & cx & "px " & cy & "px;animation:pieGrow " & AnimDur & "s ease-out forwards;'",
+                                                          ""
+                                                      ) &
+                                                      "/>" &
+                                                      If(
+                                                          IsDonut,
+                                                          "<circle cx='" & cx & "' cy='" & cy & "' r='" & innerR & "' fill='" & BgColor & "'/>",
+                                                          ""
+                                                      ),
+                                                      If(
+                                                          IsDonut,
+                                                          "<path d='M " & x1 & " " & y1 &
+                                                          " A " & radius & " " & radius & " 0 " & largeArc & " 1 " & x2 & " " & y2 &
+                                                          " L " & ix2 & " " & iy2 &
+                                                          " A " & innerR & " " & innerR & " 0 " & largeArc & " 0 " & ix1 & " " & iy1 &
+                                                          " Z' fill='" & color & "'" &
+                                                          If(
+                                                              Animate,
+                                                              " style='transform-origin:" & cx & "px " & cy & "px;opacity:0;animation:sliceFade " & AnimDur & "s ease-out " & delay & "s forwards;'",
+                                                              ""
+                                                          ) &
+                                                          "/>",
+                                                          "<path d='M " & cx & " " & cy &
+                                                          " L " & x1 & " " & y1 &
+                                                          " A " & radius & " " & radius & " 0 " & largeArc & " 1 " & x2 & " " & y2 &
+                                                          " Z' fill='" & color & "'" &
+                                                          If(
+                                                              Animate,
+                                                              " style='transform-origin:" & cx & "px " & cy & "px;opacity:0;animation:sliceFade " & AnimDur & "s ease-out " & delay & "s forwards;'",
+                                                              ""
+                                                          ) &
+                                                          "/>"
+                                                      )
+                                                  ) &
+                                                  If(
+                                                      ShowLabels && percent >= 5,
+                                                      "<text x='" & lx & "' y='" & ly & "' text-anchor='middle' dominant-baseline='middle' fill='" & LabelColor & "' font-family='" & fnt & "' font-size='12' font-weight='600'" &
+                                                      If(
+                                                          Animate,
+                                                          " style='opacity:0;animation:labelFade 0.3s ease-out " & (delay + AnimDur * 0.5) & "s forwards;'",
+                                                          ""
+                                                      ) &
+                                                      ">" &
+                                                      If(ShowPct, Text(percent, "[$-en-US]0") & "%", label) &
+                                                      "</text>",
+                                                      ""
+                                                  )
+                                              )
+                                          )
+                                      ),
+                                      legendSvg: If(
+                                          ShowLegend,
+                                          Concat(
+                                              slices,
+                                              With(
+                                                  {
+                                                      ly: If(cmpPieChart.ShowTitle, 80, 60) + (i - 1) * 28,
+                                                      lx: 380,
+                                                      valText: If(ShowVals, Text(value, "[$-en-US]#,##0"), ""),
+                                                      pctText: If(ShowPct, Text(percent, "[$-en-US]0.0") & "%", "")
+                                                  },
+                                                  "<rect x='" & lx & "' y='" & ly & "' width='14' height='14' rx='3' fill='" & color & "'/>" &
+                                                  "<text x='" & (lx + 24) & "' y='" & (ly + 7) & "' dominant-baseline='middle' fill='" & LegendTextColor & "' font-family='" & fnt & "' font-size='13'>" & label & "</text>" &
+                                                  "<text x='" & (lx + 180) & "' y='" & (ly + 7) & "' dominant-baseline='middle' text-anchor='end' fill='" & LegendValueColor & "' font-family='" & fnt & "' font-size='12'>" &
+                                                  If(ShowVals && ShowPct, valText & "  (" & pctText & ")", If(ShowVals, valText, If(ShowPct, pctText, ""))) &
+                                                  "</text>"
+                                              )
+                                          ),
+                                          ""
+                                      ),
+                                      titleSvg: If(
+                                          cmpPieChart.ShowTitle && !IsBlank(TitleText),
+                                          "<text x='50' y='30' fill='" & TitleColor & "' font-family='" & fnt & "' font-size='16' font-weight='600'>" & TitleText & "</text>",
+                                          ""
+                                      )
+                                  },
+                                  If(
+                                      n < 1 || total <= 0,
+                                      "<svg xmlns='http://www.w3.org/2000/svg' width='" & vbW & "' height='" & vbH & "' viewBox='0 0 " & vbW & " " & vbH & "'>
+                                          <rect x='0' y='0' width='100%' height='100%' fill='" & BgColor & "'/>
+                                          <text x='50%' y='50%' text-anchor='middle' dominant-baseline='middle' fill='" & EmptyTxt & "' font-family='" & fnt & "' font-size='14'>No data</text>
+                                      </svg>",
+                                      "<svg xmlns='http://www.w3.org/2000/svg' width='" & vbW & "' height='" & vbH & "' viewBox='0 0 " & vbW & " " & vbH & "' style='background:" & BgColor & "'>" &
+                                      If(
+                                          Animate,
+                                          "<style>
+                                              @keyframes pieGrow { from { transform: scale(0); } to { transform: scale(1); } }
+                                              @keyframes sliceFade { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+                                              @keyframes labelFade { from { opacity: 0; } to { opacity: 1; } }
+                                          </style>",
+                                          ""
+                                      ) &
+                                      titleSvg &
+                                      slicePaths &
+                                      legendSvg &
+                                      "</svg>"
+                                  )
+                              )
+                          )
+                      )
+                  )
+              )
+            TabIndex: =0
+            Width: =Parent.Width
